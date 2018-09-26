@@ -1,0 +1,44 @@
+<mdb-navbar SideClass="navbar fixed-top navbar-expand-lg navbar-dark secondary-variant nav-color scrolling-navbar ie-nav"
+  [containerInside]="false">
+  <mdb-navbar-brand>
+    <a class="navbar-brand font180 margin" (click)="clickMenu(0)" routerLinkActive="router-link-active">
+      <img src="assets/icon.png" height="43" class="d-inline-block align-top" alt=""> &nbsp;
+      <strong>AiR</strong>ound
+    </a>
+  </mdb-navbar-brand>
+  <links>
+
+    <ul class="navbar-nav mr-auto" style="margin-left: 2rem">
+
+      <li class="nav-item waves-light space10" mdbWavesEffect>
+        <a class="nav-link font135 margin" [ngClass]="{'active': currentMenu.sensors}" (click)="clickMenu(1)">Sensors
+        </a>
+      </li>
+
+      <li class="nav-item waves-light space10" mdbWavesEffect>
+        <a class="nav-link font135 margin" [ngClass]="{'active': currentMenu.users}" (click)="clickMenu(2)">Users
+        </a>
+      </li>
+    </ul>
+
+    <ul class="navbar-nav nav-flex-icons">
+      <!-- Dropdown -->
+      <li class="nav-item dropdown" dropdown>
+        <a dropdownToggle mdbWavesEffect type="button" class="nav-link waves-light font135 margin" mdbWavesEffect>
+          <i class="fa fa-user-circle-o font230 space5" aria-hidden="true"></i>
+          <span class="caret"></span>
+        </a>
+        <div *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+          <p class="font120 userInfo">
+            {{userInfo.email}}
+          </p>
+          <div class="divider dropdown-divider"></div>
+
+          <a class="dropdown-item waves-light font120" (click)="clickMenu(3)" mdbWavesEffect>
+            <i class="fa fa-sign-out space10" aria-hidden="true"></i>Sign out
+          </a>
+        </div>
+      </li>
+    </ul>
+  </links>
+</mdb-navbar>

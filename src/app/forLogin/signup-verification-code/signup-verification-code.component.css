@@ -1,0 +1,38 @@
+.frame {
+    height: 100vh;
+    padding-top: 10%;
+    padding-bottom: 20%;
+}
+.contents {
+    text-align: center;
+    margin: auto auto;
+    width: 600px;
+}
+.vfcContainer{
+    margin-top: 3rem;
+    width: auto;
+    height: auto;
+}
+.vfcBox{
+    font-weight: 500;
+    padding: 0.7rem;
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+    background-color: var(--on-surface-light);
+    border: solid var(--secondary) 5px;
+    border-radius: 50px;
+}
+.timerContainer{
+    margin-top: 1.5rem;
+    text-align: center;
+}
+.formStyle{
+    font-size: 1.5rem;
+    width: 400px;
+    margin-top: 1rem;
+}
+.buttonStyle{
+    margin-top: 1.3rem;
+    border-radius: 50px;
+    font-size: 1rem;
+}

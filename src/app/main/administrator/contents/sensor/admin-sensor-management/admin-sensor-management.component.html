@@ -1,0 +1,85 @@
+<app-admin-navbar></app-admin-navbar>
+<div class="table-wrapper">
+  <h1 class="title">Sensor management</h1>
+  <mat-card class="card">
+    <form class="example-form form" (ngSubmit)="onSubmit()">
+      <mat-form-field class="example-full-width inputStyle">
+        <input matInput placeholder="Wifi MAC Address" [formControl]="wifi_mac">
+      </mat-form-field>
+      <mat-form-field class="example-full-width inputStyle">
+        <input matInput placeholder="Cellular MAC Address" [formControl]="cellular_mac">
+      </mat-form-field>
+      <button type="submit" class="btn waves-light secondary-variant buttonStyle" [disabled]="wifi_mac.invalid || cellular_mac.invalid"
+        mdbWavesEffect>Register</button>
+    </form>
+  </mat-card>
+  <div class="buttonsGroup">
+    <button mdbBtn type="button" class="waves-light addition roundBtn" (click)="openAssociationDialog()" mdbWavesEffect>+</button>
+    <button mdbBtn type="button" class="waves-light deletion roundBtn" (click)="openDeletionDialog()" mdbWavesEffect>-</button>
+  </div>
+  <div class="mat-elevation-z8">
+    <mat-accordion>
+      <div class="tableheader">
+        <span class="eachtitle checkboxWidth">
+          <mat-checkbox (change)="$event ? masterToggle() : null; selected()" [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </span>
+        <span *ngFor="let column of displayedColumns; let idx=index;" class="eachtitle" [ngStyle]="columnStyles[idx]">
+          <strong>{{column}}</strong>
+        </span>
+      </div>
+
+      <mat-expansion-panel *ngFor="let element of SENSOR_LIST; let idx=index;">
+        <mat-expansion-panel-header *ngIf="!existSensor">
+          No sensor
+        </mat-expansion-panel-header>
+        <mat-expansion-panel-header>
+          <span class="eachtitle checkboxWidth" >
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(element) : null; selected()"
+              [checked]="selection.isSelected(element)">
+            </mat-checkbox>
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[0]">
+            {{idx+1}}
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[1]">
+            {{element.mac}}
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[2]">
+            <i class="fa fa-circle" [ngClass]="{'active': element.activation == 2, 'inactive': element.activation == 1}"
+              aria-hidden="true"></i>
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[3]">
+            {{element.nation}}
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[4]">
+            {{element.state}}
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[5]">
+            {{element.city}}
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[6]">
+            {{element.userID}}
+          </span>
+        </mat-expansion-panel-header>
+        <div class="row">
+          <div class="col">
+            <p><strong>Cellular MAC address: &nbsp;</strong>{{element.cellularMac}}</p>
+          </div>
+          <div class="col">
+            <p><strong>Registration date: &nbsp;</strong>{{element.regDate | date: 'medium'}}</p>
+          </div>
+          <div class="col">
+            <p><strong>Current status: &nbsp;</strong>{{element.status}}</p>
+          </div>
+          <div class="col">
+            <p><strong>Mobility: &nbsp;</strong>{{element.mobility}}</p>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+  </div>
+</div>
+<app-admin-footer></app-admin-footer>

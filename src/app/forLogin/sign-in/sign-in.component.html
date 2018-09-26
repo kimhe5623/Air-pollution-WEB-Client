@@ -1,0 +1,39 @@
+<div class="section group">
+  <div class="col span_1_of_2">
+    <nav class="navWrapper">
+      <a class="logo on-surface" [routerLink]="['/']" routerLinkActive="router-link-active">
+        <img class="navImage" src="assets/icon.png"> &nbsp;
+        <strong>AiR</strong>ound
+      </a>
+    </nav>
+
+    <!-- Sign in Form -->
+    <form class="example-container" [formGroup]="signinForm" (ngSubmit)="onSubmit()">
+      <h1>Sign in to <strong>AiR</strong>ound</h1>
+      <p>Welcome to your account dashboard</p>
+      <mat-form-field>
+        <input matInput placeholder="Email" formControlName="email">
+        <mat-error *ngIf="signinForm.get('email').invalid && !errorhide">{{getEmailErrorMessage()}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Password" formControlName="password" [type]="hide ? 'password' : 'text'">
+        <mat-error *ngIf="signinForm.get('password').invalid && !errorhide">{{getPasswordErrorMessage()}}</mat-error>
+      </mat-form-field>
+
+      <button type="submit" class="btn waves-light primary-variant buttonStyle" mdbWavesEffect>
+        LogIn</button>
+    </form>
+    <!-- Sign in Form -->
+    <div class="container">
+      <strong><a class="link-primary" [routerLink]="['/forgot-pw']" routerLinkActive="router-link-active"><u>Forgot Password?</u></a></strong>
+      <br> Don't have an account? <strong><a class="link-primary" [routerLink]="['/signup']" routerLinkActive="router-link-active"><u>Sign
+            Up
+          </u></a></strong>
+    </div>
+  </div>
+
+  <div class="col span_1_of_2 rightSide primary">
+    <img class="rightSide-img" src="assets/login.png">
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div class="section group">
+  <div class="col span_1_of_2">
+    <nav class="navWrapper">
+      <a class="logo on-surface" [routerLink]="['/']" routerLinkActive="router-link-active">
+        <img class="navImage" src="assets/icon.png"> &nbsp;
+        <strong>AiR</strong>ound
+      </a>
+    </nav>
+    <!-- Sign up Form -->
+    <form fxLayout="column" class="example-container" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <h1>Create a New Account</h1>
+      <p>Start your <strong>AiR</strong>ound service</p>
+
+      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+        <mat-form-field class="width48 margin-right2" fxFlex>
+          <input matInput placeholder="Firstname" formControlName="firstname">
+          <mat-error *ngIf="signupForm.get('firstname').invalid">{{getRequiredErrorMessage()}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="width48" fxFlex>
+          <input matInput placeholder="Lastname" formControlName="lastname">
+          <mat-error *ngIf="signupForm.get('lastname').invalid">{{getRequiredErrorMessage()}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="input-row">
+        <mat-form-field class="width100">
+          <input matInput placeholder="Email" formControlName="email">
+          <mat-error *ngIf="signupForm.get('email').invalid">{{getEmailErrorMessage()}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="input-row">
+        <mat-form-field class="width100">
+          <input matInput placeholder="Password" formControlName="password" [type]="hide ? 'password' : 'text'">
+          <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+          <mat-error *ngIf="signupForm.get('password').invalid">{{getPasswordErrorMessage()}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+        <mat-form-field class="width50 margin-right2" fxFlex>
+          <input matInput [matDatepicker]="dp3" placeholder="Birth date" formControlName="birthdate">
+          <mat-datepicker-toggle matSuffix [for]="dp3"></mat-datepicker-toggle>
+          <mat-datepicker #dp3 disabled="false"></mat-datepicker>
+          <mat-error *ngIf="signupForm.get('birthdate').invalid">{{getBirthdateErrorMessage()}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="width46" fxFlex>
+          <mat-select placeholder="Gender" formControlName="gender">
+            <mat-option>--</mat-option>
+            <mat-option *ngFor="let gender of genderOptions" [value]="gender">
+              {{gender}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="signupForm.get('gender').hasError('required')">Please choose your gender</mat-error>
+        </mat-form-field>
+      </div>
+
+      <button type="submit" class="btn waves-light secondary-variant on-primary buttonStyle" [disabled]="signupForm.invalid" mdbWavesEffect>
+        Sign up</button>
+    </form>
+    <!-- Sign up Form -->
+    <div class="container">
+      Already have an account? <strong><a class="link-secondary" [routerLink]="['/signin']" routerLinkActive="router-link-active"><u>
+            Sign in
+          </u></a></strong>
+    </div>
+
+  </div>
+  <div class="col span_1_of_2 rightSide secondary">
+    <img class="rightSide-img" src="assets/hot-air-balloon.png">
+  </div>
+</div>
