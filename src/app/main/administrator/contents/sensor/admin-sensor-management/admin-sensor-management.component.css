@@ -3,15 +3,18 @@
 }
 
 /***********************/
-.card{
+
+.card {
     margin-top: 3rem;
     margin-bottom: 3rem;
     width: 100%;
     text-align: center;
 }
-.form{
+
+.form {
     font-size: 1.1rem;
 }
+
 .buttonStyle {
     margin-top: 30px;
     font-size: 15px;
@@ -20,17 +23,21 @@
 }
 
 /**---------*/
-.inputStyle{
+
+.inputStyle {
     width: 38%;
     margin-right: 2rem;
     display: inline-block;
 }
+
 /***********************/
 
-.buttonsGroup {
-    height: auto;
-    text-align: right;
+.rowStyle {
     padding-bottom: 10px;
+}
+
+.buttonsGroup {
+    text-align: right;
 }
 
 .roundBtn {
@@ -61,13 +68,13 @@
     padding-bottom: 5px;
 }
 
-.checkboxWidth{
+.checkboxWidth {
     width: 3rem;
 }
+
 .eachtitle {
     font-size: 1.1rem;
     margin-right: 3rem;
-
 }
 
 .contents {
@@ -96,23 +103,47 @@ mat-panel-title {
     color: var(--operating);
 }
 
-.span1{
-  width: 1rem;
-  text-align: left;
+.span1 {
+    width: 1rem;
+    text-align: left;
 }
+
 .span2 {
     width: 2rem;
     text-align: left;
 }
+
 .span3 {
     width: 3rem;
     text-align: left;
 }
+
 .span4 {
-  width: 4rem;
-  text-align: left;
+    width: 4rem;
+    text-align: left;
 }
+
 .span5 {
-  width: 5rem;
-  text-align: left;
+    width: 5rem;
+    text-align: left;
+}
+
+
+
+/**====================Search======================**/
+.searchInput{
+    padding-left: 10px; 
+    font-size: 1.2em;
+    width: 70%;
+}
+.searchSelect{
+    font-size: 1.2rem;
+    width: 20%;
+}
+.searchButton{
+    padding: 7px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 70%;
+    font-size: 1rem;
 }

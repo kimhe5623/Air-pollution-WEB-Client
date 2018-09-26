@@ -5,7 +5,7 @@ import { SensorAssociationDialog } from '../../../../../dialogs/sensor-associati
 import { SensorDeregistrationDialog } from '../../../../../dialogs/sensor-deregistration-dialog/sensor-deregistration-dialog';
 import { StorageService } from 'src/app/services/storage.service';
 import { SensorManagementService } from 'src/app/services/httpRequest/sensor-management.service';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-sensor-management',
@@ -15,6 +15,7 @@ import { FormControl, Validators } from '@angular/forms';
 export class AdminSensorManagementComponent implements OnInit {
   wifi_mac: FormControl;
   cellular_mac: FormControl;
+  searchForm: FormGroup;
 
   displayedColumns: string[] = ['No.', 'MAC address', 'Activation', 'Nation', 'State', 'City', 'UserID'];
   columnStyles: any = [
@@ -32,7 +33,8 @@ export class AdminSensorManagementComponent implements OnInit {
   existSensor: boolean;
   selectedSensor: any = [];
 
-  search_conditions: any = {};
+  search_options_array: any = [];
+  search_options_json: any = {};
 
 
   //-----(Dialog variables)--------
@@ -45,9 +47,17 @@ export class AdminSensorManagementComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private storageService: StorageService,
-    private smService: SensorManagementService, ) {
+    private smService: SensorManagementService, 
+    private fb: FormBuilder) {
     this.wifi_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]);
     this.cellular_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]);
+
+    this.searchForm = this.fb.group({
+      hideRequired: true,
+      floatLabel: 'auto',
+      option: ['', Validators.required],
+      input: ['', Validators.required]
+    });
   }
 
 
@@ -72,14 +82,16 @@ export class AdminSensorManagementComponent implements OnInit {
   }
 
   /** Search */
-  addCondition(key: string, value: any) {
-    this.search_conditions['']
+  addSearchOption(key: string, value: any) {
+    console.log("addddd");
+    this.search_options_json[key] = value;
   }
 
-  deleteCondition() {
-
+  deleteSearchOption(key: string) {
+    delete this.search_options_json[key];
   }
   /**--------- */
+
   onSubmit() {
     var payload = {
       mac: this.wifi_mac.value,

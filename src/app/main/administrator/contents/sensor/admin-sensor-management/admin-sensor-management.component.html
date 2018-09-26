@@ -13,9 +13,30 @@
         mdbWavesEffect>Register</button>
     </form>
   </mat-card>
-  <div class="buttonsGroup">
-    <button mdbBtn type="button" class="waves-light addition roundBtn" (click)="openAssociationDialog()" mdbWavesEffect>+</button>
-    <button mdbBtn type="button" class="waves-light deletion roundBtn" (click)="openDeletionDialog()" mdbWavesEffect>-</button>
+  <div class="row rowStyle">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-4">
+      <!-- Search form -->
+      <form [formGroup]="searchForm" (ngSubmit)="addSearchOption()">
+        <mat-form-field class="searchSelect" [floatLabel]="searchForm.value.floatLabel">
+          <mat-select placeholder="Option" formControlName="option">
+            <mat-option>--</mat-option>
+            <mat-option value="option">Option</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="searchInput" [floatLabel]="searchForm.value.floatLabel">
+          <input matInput placeholder="Search" formControlName="input">
+        </mat-form-field>
+        <button type="submit" class="btn waves-light secondary-variant searchButton"><i class="fas fa-search"></i></button>
+      </form>
+    </div>
+    <div class="col-12 col-sm-7 col-md-8 col-lg-5">
+      fff
+    </div>
+    <div class="col-12 col-sm-5 col-md-4 col-lg-3 buttonsGroup">
+      <button mdbBtn type="button" class="waves-light addition roundBtn" (click)="openAssociationDialog()"
+        mdbWavesEffect>+</button>
+      <button mdbBtn type="button" class="waves-light deletion roundBtn" (click)="openDeletionDialog()" mdbWavesEffect>-</button>
+    </div>
   </div>
   <div class="mat-elevation-z8">
     <mat-accordion>
@@ -35,7 +56,7 @@
           No sensor
         </mat-expansion-panel-header>
         <mat-expansion-panel-header>
-          <span class="eachtitle checkboxWidth" >
+          <span class="eachtitle checkboxWidth">
             <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(element) : null; selected()"
               [checked]="selection.isSelected(element)">
             </mat-checkbox>
