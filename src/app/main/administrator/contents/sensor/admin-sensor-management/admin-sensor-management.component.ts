@@ -72,7 +72,8 @@ export class AdminSensorManagementComponent implements OnInit {
   }
 
   /** Search */
-  addCondition() {
+  addCondition(key: string, value: any) {
+    this.search_conditions['']
   }
 
   deleteCondition() {
