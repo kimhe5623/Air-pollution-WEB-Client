@@ -5,6 +5,7 @@ import { SensorAssociationDialog } from '../../../../../dialogs/sensor-associati
 import { SensorDeletionDialog } from '../../../../../dialogs/sensor-deletion-dialog/sensor-deletion-dialog';
 import { StorageService } from 'src/app/services/storage.service';
 import { SensorManagementService } from 'src/app/services/httpRequest/sensor-management.service';
+import { OPERATOR } from 'src/app/header'
 
 @Component({
   selector: 'app-sensor-management',
@@ -92,7 +93,7 @@ export class SensorManagementComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
-      if (result != null && !this.isCanceled) {
+      if (result != null && !result.isCanceled) {
         var payload = {
           mac: result.sensorSerial,
           mobility: result.mobility
@@ -115,7 +116,7 @@ export class SensorManagementComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
-      if (result != null) {
+      if (result != null && !result.isCanceled) {
         
         for(var i=0; i<result.num_of_selected_sensor; i++){
           var payload = {
@@ -124,13 +125,14 @@ export class SensorManagementComponent implements OnInit {
           }
           console.log(payload);
 
-          var success = this.smService.SDD(payload);
 
-          if (!success) {
-            alert('Failed!');
-          }
+          var success: boolean = true;
+          success = success || this.smService.SDD(payload);
         }
-        alert('Successfully diassociated');
+
+        if (!success) alert('Failed!');
+        else          alert('Successfully diassociated');
+        
         this.ngOnInit();
       }
     });

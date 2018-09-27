@@ -14,13 +14,25 @@
     </form>
   </mat-card>
   <div class="row rowStyle">
-    <div class="col-12 col-sm-12 col-md-12 col-lg-4">
+    <div class="col-lg-12" style="text-align:center">
+      <span class="badge badgeStyle" *ngFor="let option of search_options_array let idx=index">
+        <strong>{{option.key}}</strong>&nbsp;&nbsp;{{option.value}}
+        <i class="close fa fa-times closeButton" (click)="deleteSearchOption(option.key)"></i>
+      </span>
+    </div>
+    <div class="col-lg-12 col-xl-9">
       <!-- Search form -->
       <form [formGroup]="searchForm" (ngSubmit)="addSearchOption()">
         <mat-form-field class="searchSelect" [floatLabel]="searchForm.value.floatLabel">
           <mat-select placeholder="Option" formControlName="option">
             <mat-option>--</mat-option>
-            <mat-option value="option">Option</mat-option>
+            <mat-option value="wifi_mac">Wifi MAC</mat-option>
+            <mat-option value="activation">Activation</mat-option>
+            <mat-option value="mobility">Mobility</mat-option>
+            <mat-option value="nation">Nation</mat-option>
+            <mat-option value="state">State</mat-option>
+            <mat-option value="city">City</mat-option>
+            <mat-option value="userID">User ID</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="searchInput" [floatLabel]="searchForm.value.floatLabel">
@@ -29,10 +41,7 @@
         <button type="submit" class="btn waves-light secondary-variant searchButton"><i class="fas fa-search"></i></button>
       </form>
     </div>
-    <div class="col-12 col-sm-7 col-md-8 col-lg-5">
-      fff
-    </div>
-    <div class="col-12 col-sm-5 col-md-4 col-lg-3 buttonsGroup">
+    <div class="col-lg-12 col-xl-3 buttonsGroup">
       <button mdbBtn type="button" class="waves-light addition roundBtn" (click)="openAssociationDialog()"
         mdbWavesEffect>+</button>
       <button mdbBtn type="button" class="waves-light deletion roundBtn" (click)="openDeletionDialog()" mdbWavesEffect>-</button>
@@ -68,8 +77,7 @@
             {{element.mac}}
           </span>
           <span class="eachtitle" [ngStyle]="columnStyles[2]">
-            <i class="fa fa-circle" [ngClass]="{'active': element.activation == 2, 'inactive': element.activation == 1}"
-              aria-hidden="true"></i>
+            {{getSensorActivation(element.activation)}}
           </span>
           <span class="eachtitle" [ngStyle]="columnStyles[3]">
             {{element.nation}}
@@ -93,6 +101,7 @@
           </div>
           <div class="col">
             <p><strong>Current status: &nbsp;</strong>{{element.status}}</p>
+            <!--<i class="fa fa-circle" [ngClass]="{'active': element.activation == 2, 'inactive': element.activation == 1}" aria-hidden="true"></i>-->
           </div>
           <div class="col">
             <p><strong>Mobility: &nbsp;</strong>{{element.mobility}}</p>

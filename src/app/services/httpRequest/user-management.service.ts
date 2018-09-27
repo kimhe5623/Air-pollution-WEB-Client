@@ -32,15 +32,18 @@ export class UserManagementService {
             case (0): // success
               this.router.navigate([`/signup-code`, rspMsg.header.endpointId, reqMsg.payload.userID, rspMsg.payload.verificationCode], { skipLocationChange: true });
               break;
+
             case (1): // reject-other
               alert('Unknown error');
-              break;
+              return false;
+
             case (2): // reject-conflict of tci
               alert('Conflict of TCI');
-              break;
+              return false;
+
             case (3): // reject-duplicate of user ID
               alert('Duplicate of userID');
-              break;
+              return false;
           }
         }
       });
@@ -61,21 +64,25 @@ export class UserManagementService {
               alert('Signup is completely finished.');
               this.router.navigate([`/signin`]);
               break;
+
             case (1): // reject-other
               alert('Unknown error');
               this.router.navigate(['/']);
-              break;
+              return false;
+
             case (2): // reject-duplicate of user ID
               alert('Duplicate of user ID');
               this.router.navigate(['/signup']);
-              break;
+              return false;
+
             case (3): // reject-not exist Temporary Client ID
               alert('Not exist Temporary client ID');
               this.router.navigate(['/signup']);
-              break;
+              return false;
+
             case (4): // reject-incorrect authentication code under the verification code
               alert('Incorrect authentication code under the verification code');
-              break;
+              return false;
           }
         }
       })
@@ -108,16 +115,19 @@ export class UserManagementService {
 
             case (1): // reject-other
               alert('Unknown error');
-              break;
+              return false;
+
             case (2): // reject-conflict of Temporary Client ID
               alert('Conflict of Temporary Client ID');
-              break;
+              return false;
+
             case (3): // reject-not exist user ID
               alert('Not exist user ID');
-              break;
+              return false;
+
             case (4): // reject-incorrect current user password
               alert('Incorrect password');
-              break;
+              return false;
           }
         }
       })
@@ -136,15 +146,18 @@ export class UserManagementService {
           case (0):
             console.log("Successfully signed out");
             break;
+
           case (1):
             console.log("Unknown warning");
-            break;
+            return false;
+
           case (2):
             console.log("Unallocated user sequence number");
-            break;
+            return false;
+
           case (3):
             console.log("Incorrect number of signed-in completions");
-            break;
+            return false;
         }
       })
 

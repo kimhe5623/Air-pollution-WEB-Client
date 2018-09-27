@@ -134,16 +134,32 @@ mat-panel-title {
 .searchInput{
     padding-left: 10px; 
     font-size: 1.2em;
-    width: 70%;
+    width: 400px;
 }
 .searchSelect{
     font-size: 1.2rem;
-    width: 20%;
+    width: 150px;
 }
 .searchButton{
     padding: 7px;
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 70%;
+    font-size: 1rem;
+}
+
+/***=====chip======***/
+.badgeStyle{
+    font-size: 1rem;
+    font-weight: normal;
+    border-radius: 50px;
+    padding: 16px;
+    text-align: center;
+    background-color: var(--secondary-light) !important;
+    color: var(--on-background) !important;
+    margin-right: 10px;
+}
+.closeButton{
+    margin-left: 10px;
     font-size: 1rem;
 }

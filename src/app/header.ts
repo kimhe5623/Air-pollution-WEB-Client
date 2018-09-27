@@ -55,6 +55,13 @@ export const RETRIVE = {
     R421: 5,
 }
 
+export const OPERATOR = {
+    and:    0b00,
+    or:     0b01,
+    not:    0b10
+
+}
+
 @NgModule()
 
 export class Header { }

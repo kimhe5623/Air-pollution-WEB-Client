@@ -34,17 +34,19 @@ export class SensorManagementService {
               break;
             case (1): // reject-other
               alert('Unknown error');
-              break;
+              return false;
+
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              break;
+              return false;
+
             case (3): // reject-unauthorized user sequence number
               alert('Unauthorized user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              break;
+              return false;
           }
         }
       });
@@ -63,28 +65,34 @@ export class SensorManagementService {
           switch (rspMsg.payload.resultCode) {
             case (0):  // success
               break;
+
             case (1): // reject-other
               alert('Unknown error');
-              break;
+              return false;
+
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              break;
+              return false;
+
             case (3): // reject-unauthorized user sequence number
               alert('Unauthorized user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              break;
+              return false;
+
             case (4): // reject-not exist WiFi MAC address
               alert('Not exist Wifi MAC address');
-              break;
+              return false;
+
             case (5): // reject-not exist user ID
               alert('Not exist user ID');
-              break;
+              return false;
+
             case (6): // reject-the requested WiFi MAC address is not an associated with user ID
               alert('the requested WiFi MAC address is not an associated with user ID');
-              break;
+              return false;
           }
         }
       });
@@ -107,17 +115,19 @@ export class SensorManagementService {
               break;
             case (1): // reject-other
               alert('Unknown error');
-              break;
+              return false;
+
             case (2): // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              break;
+              return false;
+
             case (3): // reject-unauthorized user sequence number
               alert('Unauthorized user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              break;
+              return false;
           }
         }
       });
@@ -141,12 +151,13 @@ export class SensorManagementService {
               break;
             case (1): // reject-other
               alert('Unknown error');
-              break;
+              return false;
+
             case (2): // reject-unallocated user sequence number
               alert('Invalid user sequence number. Login again');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              break;
+              return false;
           }
         }
       });
@@ -166,20 +177,24 @@ export class SensorManagementService {
             case (0): // success
               alert('Successfully associated');
               break;
+
             case (1): // reject-other
               alert('Unknown error');
-              break;
+              return false;
+
             case (2): // reject-unallocated user sequence number
               alert('Invalid user sequence number. Login again');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              break;
+              return false;
+
             case (3): // reject-not exist Wifi MAC address
               alert('Not exist wifi MAC address. Try another one');
-              break;
+              return false;
+
             case (4): // reject-the requested WiFi MAC address was already associated with own user sequence number
               alert('Already associated sensor. Try another one');
-              break;
+              return false;
           }
         }
       });
@@ -197,21 +212,26 @@ export class SensorManagementService {
         else {
           switch (rspMsg.payload.resultCode) {
             case (0): // success
+              alert('Successfully diassociated');
               break;
+
             case (1): // reject-other
               alert('Unknown error');
-              break;
+              return false;
+
             case (2): // reject-unallocated user sequence number
               alert('Invalid user sequence number. Login again');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              break;
+              return false;
+
             case (3): // reject-not exist Wifi MAC address
               alert('The selected wifi MAC address is not exist. Try again');
-              break;
+              return false;
+
             case (4): // reject-the requested user sequence number and WiFi MAC addresss are not associated
               alert('The selected wifi MAC address is not associated. Try again');
-              break;
+              return false;
           }
         }
       });
@@ -237,12 +257,13 @@ export class SensorManagementService {
             case (1): // reject-other
               alert('Unknown error');
               this.router.navigate(['/dashboard']);
-              break;
+              return false;
+
             case (2): // reject-unallocated user sequence number
               alert('Invalid user sequence number. Login again');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              break;
+              return false;
 
           }
         }

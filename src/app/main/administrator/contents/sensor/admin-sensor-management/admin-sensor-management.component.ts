@@ -21,7 +21,7 @@ export class AdminSensorManagementComponent implements OnInit {
   columnStyles: any = [
     { 'width': '3rem' }, // No
     { 'width': '13rem' }, // Mac address
-    { 'width': '6rem' }, // Activation
+    { 'width': '8rem' }, // Activation
     { 'width': '4rem' }, // Nation
     { 'width': '4rem' },  // State
     { 'width': '4rem' },  // City
@@ -47,7 +47,7 @@ export class AdminSensorManagementComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private storageService: StorageService,
-    private smService: SensorManagementService, 
+    private smService: SensorManagementService,
     private fb: FormBuilder) {
     this.wifi_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]);
     this.cellular_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]);
@@ -82,16 +82,45 @@ export class AdminSensorManagementComponent implements OnInit {
   }
 
   /** Search */
-  addSearchOption(key: string, value: any) {
-    console.log("addddd");
-    this.search_options_json[key] = value;
+  addSearchOption() {
+    this.search_options_json[this.searchForm.value.option] = this.searchForm.value.input;
+    this.jsonToArray(this.search_options_json);
+
+    var payload: any = {
+      nsc: this.storageService.get('userInfo').nsc,
+      options: this.search_options_json
+    }
+
+    var success: boolean = this.smService.ASV(payload, (result) => {
+      console.log(result);
+
+      this.existSensor = result.payload.length != 0 ? true : false;
+      console.log(this.existSensor);
+
+      this.SENSOR_LIST = result.payload.sensorList;
+
+    });
+    if (!success) {
+      alert('Failed');
+    }
   }
 
   deleteSearchOption(key: string) {
     delete this.search_options_json[key];
+    this.jsonToArray(this.search_options_json);
+  }
+
+  jsonToArray(json: any) {
+    this.search_options_array = [];
+    for (var key in json) {
+      this.search_options_array.push({ key: key, value: json[key] });
+      console.log(this.search_options_array);
+    }
   }
   /**--------- */
 
+
+  /** Sensor Registration */
   onSubmit() {
     var payload = {
       mac: this.wifi_mac.value,
@@ -103,6 +132,24 @@ export class AdminSensorManagementComponent implements OnInit {
     }
     else this.ngOnInit();
   }
+  /**----------------*/
+
+  /** Get Sensor Activation */
+  getSensorActivation(activation: number): string {
+    switch (activation) {
+      case (0):
+        return "Registered";
+      case (1):
+        return "Associated";
+      case (2):
+        return "Operating";
+      case (3):
+        return "Deregistered";
+    }
+  }
+  /**---------------------- */
+
+
 
   //------(Selection functions)---------
   /** Whether the number of selected elements matches the total number of rows. */
@@ -134,11 +181,12 @@ export class AdminSensorManagementComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
-      if (result != null && !this.isCanceled) {
+      if (result != null && !result.isCanceled) {
         var payload = {
           mac: result.sensorSerial,
           mobility: result.mobility
         }
+        
         var success = this.smService.SAS(payload);
         if (!success) {
           alert('Failed!');
@@ -156,7 +204,7 @@ export class AdminSensorManagementComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
-      if (result != null) {
+      if (result != null && !result.isCanceled) {
 
         for (var i = 0; i < result.num_of_selected_sensor; i++) {
           var payload = {
@@ -165,12 +213,13 @@ export class AdminSensorManagementComponent implements OnInit {
           }
           console.log(payload);
 
-          var success = this.smService.ASD(payload);
-          if (!success) {
-            alert('Failed!');
-          }
+          var success: boolean = true;
+          success = success || this.smService.ASD(payload);
         }
-        alert('Successfully deregistered');
+
+        if (!success) alert('Failed!');
+        else          alert('Successfully deregistered');
+        
         this.ngOnInit();
       }
     });
