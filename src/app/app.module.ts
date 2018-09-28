@@ -81,6 +81,7 @@ import { SensorDeregistrationDialog } from './dialogs/sensor-deregistration-dial
 import { TimerComponent } from './timer/timer.component';
 import { Header } from 'src/app/header';
 import { AdminMainComponent } from './main/administrator/contents/admin-main/admin-main.component';
+import { TemperatureComponent } from './components/temperature/temperature.component';
 
 @NgModule({
   declarations: [
@@ -112,6 +113,7 @@ import { AdminMainComponent } from './main/administrator/contents/admin-main/adm
     SensorDeregistrationDialog,
     TimerComponent,
     AdminMainComponent,
+    TemperatureComponent,
   ],
   imports: [
     /** Angular Modules */

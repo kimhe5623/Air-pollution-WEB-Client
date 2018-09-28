@@ -1,9 +1,30 @@
 .title {
     margin-bottom: 50px;
 }
-.wrapper{
-    width: 70%;
+
+.wrapper {
+    width: 80%;
     margin: auto auto;
     margin-top: 10rem;
     margin-bottom: 10rem;
+}
+
+.card1 {
+    width: 100%;
+    margin-right: 5px;
+    margin-bottom: 23px;
+}
+.card2 {
+    width: 100%;
+    margin-right: 5px;
+}
+
+.card3 {
+    width: 100%;
+}
+
+
+.example-header-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
 }

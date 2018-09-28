@@ -62,6 +62,8 @@ export const OPERATOR = {
 
 }
 
+export const GOOGLE_MAP_API_KEY = "AIzaSyBzlpsKxfTFKZBYHTM-hOGltSeCUHMYfw4";
+
 @NgModule()
 
 export class Header { }
