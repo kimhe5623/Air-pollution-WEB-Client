@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UnitsType } from 'src/app/components/temperature/temperature.component';
 import { DataMonitoringService } from 'src/app/services/httpRequest/data-monitoring.service';
+import { DataManagementService } from 'src/app/services/data-management.service';
 
 @Component({
   selector: 'app-user-main',
@@ -29,15 +30,6 @@ export class UserMainComponent implements OnInit {
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
           pointHoverBorderColor: '#ffe190a9'
-      },
-      {
-          backgroundColor: 'rgba(151,187,205,0.2)',
-          borderColor: 'rgba(151,187,205,1)',
-          borderWidth: 2,
-          pointBackgroundColor: 'rgba(151,187,205,1)',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(151,187,205,1)'
       }
   ];
 
@@ -52,7 +44,8 @@ export class UserMainComponent implements OnInit {
 
 
   constructor(
-    private dmService: DataMonitoringService
+    private dmService: DataMonitoringService,
+    private dataService: DataManagementService
   ) { }
 
   ngOnInit() {
