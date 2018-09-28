@@ -95,7 +95,7 @@ export class DataManagementService {
         end_tsp: currentTime,
         num_of_retransmission: 0,
         list_of_unsuccessful_serials: [],
-        TLV: {
+        tlv: {
           nation: currentAddress.address.results[0].address_components[7].short_name,
           state: currentAddress.address.results[0].address_components[6].short_name,
           city: currentAddress.address.results[0].address_components[4].short_name
@@ -103,15 +103,17 @@ export class DataManagementService {
       }
 
       this.dmService.HAV(payload, (result) => {
+
+        // callback
         if (result.resultCode != 0) cb(null);
         else if (result.resultCode) {
           /** Finding the nearest sensor */
           var distances: any = this.getDistances(currentAddress.currentLatlng, result.payload.tlv);
-          var theNearestIdx: number = this.min(distances).idx;
+          
+          cb(result.payload.tlv[this.min(distances).idx]);
         }
       })
     })
   }
-
 
 }

@@ -100,38 +100,41 @@ export class SensorManagementService {
   }
 
   /** ASV */
-  ASV(payload: any, cb): boolean {
+  ASV(payload: any, cb) {
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.ASV_REQ, this.storageService.get('userInfo').usn);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        cb(rspMsg);
 
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.ASV_RSP, reqMsg.header.endpointId)) return false;
+        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.ASV_RSP, reqMsg.header.endpointId)){
+          cb(null); return;
+        } 
 
         else {
           switch (rspMsg.payload.resultCode) {
             case (0): // success
-              break;
+              cb(rspMsg); break;
             case (1): // reject-other
               alert('Unknown error');
-              return false;
+              cb(null); break;
 
             case (2): // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              return false;
+              cb(null); break;
 
             case (3): // reject-unauthorized user sequence number
               alert('Unauthorized user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              return false;
+              cb(null); break;
+
+            default:
+              cb(null); break;
           }
         }
       });
-    return true;
   }
 
 
@@ -240,35 +243,36 @@ export class SensorManagementService {
 
 
   /** SLV */
-  SLV(payload: any, cb): boolean {
+  SLV(payload: any, cb) {
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SLV_REQ, this.storageService.get('userInfo').usn);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        cb(rspMsg);
 
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.SLV_RSP, reqMsg.header.endpointId)) return false;
+        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.SLV_RSP, reqMsg.header.endpointId)) {
+          cb(null); return;
+        }
 
         else {
           switch (rspMsg.payload.resultCode) {
             case (0): // success
-              break;
+              cb(rspMsg); break;
 
             case (1): // reject-other
               alert('Unknown error');
               this.router.navigate(['/dashboard']);
-              return false;
+              cb(null); break;
 
             case (2): // reject-unallocated user sequence number
               alert('Invalid user sequence number. Login again');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              return false;
-
+              cb(null); break;
+            
+            default:
+              cb(null); break;
           }
         }
       });
-    return true;
   }
-
 }

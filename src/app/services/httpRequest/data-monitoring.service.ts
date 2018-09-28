@@ -21,7 +21,7 @@ export class DataMonitoringService {
   /**
    * Latlng to address
    */
-  latlngToAddress(lat: number, lng: number, cb): any {
+  latlngToAddress(lat: number, lng: number, cb) {
 
     this.http.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAP_API_KEY}`)
       .subscribe((result) => {
@@ -36,41 +36,78 @@ export class DataMonitoringService {
 
 
   /** RAV */
-  /** RHV */
 
-  /** HAV */
-  HAV(payload: any, cb): boolean {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.HAV_REQ, this.storageService.get('userInfo').usn);
-  
+  /** RHV */
+  RHV(payload: any, cb) {
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.RHV_REQ, this.storageService.get('userInfo').usn);
+
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
         cb(rspMsg);
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.HAV_RSP, reqMsg.header.endpointId)) return false;
+        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.RHV_RSP, reqMsg.header.endpointId)) {
+          cb(null); return;
+        }
 
         else {
           switch (rspMsg.payload.resultCode) {
             case (0):  // success
-              break;
+              cb(rspMsg); break;
+
             case (1): // reject-other
               alert('Unknown error');
-              return false;
+              cb(null); break;
 
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
-              return false;
+              cb(null); break;
 
-            case (3): // reject-requested by an unauthorized user sequence number
-              alert('Unauthorized user sequence number.');
-              return false;
+            case (3): // reject-incorrect number of signed-in completions
+              alert('Already signed in another computer.');
+              cb(null); break;
 
-            case (4): // reject-not exist a sensor under the spatial-temporal search condition included in the SDP: HAV-REQ message
-              return false;
+            default:
+              cb(null); break;
           }
         }
       });
-    return true;
+  }
+
+  /** HAV */
+  HAV(payload: any, cb) {
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.HAV_REQ, this.storageService.get('userInfo').usn);
+
+    this.http.post(`/serverapi`, reqMsg)
+      .subscribe((rspMsg: any) => {
+        cb(rspMsg);
+        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.HAV_RSP, reqMsg.header.endpointId)) {
+          cb(null); return;
+        }
+
+        else {
+          switch (rspMsg.payload.resultCode) {
+            case (0):  // success
+              cb(rspMsg); break;
+            case (1): // reject-other
+              alert('Unknown error');
+              cb(null); break;
+
+            case (2):  // reject-unallocated user sequence number
+              alert('Unallocated user sequence number.');
+              var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
+              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              cb(null); break;
+
+            case (3): // reject-requested by an unauthorized user sequence number
+              alert('Unauthorized user sequence number.');
+              cb(null); break;
+
+            case (4): // reject-not exist a sensor under the spatial-temporal search condition included in the SDP: HAV-REQ message
+              cb(null); break;
+          }
+        }
+      });
   }
 
   /** SHR */

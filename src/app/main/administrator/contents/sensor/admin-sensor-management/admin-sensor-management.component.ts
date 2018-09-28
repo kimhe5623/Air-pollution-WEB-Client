@@ -67,18 +67,18 @@ export class AdminSensorManagementComponent implements OnInit {
       nsc: this.storageService.get('userInfo').nsc,
     }
 
-    var success: boolean = this.smService.ASV(payload, (result) => {
+    this.smService.ASV(payload, (result) => {
       console.log(result);
 
-      this.existSensor = result.payload.length != 0 ? true : false;
-      console.log(this.existSensor);
+      if (result != null) {
+        this.existSensor = result.payload.length != 0 ? true : false;
+        console.log(this.existSensor);
 
-      this.SENSOR_LIST = result.payload.sensorList;
+        this.SENSOR_LIST = result.payload.sensorList;
+      }
+      else alert('Failed');
 
     });
-    if (!success) {
-      alert('Failed');
-    }
   }
 
   /** Search */
@@ -91,18 +91,18 @@ export class AdminSensorManagementComponent implements OnInit {
       options: this.search_options_json
     }
 
-    var success: boolean = this.smService.ASV(payload, (result) => {
+    this.smService.ASV(payload, (result) => {
       console.log(result);
 
-      this.existSensor = result.payload.length != 0 ? true : false;
-      console.log(this.existSensor);
+      if (result != null) {
+        this.existSensor = result.payload.length != 0 ? true : false;
+        console.log(this.existSensor);
 
-      this.SENSOR_LIST = result.payload.sensorList;
+        this.SENSOR_LIST = result.payload.sensorList;
+      }
+      else alert('Failed');
 
     });
-    if (!success) {
-      alert('Failed');
-    }
   }
 
   deleteSearchOption(key: string) {
@@ -186,7 +186,7 @@ export class AdminSensorManagementComponent implements OnInit {
           mac: result.sensorSerial,
           mobility: result.mobility
         }
-        
+
         var success = this.smService.SAS(payload);
         if (!success) {
           alert('Failed!');
@@ -218,8 +218,8 @@ export class AdminSensorManagementComponent implements OnInit {
         }
 
         if (!success) alert('Failed!');
-        else          alert('Successfully deregistered');
-        
+        else alert('Successfully deregistered');
+
         this.ngOnInit();
       }
     });

@@ -15,12 +15,12 @@ import { OPERATOR } from 'src/app/header'
 export class SensorManagementComponent implements OnInit {
   displayedColumns: string[] = ['No.', 'MAC address', 'Activation', 'Nation', 'State', 'City'];
   columnStyles: any = [
-    {'width': '3.5rem'}, // No
-    {'width': '14rem'}, // Mac address
-    {'width': '6.5rem'}, // Activation
-    {'width': '5rem'}, // Nation
-    {'width': '5rem'},  // State
-    {'width': '5rem'},  // City
+    { 'width': '3.5rem' }, // No
+    { 'width': '14rem' }, // Mac address
+    { 'width': '6.5rem' }, // Activation
+    { 'width': '5rem' }, // Nation
+    { 'width': '5rem' },  // State
+    { 'width': '5rem' },  // City
   ];
   SENSOR_LIST: PeriodicElement[] = [];
   selection = new SelectionModel<PeriodicElement>(true, []);
@@ -39,7 +39,7 @@ export class SensorManagementComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private storageService: StorageService,
-    private smService: SensorManagementService,) { }
+    private smService: SensorManagementService, ) { }
 
 
   ngOnInit() {
@@ -48,19 +48,19 @@ export class SensorManagementComponent implements OnInit {
       nsc: this.storageService.get('userInfo').nsc
     }
 
-    var success: boolean = this.smService.SLV(payload, (result) => {
+    this.smService.SLV(payload, (result) => {
       console.log(result);
 
-      this.existSensor = result.payload.existCode == 0 ? true : false;
-      console.log(this.existSensor);
+      if (result != null) {
 
-      if (this.existSensor) // exist one or more sensors
-        this.SENSOR_LIST = result.payload.sensorList;
+        this.existSensor = result.payload.existCode == 0 ? true : false;
+        console.log(this.existSensor);
 
+        if (this.existSensor) // exist one or more sensors
+          this.SENSOR_LIST = result.payload.sensorList;
+      }
+      else alert('Failed');
     });
-    if (!success) {
-      alert('Failed');
-    }
   }
 
   //------(Selection functions)---------
@@ -98,12 +98,12 @@ export class SensorManagementComponent implements OnInit {
           mac: result.sensorSerial,
           mobility: result.mobility
         }
-        
+
         var success = this.smService.SAS(payload);
         if (!success) {
           alert('Failed!');
         }
-        else  this.ngOnInit();
+        else this.ngOnInit();
       }
     });
   }
@@ -117,8 +117,8 @@ export class SensorManagementComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
       if (result != null && !result.isCanceled) {
-        
-        for(var i=0; i<result.num_of_selected_sensor; i++){
+
+        for (var i = 0; i < result.num_of_selected_sensor; i++) {
           var payload = {
             mac: this.selectedSensor[i].mac,
             reasonCode: result.reasonCode
@@ -131,8 +131,8 @@ export class SensorManagementComponent implements OnInit {
         }
 
         if (!success) alert('Failed!');
-        else          alert('Successfully diassociated');
-        
+        else alert('Successfully diassociated');
+
         this.ngOnInit();
       }
     });

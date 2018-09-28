@@ -42,6 +42,12 @@ export class UserMainComponent implements OnInit {
    */
   currentUnit: UnitsType;
 
+  /**
+   * AQI, Heart data
+   */
+  nearestSensordata: any;
+  currentHeartdata: any;
+
 
   constructor(
     private dmService: DataMonitoringService,
@@ -50,6 +56,8 @@ export class UserMainComponent implements OnInit {
 
   ngOnInit() {
     this.currentUnit = 'C';
+    
+
   }
 
   public chartClicked(e: any): void { }
