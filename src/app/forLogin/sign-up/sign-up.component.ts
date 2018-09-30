@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserManagementService } from 'src/app/services/httpRequest/user-management.service';
+import { DataManagementService } from '../../services/data-management.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -15,7 +16,8 @@ export class SignUpComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private umService: UserManagementService,) {
+    private umService: UserManagementService,
+    private dataService: DataManagementService) {
     this.signupForm = this.fb.group({
       firstname: ['', Validators.required],
       lastname: ['', Validators.required],
@@ -47,28 +49,13 @@ export class SignUpComponent implements OnInit {
         '';
   }
 
-  /** Date formatting */
-  formattingDate(date: Date): string {
-    function pad2(n) { return n < 10 ? '0' + n : n }
-
-    var parsedDate = [
-      date.getFullYear().toString(),
-      pad2(date.getMonth() + 1),
-      pad2(date.getDate()),
-      pad2(date.getHours()),
-      pad2(date.getMinutes()),
-      pad2(date.getSeconds())
-    ];
-    return parsedDate[0] + '/' + parsedDate[1] + '/' + parsedDate[2] + ' '
-      + parsedDate[3] + ':' + parsedDate[4] + ':' + parsedDate[5];
-  }
 
   /** Event functions */
   onSubmit() {
     if (this.signupForm.invalid) console.log('Input again');
 
     var payload: any = {
-      birth: this.formattingDate(this.signupForm.value['birthdate']),
+      birth: this.dataService.formattingDate(this.signupForm.value['birthdate']),
       gender: this.signupForm.value['gender'],
       userID: this.signupForm.value['email'],
       password: this.signupForm.value['password'],

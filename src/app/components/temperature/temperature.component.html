@@ -1,6 +1,6 @@
 <span [ngStyle]="temperature_style" [ngStyle]="primary">{{ temperature }}</span>
 <span>
   <a [ngStyle]="celsius_style" (click)="click('C')"><strong>ºC</strong></a>
-  <strong>|</strong>
+  <strong [ngStyle] = "unit_style">|</strong>
   <a [ngStyle]="fahrenheit_style" (click)="click('F')"><strong>ºF</strong></a>
 </span>

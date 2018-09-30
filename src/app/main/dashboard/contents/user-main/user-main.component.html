@@ -24,12 +24,11 @@
         <mat-card-content>
           <!-- Temperature -->
           <app-temperature
-          [temperature]="30"
-          unit="C"
+          [temperature]="currentCelsius"
           primary_color="#000000"
           secondary_color="#929292be"
-          [temperature_style]="{'font-size':'3rem'}"
-          [unit_style]="{'font-size':'1rem', 'padding':'4.5px'}"
+          [temperature_style]="{'font-size':'4rem'}"
+          [unit_style]="{'font-size':'2rem', 'padding':'4.8px'}"
           (unitChange)="unitChange($event)"></app-temperature>
 
           <!-- Temperature Chart: Celsius -->

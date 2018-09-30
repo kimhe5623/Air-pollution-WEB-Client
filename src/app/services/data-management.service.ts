@@ -12,6 +12,28 @@ export class DataManagementService {
     private dmService: DataMonitoringService
   ) { }
 
+  /** 
+   * Date formatting 
+   */
+  formattingDate(date: Date): string {
+    console.log(date);
+    function pad2(n) { return n < 10 ? '0' + n : n }
+
+    var parsedDate = [
+      date.getFullYear().toString(),
+      pad2(date.getMonth() + 1),
+      pad2(date.getDate()),
+      pad2(date.getHours()),
+      pad2(date.getMinutes()),
+      pad2(date.getSeconds())
+    ];
+
+    var result: string =  parsedDate[0] + '/' + parsedDate[1] + '/' + parsedDate[2] + ' '
+      + parsedDate[3] + ':' + parsedDate[4] + ':' + parsedDate[5];
+
+    console.log(result);
+    return result;
+  }
 
   /**
    * Temperature unit change function
@@ -75,11 +97,52 @@ export class DataManagementService {
 
     for (var i = 0; i < to.length; i++) {
       var lat = from.latitude - to[i].latitude;
-      var lng = from.longitude = to[i].longitude;
+      var lng = from.longitude - to[i].longitude;
       result.push(lat * lat + lng * lng);
     }
+    console.log('Distances: ', result);
     return result;
   }
+
+  /** 
+   * get Chart data 
+   */
+  getChartData(data: any): any {
+    var chartData: any = {};
+
+    for (var key in data[0]) {
+      chartData[key] = { data: [], label: '' };
+    }
+
+    for (var i = 0; i < data.length; i++) {
+      for (var key in data[i]) {
+        chartData[key]['data'].push(data[i][key]);
+        chartData[key]['label'] = key;
+      }
+    }
+
+    return chartData;
+  }
+
+
+  /**
+   * extract specified number data
+   */
+  extractDataTo(num: number, data: any): any {
+    if (num > data.length || num == 0) return null;
+    else {
+      var result: any = [];
+      var numOfDistance: number = Math.floor(data.length / num);
+
+      for (var i = numOfDistance - 1; i < data.length; i += numOfDistance) {
+        if (num == 0) break;
+
+        result.push(data[i]); num--;
+      }
+      return result;
+    }
+  }
+
 
   /**
    * get the nearest sensor's data
@@ -105,15 +168,22 @@ export class DataManagementService {
       this.dmService.HAV(payload, (result) => {
 
         // callback
-        if (result.resultCode != 0) cb(null);
-        else if (result.resultCode) {
+        if (result != null) {
           /** Finding the nearest sensor */
-          var distances: any = this.getDistances(currentAddress.currentLatlng, result.payload.tlv);
-          
-          cb(result.payload.tlv[this.min(distances).idx]);
+          var tlv: any = result.payload.tlv;
+          var distances: any = this.getDistances(currentAddress.currentLatlng, tlv);
+          var selectedMac: string = tlv[this.min(distances).idx]['mac'];
+          var nearestSensorData: any = [];
+
+          for (var i = 0; i < tlv.length; i++) {
+            if (tlv[i]['mac'] == selectedMac)
+              nearestSensorData.push(tlv[i]);
+          }
+          cb(nearestSensorData);
         }
-      })
-    })
+        else cb(null);
+      });
+    });
   }
 
 }

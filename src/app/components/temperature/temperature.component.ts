@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-temperature',
   templateUrl: './temperature.component.html',
   styleUrls: ['./temperature.component.css']
 })
-export class TemperatureComponent implements OnInit {
+export class TemperatureComponent implements OnInit, OnChanges {
   @Input() temperature: number = 0;
   @Input() unit: UnitsType = 'default';
   @Input() primary_color: string = '#000000';
@@ -17,6 +17,7 @@ export class TemperatureComponent implements OnInit {
 
   celsius_style: any = {};
   fahrenheit_style: any = {};
+  division_style: any = {};
 
   isCelsius: boolean = true;
 
@@ -29,6 +30,7 @@ export class TemperatureComponent implements OnInit {
 
   ngOnInit() {
 
+    console.log('temperatuer component: ',this.temperature);
     this.temperature_style['color'] = this.primary_color;
 
     this.celsius_style = this.JSON_copy(this.unit_style);
@@ -36,6 +38,8 @@ export class TemperatureComponent implements OnInit {
 
     this.fahrenheit_style = this.JSON_copy(this.unit_style);
     this.fahrenheit_style['color'] = this.secondary_color;
+
+    this.division_style = this.JSON_copy(this.unit_style);
 
 
     if (this.unit == 'default' || this.unit == 'C') {
@@ -46,6 +50,11 @@ export class TemperatureComponent implements OnInit {
       this.fahrenheit = this.temperature;
       this.celsius = Math.floor((this.temperature - 50) * 0.5556);
     }
+
+  }
+
+  ngOnChanges(){
+    this.ngOnInit();
   }
 
   JSON_copy(object: any): any{
