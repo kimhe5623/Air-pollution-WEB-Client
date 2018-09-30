@@ -3,6 +3,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { WebStorageModule } from 'ngx-store';
 
+import { NgCircleProgressModule } from 'ng-circle-progress';
+
 // MDB Angular Free
 import { NavbarModule, WavesModule } from 'angular-bootstrap-md';
 
@@ -122,6 +124,16 @@ import { TemperatureComponent } from './components/temperature/temperature.compo
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+
+    NgCircleProgressModule.forRoot({
+      // set defaults here
+      radius: 100,
+      outerStrokeWidth: 16,
+      innerStrokeWidth: 8,
+      outerStrokeColor: "#78C000",
+      innerStrokeColor: "#C7E596",
+      animationDuration: 300,
+    }),
 
     WebStorageModule,
 

@@ -122,4 +122,7 @@
     --on-deletion: #ffffff;
     --active: #03daa4;
     --inactive: #8585858c;
+    /*--------------------------*/
+    --heartRate: #e77080;
+    --heartRate-light: #f8bbc3;
 }

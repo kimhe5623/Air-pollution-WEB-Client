@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UnitsType } from 'src/app/components/temperature/temperature.component';
 import { DataMonitoringService } from 'src/app/services/httpRequest/data-monitoring.service';
 import { DataManagementService } from 'src/app/services/data-management.service';
+import { SessionStorageService } from 'ngx-store';
 
 @Component({
   selector: 'app-user-main',
@@ -58,18 +59,31 @@ export class UserMainComponent implements OnInit {
    * AQI, Heart data
    */
   nearestSensordata: any = {};
-  currentHeartdata: any = {};
+  currentHeartdata: any = {
+    heartrate: 0
+  };
   num_of_data: number;
 
 
   constructor(
     private dmService: DataMonitoringService,
-    private dataService: DataManagementService
+    private dataService: DataManagementService,
+    private sessionStorageService: SessionStorageService
   ) { }
 
   ngOnInit() {
     this.currentUnit = 'C';
 
+    // get current heart data
+    var payload = { nsc: this.sessionStorageService.get('userInfo').nsc };
+    this.dmService.RHV(payload, (result) => {
+      if(result != null){
+        this.currentHeartdata = result.payload;
+        console.log('currentHEart:' , this.currentHeartdata);
+      }
+    });
+
+    // get nearest sensor data
     this.dataService.getNearestSensorData((data) => {
       this.nearestSensordata = this.dataService.getChartData(data);
       console.log('nearestSensordata: ', this.nearestSensordata);

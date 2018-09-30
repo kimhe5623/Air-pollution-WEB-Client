@@ -9,6 +9,20 @@
           </div>
           <div class="col-6">
             <!-- Heart rate -->
+            <circle-progress
+              [percent]="currentHeartdata.heartrate"
+              [radius]="60"
+              [outerStrokeWidth]="16"
+              [innerStrokeWidth]="8"
+              outerStrokeColor='var(--heartRate)'
+              innerStrokeColor='var(--heartRate-light)'
+              [animation]="true"
+              [animationDuration]="300"
+              [titleFontSize]="30"
+              [showUnits]="false"
+              subtitle='bpm'
+              [subtitleFontSize]="20"
+            ></circle-progress>
           </div>
         </div>
         <mat-card-actions style="text-align: right">
