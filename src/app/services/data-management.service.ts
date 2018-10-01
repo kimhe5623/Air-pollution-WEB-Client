@@ -13,7 +13,7 @@ export class DataManagementService {
   ) { }
 
   /** 
-   * Date formatting 
+   * Date formatting
    */
   formattingDate(date: Date): string {
     console.log(date);

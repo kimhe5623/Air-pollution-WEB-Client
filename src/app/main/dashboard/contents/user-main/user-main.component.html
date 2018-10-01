@@ -9,20 +9,10 @@
           </div>
           <div class="col-6">
             <!-- Heart rate -->
-            <circle-progress
-              [percent]="currentHeartdata.heartrate"
-              [radius]="60"
-              [outerStrokeWidth]="16"
-              [innerStrokeWidth]="8"
-              outerStrokeColor='var(--heartRate)'
-              innerStrokeColor='var(--heartRate-light)'
-              [animation]="true"
-              [animationDuration]="300"
-              [titleFontSize]="30"
-              [showUnits]="false"
-              subtitle='bpm'
-              [subtitleFontSize]="20"
-            ></circle-progress>
+            <circle-progress [percent]="currentHeartdata.heartrate" [radius]="60" [outerStrokeWidth]="16"
+              [innerStrokeWidth]="8" outerStrokeColor='var(--heartRate)' innerStrokeColor='var(--heartRate-light)'
+              [animation]="true" [animationDuration]="300" [titleFontSize]="30" [showUnits]="false" subtitle='bpm'
+              [subtitleFontSize]="20"></circle-progress>
           </div>
         </div>
         <mat-card-actions style="text-align: right">
@@ -37,39 +27,21 @@
         </mat-card-header>
         <mat-card-content>
           <!-- Temperature -->
-          <app-temperature
-          [temperature]="currentCelsius"
-          primary_color="#000000"
-          secondary_color="#929292be"
-          [temperature_style]="{'font-size':'4rem'}"
-          [unit_style]="{'font-size':'2rem', 'padding':'4.8px'}"
-          (unitChange)="unitChange($event)"></app-temperature>
+          <app-temperature [temperature]="currentCelsius" primary_color="#000000" secondary_color="#929292be"
+            [temperature_style]="{'font-size':'4rem'}" [unit_style]="{'font-size':'2rem', 'padding':'4.8px'}"
+            (unitChange)="unitChange($event)"></app-temperature>
 
           <!-- Temperature Chart: Celsius -->
           <div style="display: block" *ngIf="currentUnit == 'C'">
-              <canvas mdbChart
-                  [chartType]="chartType"
-                  [datasets]="temp_cels"
-                  [labels]="chartLabels"
-                  [colors]="chartColors"
-                  [options]="chartOptions"
-                  [legend]="true"
-                  (chartHover)="chartHovered($event)"
-                  (chartClick)="chartClicked($event)">
-              </canvas>
+            <canvas mdbChart [chartType]="chartType" [datasets]="temp_cels" [labels]="chartLabels" [colors]="chartColors"
+              [options]="chartOptions" [legend]="true" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)">
+            </canvas>
           </div>
-           <!-- Temperature Chart: Fahrenheit -->
+          <!-- Temperature Chart: Fahrenheit -->
           <div style="display: block" *ngIf="currentUnit == 'F'">
-              <canvas mdbChart
-                  [chartType]="chartType"
-                  [datasets]="temp_fahr"
-                  [labels]="chartLabels"
-                  [colors]="chartColors"
-                  [options]="chartOptions"
-                  [legend]="true"
-                  (chartHover)="chartHovered($event)"
-                  (chartClick)="chartClicked($event)">
-              </canvas>
+            <canvas mdbChart [chartType]="chartType" [datasets]="temp_fahr" [labels]="chartLabels" [colors]="chartColors"
+              [options]="chartOptions" [legend]="true" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)">
+            </canvas>
           </div>
         </mat-card-content>
         <mat-card-actions style="text-align: right">
@@ -81,16 +53,16 @@
   <div class="col-12 col-lg-8">
     <mat-card class="card3">
       <mat-card-header>
-        <mat-card-title><h2>The nearest sensor is</h2></mat-card-title>
-        <mat-card-subtitle><h4>At &nbsp;"5200 Toscanaway, Sandiego CA"</h4></mat-card-subtitle>
+        <mat-card-title>
+          <h2>The nearest sensor is</h2>
+        </mat-card-title>
+        <mat-card-subtitle>
+          <h4>At &nbsp;"5200 Toscanaway, Sandiego CA"</h4>
+        </mat-card-subtitle>
       </mat-card-header>
-      <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
       <mat-card-content>
-        <p>
-          The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-          A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-          bred for hunting.
-        </p>
+        <app-air-data>
+        </app-air-data>
       </mat-card-content>
       <mat-card-actions style="text-align: right">
         <a mat-button>More details..</a>

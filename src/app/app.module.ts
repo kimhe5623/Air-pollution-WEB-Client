@@ -84,6 +84,7 @@ import { TimerComponent } from './timer/timer.component';
 import { Header } from 'src/app/header';
 import { AdminMainComponent } from './main/administrator/contents/admin-main/admin-main.component';
 import { TemperatureComponent } from './components/temperature/temperature.component';
+import { AirDataComponent } from './components/air-data/air-data.component';
 
 @NgModule({
   declarations: [
@@ -116,6 +117,7 @@ import { TemperatureComponent } from './components/temperature/temperature.compo
     TimerComponent,
     AdminMainComponent,
     TemperatureComponent,
+    AirDataComponent,
   ],
   imports: [
     /** Angular Modules */

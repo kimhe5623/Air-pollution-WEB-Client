@@ -105,12 +105,12 @@ export class UserMainComponent implements OnInit {
 
       /** Set Air data */
       this.Air_data = [];
-      this.Air_data.push({ data: this.nearestSensordata['CO']['data'], label: 'Recent 48 hours CO (ppm)' });
-      this.Air_data.push({ data: this.nearestSensordata['O3']['data'], label: 'Recent 48 hours O<sub>3</sub> (µg/m<sup>3</sup>)' });
-      this.Air_data.push({ data: this.nearestSensordata['NO2']['data'], label: 'Recent 48 hours NO<sub>2</sub> (ppb)' });
-      this.Air_data.push({ data: this.nearestSensordata['SO2']['data'], label: 'Recent 48 hours SO<sub>2</sub> (ppb)' });
-      this.Air_data.push({ data: this.nearestSensordata['PM25']['data'], label: 'Recent 48 hours PM2.5 (µg/m<sup>3</sup>)' });
-      this.Air_data.push({ data: this.nearestSensordata['PM10']['data'], label: 'Recent 48 hours PM10 (µg/m<sup>3</sup>)' });
+      this.Air_data.push({ data: this.nearestSensordata['CO']['data'], label: 'Recent 48 hours CO' });
+      this.Air_data.push({ data: this.nearestSensordata['O3']['data'], label: 'Recent 48 hours O3 (µg/m3)' });
+      this.Air_data.push({ data: this.nearestSensordata['NO2']['data'], label: 'Recent 48 hours NO2 (ppb)' });
+      this.Air_data.push({ data: this.nearestSensordata['SO2']['data'], label: 'Recent 48 hours SO2 (ppb)' });
+      this.Air_data.push({ data: this.nearestSensordata['PM25']['data'], label: 'Recent 48 hours PM2.5 (µg/m3)' });
+      this.Air_data.push({ data: this.nearestSensordata['PM10']['data'], label: 'Recent 48 hours PM10 (µg/m3)' });
 
       console.log(this.temp_cels);
       /** Label */
