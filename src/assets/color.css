@@ -126,10 +126,11 @@
     --heartRate: #e77080;
     --heartRate-light: #f8bbc3;
     /*--------------------------*/
-    --aqi-good: #12914b;
-    --aqi-moderate: #c7c546;
-    --aqi-unhealthy-for-sensitive-groups: #d68746;
+    --aqi-good: #33e081;
+    --aqi-moderate: #ebe841;
+    --aqi-unhealthy-for-sensitive-groups: #f19040;
     --aqi-unhealthy: #ec4545;
     --aqi-very-unhealthy: #b046e0;
     --aqi-hazardous: #6b132e;
+    --grey: #949393;
 }

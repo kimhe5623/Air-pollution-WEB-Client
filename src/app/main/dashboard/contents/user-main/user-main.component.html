@@ -61,8 +61,15 @@
         </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <app-air-data>
-        </app-air-data>
+        <app-air-data
+        [radius]="150"
+        [sub_radius]="80"
+        main_color='#FFFFFF'
+        main_font_color='#000'
+        hovered_color='var(--grey)'
+        hovered_font_color='#fff'
+        dominent_color=''
+        ></app-air-data>
       </mat-card-content>
       <mat-card-actions style="text-align: right">
         <a mat-button>More details..</a>

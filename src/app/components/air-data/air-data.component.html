@@ -1,9 +1,18 @@
-<div>
-  <span class="pill" [ngStyle]="AQI_style">{{shown_aqi}}</span>
-  <span class="pill" [ngStyle]="Airdata_style">CO</span>
-  <span class="pill" [ngStyle]="Airdata_style">O<sub>3</sub></span>
-  <span class="pill" [ngStyle]="Airdata_style">NO<sub>2</sub></span>
-  <span class="pill" [ngStyle]="Airdata_style">SO<sub>2</sub></span>
-  <span class="pill" [ngStyle]="Airdata_style">PM2.5</span>
-  <span class="pill" [ngStyle]="Airdata_style">PM10</span>
+<div class="row">
+  <div class="col-3">
+    <span [ngStyle]="aqi_style">{{shown_aqi}}<br><span style="font-size: 23px">{{current_description[0]}}</span></span>
+  </div>
+  <div class="col-9">
+    <div class="row">
+      <span [ngStyle]="each_air_data_style.CO" (mouseover)="hover('CO')">CO</span>
+      <span [ngStyle]="each_air_data_style.O3" (mouseover)="hover('O3')">O<sub>3</sub></span>
+      <span [ngStyle]="each_air_data_style.NO2" (mouseover)="hover('NO2')">NO<sub>2</sub></span>
+      <span [ngStyle]="each_air_data_style.SO2" (mouseover)="hover('SO2')">SO<sub>2</sub></span>
+      <span [ngStyle]="each_air_data_style.PM25" (mouseover)="hover('PM25')">PM2.5</span>
+      <span [ngStyle]="each_air_data_style.PM10" (mouseover)="hover('PM10')">PM10</span>
+    </div>
+    <div class="row">
+      kkka
+    </div>
+  </div>
 </div>

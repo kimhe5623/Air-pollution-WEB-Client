@@ -30,7 +30,7 @@ export class TemperatureComponent implements OnInit, OnChanges {
 
   ngOnInit() {
 
-    console.log('temperatuer component: ',this.temperature);
+    console.log ('temperatuer component: ',this.temperature);
     this.temperature_style['color'] = this.primary_color;
 
     this.celsius_style = this.JSON_copy(this.unit_style);
