@@ -18,7 +18,7 @@ export class UserMainComponent implements OnInit {
 
   public temp_cels: Array<any> = [{ data: [], label: '' }];
   public temp_fahr: Array<any> = [{ data: [], label: '' }];
-  public Air_data: Array<any> = [{ data: [], label: '' }];
+  public air_data: Array<any> = [{ data: [], label: '' }];
 
 
 
@@ -33,6 +33,63 @@ export class UserMainComponent implements OnInit {
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: '#ffe190a9'
+    }
+  ];
+
+  public airChartColors: Array<any> = [
+    {
+      backgroundColor: '#aaaaaa36',
+      borderColor: '#99999936',
+      borderWidth: 2,
+      pointBackgroundColor: '#99999936',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#99999936'
+    },
+    {
+      backgroundColor: '#aaaaaa36',
+      borderColor: '#99999936',
+      borderWidth: 2,
+      pointBackgroundColor: '#99999936',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#99999936'
+    },
+    {
+      backgroundColor: '#aaaaaa36',
+      borderColor: '#99999936',
+      borderWidth: 2,
+      pointBackgroundColor: '#99999936',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#99999936'
+    },
+    {
+      backgroundColor: '#aaaaaa36',
+      borderColor: '#99999936',
+      borderWidth: 2,
+      pointBackgroundColor: '#99999936',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#99999936'
+    },
+    {
+      backgroundColor: '#aaaaaa36',
+      borderColor: '#99999936',
+      borderWidth: 2,
+      pointBackgroundColor: '#99999936',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#99999936'
+    },
+    {
+      backgroundColor: '#aaaaaa36',
+      borderColor: '#99999936',
+      borderWidth: 2,
+      pointBackgroundColor: '#99999936',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#99999936'
     }
   ];
 
@@ -59,6 +116,8 @@ export class UserMainComponent implements OnInit {
    * AQI, Heart data
    */
   nearestSensordata: any = {};
+  currentAirdata: any = {};
+  currentAirdata_stringfied: string = '';
   currentHeartdata: any = {
     heartrate: 0
   };
@@ -77,16 +136,14 @@ export class UserMainComponent implements OnInit {
     // get current heart data
     var payload = { nsc: this.sessionStorageService.get('userInfo').nsc };
     this.dmService.RHV(payload, (result) => {
-      if(result != null){
+      if (result != null) {
         this.currentHeartdata = result.payload;
-        console.log('currentHEart:' , this.currentHeartdata);
       }
     });
 
     // get nearest sensor data
     this.dataService.getNearestSensorData((data) => {
       this.nearestSensordata = this.dataService.getChartData(data);
-      console.log('nearestSensordata: ', this.nearestSensordata);
 
       if (this.nearestSensordata['timestamp']['data'].length > 16) {
         for (var key in this.nearestSensordata) {
@@ -98,27 +155,30 @@ export class UserMainComponent implements OnInit {
 
       this.currentCelsius = this.nearestSensordata['temperature']['data'][this.num_of_data - 1];
 
-      this.temp_cels = [{ data: this.nearestSensordata['temperature']['data'], label: 'Recent 48 hours Temp (ºC)' }];
-      this.temp_fahr = [{ data: this.dataService.CelsiusToFahr(this.temp_cels[0].data), label: 'Recent 48 hours Temp (ºF)' }];
+      this.temp_cels = [{ data: this.nearestSensordata['temperature']['data'], label: 'Temp (ºC)' }];
+      this.temp_fahr = [{ data: this.dataService.CelsiusToFahr(this.temp_cels[0].data), label: 'Temp (ºF)' }];
 
       this.num_of_data = this.temp_cels[0]['data'].length;
 
       /** Set Air data */
-      this.Air_data = [];
-      this.Air_data.push({ data: this.nearestSensordata['CO']['data'], label: 'Recent 48 hours CO' });
-      this.Air_data.push({ data: this.nearestSensordata['O3']['data'], label: 'Recent 48 hours O3 (µg/m3)' });
-      this.Air_data.push({ data: this.nearestSensordata['NO2']['data'], label: 'Recent 48 hours NO2 (ppb)' });
-      this.Air_data.push({ data: this.nearestSensordata['SO2']['data'], label: 'Recent 48 hours SO2 (ppb)' });
-      this.Air_data.push({ data: this.nearestSensordata['PM25']['data'], label: 'Recent 48 hours PM2.5 (µg/m3)' });
-      this.Air_data.push({ data: this.nearestSensordata['PM10']['data'], label: 'Recent 48 hours PM10 (µg/m3)' });
+      for (var key in this.nearestSensordata) {
+        this.currentAirdata[key] = this.nearestSensordata[key]['data'][this.num_of_data - 1];
+      }
+      console.log(">>main component init");
 
-      console.log(this.temp_cels);
+      this.air_data = [];
+      this.air_data.push({ data: this.nearestSensordata['AQI_CO']['data'], label: 'CO AQI' });
+      this.air_data.push({ data: this.nearestSensordata['AQI_O3']['data'], label: 'O3 AQI' });
+      this.air_data.push({ data: this.nearestSensordata['AQI_NO2']['data'], label: 'NO2 AQI' });
+      this.air_data.push({ data: this.nearestSensordata['AQI_SO2']['data'], label: 'SO2 AQI' });
+      this.air_data.push({ data: this.nearestSensordata['AQI_PM25']['data'], label: 'PM2.5 AQI' });
+      this.air_data.push({ data: this.nearestSensordata['AQI_PM10']['data'], label: 'PM10 AQI' });
+
       /** Label */
       this.chartLabels = [];
       for (var i = 0; i < this.num_of_data; i++) {
         this.chartLabels.push(this.dataService.formattingDate(new Date(this.nearestSensordata['timestamp']['data'][i])));
       }
-      console.log(this.chartLabels);
 
 
     });

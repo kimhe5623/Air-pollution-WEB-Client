@@ -1,11 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, DoCheck, KeyValueDiffers } from '@angular/core';
+import { DataManagementService } from '../../services/data-management.service';
 
 @Component({
   selector: 'app-air-data',
   templateUrl: './air-data.component.html',
   styleUrls: ['./air-data.component.css']
 })
-export class AirDataComponent implements OnInit {
+export class AirDataComponent implements OnInit, DoCheck {
   @Input() radius: number;
   @Input() sub_radius: number;
 
@@ -36,6 +37,7 @@ export class AirDataComponent implements OnInit {
     PM10: ['PM10', 'µg/m3'],
   };
 
+  /** Style */
   aqi_style: any = {
     'height': '150px',
     'width': '150px',
@@ -75,20 +77,53 @@ export class AirDataComponent implements OnInit {
   }
 
   details_style: any = {
-    'font-size': '15px',
+    'font-size': '20px',
     'color': '#000000',
+    'margin-right': '15px',
   };
 
-  dominent_style: {
-    'color': '#082938',
+  dominent_style: any = {
+    'font-size': '20px',
+    'color': 'var(--primary)',
+    'font-weight': '400'
   };
+  /**------------------- */
 
-  shown_aqi: number = 10;
-  current_description: string = this.description.good;
+  shown_aqi: any = {};
+  current_description: any = this.description.good;
+  aqi_data: any = {};
+  air_data: any = {};
+  dominent: string = '';
 
-  constructor() { }
+  differ: any;
+
+  constructor(
+    private dataService: DataManagementService,
+    private differs: KeyValueDiffers
+  ) {
+    this.differ = this.differs.find([]).create();
+  }
+
+  ngDoCheck() {
+    const changes = this.differ.diff(this.data);
+
+    if (changes) {
+      for (var key in this.air_type) {
+        this.aqi_data[key] = this.data['AQI_' + key];
+        this.air_data[key] = this.data[key];
+      }
+
+      this.shown_aqi = this.dataService.minDev('CO', this.aqi_data);
+      this.hover(this.shown_aqi['key']);
+      this.dominent = this.shown_aqi.key;
+    }
+  }
 
   ngOnInit() {
+    console.log(">>air-data component");
+    console.log('Entered data:', this.data);
+
+    // Style setting
     this.aqi_style['width'] = `${this.radius}px`;
     this.aqi_style['height'] = `${this.radius}px`;
     this.aqi_style['background-color'] = this.hovered_color;
@@ -98,23 +133,44 @@ export class AirDataComponent implements OnInit {
 
     for (var key in this.each_air_data_style) {
       this.each_air_data_style[key] = this.JSON_copy(this.airdata_style);
-      console.log(this.each_air_data_style[key]);
     }
+
+      this.aqi_data = {
+        CO: 0,
+        O3: 0,
+        NO2: 0,
+        SO2: 0,
+        PM25: 0,
+        PM10: 0,
+      };
+      this.air_data = {
+        CO: 0,
+        O3: 0,
+        NO2: 0,
+        SO2: 0,
+        PM25: 0,
+        PM10: 0,
+      };
+      this.shown_aqi = { key: 'CO', value: 0 };
+      this.dominent = 'CO';
   }
 
   hover(airtype: string) {
 
+    // Data setting
+    this.shown_aqi = { key: airtype, value: this.aqi_data[airtype] };
+
+    // Style setting
     for (var key in this.each_air_data_style) {
       this.each_air_data_style[key] = this.JSON_copy(this.airdata_style);
-      console.log(this.each_air_data_style[key]);
     }
 
+    console.log('hover: ', this.shown_aqi);
     this.each_air_data_style[airtype]['border'] = "solid 5px " +
-      this.description[this.getCurrentDescription(this.shown_aqi)][1];
-      console.log(this.each_air_data_style[airtype]['border']);
+      this.description[this.getCurrentDescription(this.shown_aqi['value'])][1];
     this.each_air_data_style[airtype]['background-color'] = "var(--grey)";
     this.each_air_data_style[airtype]['color'] = "#FFF";
- 
+
   }
 
   JSON_copy(data: any): any {

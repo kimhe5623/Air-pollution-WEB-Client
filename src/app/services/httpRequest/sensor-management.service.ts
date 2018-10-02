@@ -144,7 +144,7 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        console.log(rspMsg);
+        
         if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.SRG_RSP, reqMsg.header.endpointId)) return false;
 
         else {

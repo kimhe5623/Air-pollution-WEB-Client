@@ -68,11 +68,9 @@ export class AdminSensorManagementComponent implements OnInit {
     }
 
     this.smService.ASV(payload, (result) => {
-      console.log(result);
 
       if (result != null) {
         this.existSensor = result.payload.length != 0 ? true : false;
-        console.log(this.existSensor);
 
         this.SENSOR_LIST = result.payload.sensorList;
       }
@@ -92,11 +90,9 @@ export class AdminSensorManagementComponent implements OnInit {
     }
 
     this.smService.ASV(payload, (result) => {
-      console.log(result);
 
       if (result != null) {
         this.existSensor = result.payload.length != 0 ? true : false;
-        console.log(this.existSensor);
 
         this.SENSOR_LIST = result.payload.sensorList;
       }
@@ -114,7 +110,6 @@ export class AdminSensorManagementComponent implements OnInit {
     this.search_options_array = [];
     for (var key in json) {
       this.search_options_array.push({ key: key, value: json[key] });
-      console.log(this.search_options_array);
     }
   }
   /**--------- */
@@ -168,7 +163,6 @@ export class AdminSensorManagementComponent implements OnInit {
 
   selected() {
     this.selectedSensor = this.selection.selected;
-    console.log(this.selectedSensor);
   }
   //------------------------------------
 
@@ -180,7 +174,6 @@ export class AdminSensorManagementComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       if (result != null && !result.isCanceled) {
         var payload = {
           mac: result.sensorSerial,
@@ -203,7 +196,6 @@ export class AdminSensorManagementComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       if (result != null && !result.isCanceled) {
 
         for (var i = 0; i < result.num_of_selected_sensor; i++) {
@@ -211,7 +203,6 @@ export class AdminSensorManagementComponent implements OnInit {
             mac: this.selectedSensor[i].mac,
             reasonCode: result.reasonCode
           }
-          console.log(payload);
 
           var success: boolean = true;
           success = success || this.smService.ASD(payload);

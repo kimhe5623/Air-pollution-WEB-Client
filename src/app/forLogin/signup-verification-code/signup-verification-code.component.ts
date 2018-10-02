@@ -55,7 +55,6 @@ export class SignupVerificationCodeComponent implements OnInit {
       verificationCode: this.verificationCode,
       authenticationCode: this.vfcFormControl.value,
     }
-    console.log(payload);
 
     /** HTTP REQUEST */
     var success: boolean = this.umService.UVC(payload, this.tci);

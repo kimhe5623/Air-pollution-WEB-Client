@@ -49,12 +49,10 @@ export class SensorManagementComponent implements OnInit {
     }
 
     this.smService.SLV(payload, (result) => {
-      console.log(result);
 
       if (result != null) {
 
         this.existSensor = result.payload.existCode == 0 ? true : false;
-        console.log(this.existSensor);
 
         if (this.existSensor) // exist one or more sensors
           this.SENSOR_LIST = result.payload.sensorList;
@@ -80,7 +78,6 @@ export class SensorManagementComponent implements OnInit {
 
   selected() {
     this.selectedSensor = this.selection.selected;
-    console.log(this.selectedSensor);
   }
   //------------------------------------
 
@@ -92,7 +89,6 @@ export class SensorManagementComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       if (result != null && !result.isCanceled) {
         var payload = {
           mac: result.sensorSerial,
@@ -115,7 +111,6 @@ export class SensorManagementComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       if (result != null && !result.isCanceled) {
 
         for (var i = 0; i < result.num_of_selected_sensor; i++) {
@@ -123,8 +118,6 @@ export class SensorManagementComponent implements OnInit {
             mac: this.selectedSensor[i].mac,
             reasonCode: result.reasonCode
           }
-          console.log(payload);
-
 
           var success: boolean = true;
           success = success || this.smService.SDD(payload);

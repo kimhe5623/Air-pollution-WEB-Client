@@ -16,7 +16,6 @@ export class DataManagementService {
    * Date formatting
    */
   formattingDate(date: Date): string {
-    console.log(date);
     function pad2(n) { return n < 10 ? '0' + n : n }
 
     var parsedDate = [
@@ -31,7 +30,6 @@ export class DataManagementService {
     var result: string =  parsedDate[0] + '/' + parsedDate[1] + '/' + parsedDate[2] + ' '
       + parsedDate[3] + ':' + parsedDate[4] + ':' + parsedDate[5];
 
-    console.log(result);
     return result;
   }
 
@@ -90,6 +88,40 @@ export class DataManagementService {
   }
 
   /**
+   * return minimum deviation key and value
+   */
+  minDev(key: string, data: any): any {
+    var avg: number = 0;
+    var num_of_data: number = 0;
+    var Dev: any ={};
+    var minDevKey: string = '';
+    var minDevVal: number = 0;
+    
+    // calculate average
+    for(var key in data){
+      num_of_data++;
+      avg += data[key];
+    }
+    avg = avg/num_of_data;
+
+    // calculate deviation
+    for(var key in data){
+      Dev[key] = (data[key] - avg)*(data[key] - avg);
+    }
+
+    minDevKey = key;
+    minDevVal = data[minDevKey];
+    // return minimum deviation key and value
+    for(var key in data){
+      if(minDevVal > data[key]){
+        minDevKey = key; minDevVal = data[key];
+      }
+    }
+
+    return { key: minDevKey, value: minDevVal };
+  }
+
+  /**
    * calculate distance function
    */
   getDistances(from: any, to: any): any {
@@ -100,7 +132,6 @@ export class DataManagementService {
       var lng = from.longitude - to[i].longitude;
       result.push(lat * lat + lng * lng);
     }
-    console.log('Distances: ', result);
     return result;
   }
 

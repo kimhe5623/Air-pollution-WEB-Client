@@ -23,7 +23,6 @@ export class TimerComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.style);
     /*
       timer takes a second argument, how often to emit subsequent values
       in this case we will emit first value after 1 second and subsequent

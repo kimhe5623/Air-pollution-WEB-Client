@@ -62,7 +62,6 @@ export class SignUpComponent implements OnInit {
       firstname: this.signupForm.value['firstname'],
       lastname: this.signupForm.value['lastname'],
     }
-    console.log(payload);
 
     /** HTTP REQUEST */
     var success: boolean = this.umService.SGU(payload);

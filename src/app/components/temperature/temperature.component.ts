@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'app-temperature',
@@ -30,7 +30,6 @@ export class TemperatureComponent implements OnInit, OnChanges {
 
   ngOnInit() {
 
-    console.log ('temperatuer component: ',this.temperature);
     this.temperature_style['color'] = this.primary_color;
 
     this.celsius_style = this.JSON_copy(this.unit_style);
@@ -42,6 +41,12 @@ export class TemperatureComponent implements OnInit, OnChanges {
     this.division_style = this.JSON_copy(this.unit_style);
 
 
+    this.celsius = 0;
+    this.fahrenheit = 0;
+
+  }
+
+  ngOnChanges(){
     if (this.unit == 'default' || this.unit == 'C') {
       this.celsius = this.temperature;
       this.fahrenheit = Math.floor(this.temperature * 1.8 + 32);
@@ -50,11 +55,6 @@ export class TemperatureComponent implements OnInit, OnChanges {
       this.fahrenheit = this.temperature;
       this.celsius = Math.floor((this.temperature - 50) * 0.5556);
     }
-
-  }
-
-  ngOnChanges(){
-    this.ngOnInit();
   }
 
   JSON_copy(object: any): any{
