@@ -85,6 +85,7 @@ import { Header } from 'src/app/header';
 import { AdminMainComponent } from './main/administrator/contents/admin-main/admin-main.component';
 import { TemperatureComponent } from './components/temperature/temperature.component';
 import { AirDataComponent } from './components/air-data/air-data.component';
+import { AirMapsComponent } from './components/air-maps/air-maps.component';
 
 @NgModule({
   declarations: [
@@ -118,6 +119,7 @@ import { AirDataComponent } from './components/air-data/air-data.component';
     AdminMainComponent,
     TemperatureComponent,
     AirDataComponent,
+    AirMapsComponent,
   ],
   imports: [
     /** Angular Modules */
@@ -184,7 +186,7 @@ import { AirDataComponent } from './components/air-data/air-data.component';
     AppRoutes,
 
     /** Header */
-    Header
+    Header,
   ],
   entryComponents: [
     SensorAssociationDialog,
