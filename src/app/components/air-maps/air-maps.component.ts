@@ -42,7 +42,7 @@ export class AirMapsComponent implements OnInit {
         minLongitude: location.longitude - 3,
       }
 
-      for (var i = 0; i < 30; i++) {
+      for (var i = 0; i < 100; i++) {
         this.data.push({
           mac: '12:F2:D3:92:2C:FF',
           activation: 2,
@@ -82,10 +82,10 @@ export class AirMapsComponent implements OnInit {
         console.log('lat: ', this.data[i].latitude, 'lng: ', this.data[i].longitude);
 
         var cityCircle = new google.maps.Circle({
-          strokeColor: this.aqi_colors.good,
+          strokeColor: '#fff',
           strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: this.aqi_colors.good,
+          strokeWeight: 0.2,
+          fillColor: this.getAqiColor(this.aqiAvg(i)),
           fillOpacity: 0.3,
           map: this.map,
           center: { lat: this.data[i].latitude, lng: this.data[i].longitude },
@@ -95,5 +95,35 @@ export class AirMapsComponent implements OnInit {
         console.log(cityCircle);
       }
     });
+
+    google.maps.event.addDomListener()
+  }
+
+  aqiAvg(idx: number): number {
+    var sum: number = this.data[idx].AQI_CO + this.data[idx].AQI_NO2 + this.data[idx].AQI_O3
+      + this.data[idx].AQI_SO2 + this.data[idx].AQI_PM10 + this.data[idx].AQI_PM25;
+
+    return sum / 6;
+  }
+
+  getAqiColor(aqi: number): string {
+    if (aqi >= 0 && aqi <= 50) {
+      return this.aqi_colors.good;
+    }
+    else if (aqi >= 51 && aqi <= 100) {
+      return this.aqi_colors.moderate;
+    }
+    else if (aqi >= 101 && aqi <= 150) {
+      return this.aqi_colors.unhealthy_for_sensitive_groups;
+    }
+    else if (aqi >= 151 && aqi <= 200) {
+      return this.aqi_colors.unhealthy;
+    }
+    else if (aqi >= 201 && aqi <= 300) {
+      return this.aqi_colors.very_unhealthy;
+    }
+    else if (aqi >= 301 && aqi <= 500) {
+      return this.aqi_colors.hazardous;
+    }
   }
 }

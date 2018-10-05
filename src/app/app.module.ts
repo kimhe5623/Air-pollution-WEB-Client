@@ -86,6 +86,7 @@ import { AdminMainComponent } from './main/administrator/contents/admin-main/adm
 import { TemperatureComponent } from './components/temperature/temperature.component';
 import { AirDataComponent } from './components/air-data/air-data.component';
 import { AirMapsComponent } from './components/air-maps/air-maps.component';
+import { MapClusteringComponent } from './components/map-clustering/map-clustering.component';
 
 @NgModule({
   declarations: [
@@ -120,6 +121,7 @@ import { AirMapsComponent } from './components/air-maps/air-maps.component';
     TemperatureComponent,
     AirDataComponent,
     AirMapsComponent,
+    MapClusteringComponent,
   ],
   imports: [
     /** Angular Modules */
