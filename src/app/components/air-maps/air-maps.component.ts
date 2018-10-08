@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { } from 'googlemaps';
 import { DataManagementService } from '../../services/data-management.service';
+import { SANITIZER } from '@angular/core/src/render3/interfaces/view';
 declare var google;
 
 @Component({
@@ -17,15 +18,25 @@ export class AirMapsComponent implements OnInit {
 
   locationLimits: any;
   data: any = [];
+  mc: MarkerClusterer;
 
-  /** Colors */
-  aqi_colors = {
-    good: '#33e081',
-    moderate: '#ebe841',
-    unhealthy_for_sensitive_groups: '#f19040',
-    unhealthy: '#ec4545',
-    very_unhealthy: '#b046e0',
-    hazardous: '#6b132e',
+  /** Icon urls */
+  aqi_icon = {
+    good: 'assets/map/marker/good.svg',
+    moderate: 'assets/map/marker/moderate.svg',
+    unhealthy_for_sensitive_groups: 'assets/map/marker/unhealthy-for-sensitive-groups.svg',
+    unhealthy: 'assets/map/marker/unhealthy.svg',
+    very_unhealthy: 'assets/map/marker/very-unhealthy.svg',
+    hazardous: 'assets/map/marker/hazardous.svg',
+  }
+  /** Label color */
+  aqi_label_color = {
+    good: '#000000',
+    moderate: '#000000',
+    unhealthy_for_sensitive_groups: '#000000',
+    unhealthy: '#ffffff',
+    very_unhealthy: '#ffffff',
+    hazardous: '#ffffff',
   }
 
   constructor(
@@ -35,6 +46,9 @@ export class AirMapsComponent implements OnInit {
   ngOnInit() {
     this.dataService.getCurrentLatlng((location) => {
 
+      /**
+       * Data sets
+       */
       this.locationLimits = {
         maxLatitude: location.latitude + 3,
         maxLongitude: location.longitude + 3,
@@ -42,7 +56,7 @@ export class AirMapsComponent implements OnInit {
         minLongitude: location.longitude - 3,
       }
 
-      for (var i = 0; i < 100; i++) {
+      for (var i = 0; i < 30; i++) {
         this.data.push({
           mac: '12:F2:D3:92:2C:FF',
           activation: 2,
@@ -65,65 +79,112 @@ export class AirMapsComponent implements OnInit {
         });
       }
 
-      console.log('data=>', this.data);
+      //console.log('data=>', this.data);
 
+      /**
+       * Google maps
+       */
       var mapProp = {
         center: new google.maps.LatLng(Number(location.latitude), Number(location.longitude)),
         zoom: 4,
+        draggableCursor: '',
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
 
       this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
 
-      // Construct the circle for each value in citymap.
-      // Note: We scale the area of the circle based on the population.
-      for (var i = 0; i < this.data.length; i++) {
-        // Add the circle for this city to the map.
-        console.log('lat: ', this.data[i].latitude, 'lng: ', this.data[i].longitude);
 
-        var cityCircle = new google.maps.Circle({
-          strokeColor: '#fff',
-          strokeOpacity: 0.8,
-          strokeWeight: 0.2,
-          fillColor: this.getAqiColor(this.aqiAvg(i)),
-          fillOpacity: 0.3,
+      /**
+       * Marker
+       */
+      for (var i = 0; i < this.data.length; i++) {
+
+        var marker = new google.maps.Marker({
           map: this.map,
-          center: { lat: this.data[i].latitude, lng: this.data[i].longitude },
-          radius: 164768
+          position: { lat: this.data[i].latitude, lng: this.data[i].longitude },
+          
+          icon: {
+            anchor: new google.maps.Point(20, 45),
+            labelOrigin: new google.maps.Point(20, 20),
+            origin: new google.maps.Point(0, 0),
+            scaledSize: new google.maps.Size(40, 45),
+            url: this.getAqiIcon(this.aqiAvg(i))
+          },
+    
+          label: {
+            color: this.getAqiFontColor(this.aqiAvg(i)),
+            fontSize: '13px',
+            fontWeight: '400',
+            text: this.aqiAvg(i).toString(),
+          },
+
         });
 
-        console.log(cityCircle);
       }
-    });
 
-    google.maps.event.addDomListener()
+    });
   }
 
+
+
+  /**
+   * get AQI average
+   * @param idx : index number
+   */
   aqiAvg(idx: number): number {
     var sum: number = this.data[idx].AQI_CO + this.data[idx].AQI_NO2 + this.data[idx].AQI_O3
       + this.data[idx].AQI_SO2 + this.data[idx].AQI_PM10 + this.data[idx].AQI_PM25;
 
-    return sum / 6;
+    return Math.floor(sum / 6);
   }
 
-  getAqiColor(aqi: number): string {
+  /**
+   * get AQI Icon
+   * @param aqi : Air quality index
+   */
+  getAqiIcon(aqi: number): string {
     if (aqi >= 0 && aqi <= 50) {
-      return this.aqi_colors.good;
+      return this.aqi_icon.good;
     }
     else if (aqi >= 51 && aqi <= 100) {
-      return this.aqi_colors.moderate;
+      return this.aqi_icon.moderate;
     }
     else if (aqi >= 101 && aqi <= 150) {
-      return this.aqi_colors.unhealthy_for_sensitive_groups;
+      return this.aqi_icon.unhealthy_for_sensitive_groups;
     }
     else if (aqi >= 151 && aqi <= 200) {
-      return this.aqi_colors.unhealthy;
+      return this.aqi_icon.unhealthy;
     }
     else if (aqi >= 201 && aqi <= 300) {
-      return this.aqi_colors.very_unhealthy;
+      return this.aqi_icon.very_unhealthy;
     }
     else if (aqi >= 301 && aqi <= 500) {
-      return this.aqi_colors.hazardous;
+      return this.aqi_icon.hazardous;
+    }
+  }
+
+  /**
+   * get AQI font color
+   * @param aqi : Air quality index
+   */
+  getAqiFontColor(aqi: number): string {
+    if (aqi >= 0 && aqi <= 50) {
+      return this.aqi_label_color.good;
+    }
+    else if (aqi >= 51 && aqi <= 100) {
+      return this.aqi_label_color.moderate;
+    }
+    else if (aqi >= 101 && aqi <= 150) {
+      return this.aqi_label_color.unhealthy_for_sensitive_groups;
+    }
+    else if (aqi >= 151 && aqi <= 200) {
+      return this.aqi_label_color.unhealthy;
+    }
+    else if (aqi >= 201 && aqi <= 300) {
+      return this.aqi_label_color.very_unhealthy;
+    }
+    else if (aqi >= 301 && aqi <= 500) {
+      return this.aqi_label_color.hazardous;
     }
   }
 }

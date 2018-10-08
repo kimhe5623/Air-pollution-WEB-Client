@@ -2,6 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { WebStorageModule } from 'ngx-store';
+import {} from 'googlemaps';
+import {} from 'markerclustererplus';
 
 import { NgCircleProgressModule } from 'ng-circle-progress';
 
