@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { } from 'googlemaps';
 import { DataManagementService } from '../../services/data-management.service';
-import { SANITIZER } from '@angular/core/src/render3/interfaces/view';
+import { DataMonitoringService } from '../../services/httpRequest/data-monitoring.service';
+import { timer } from 'rxjs/observable/timer';
 declare var google;
 
 @Component({
@@ -16,7 +17,8 @@ export class AirMapsComponent implements OnInit {
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
 
-  locationLimits: any;
+  currentLocation: any;
+  currentAddress: any;
   data: any = [];
   mc: MarkerClusterer;
 
@@ -39,93 +41,138 @@ export class AirMapsComponent implements OnInit {
     hazardous: '#ffffff',
   }
 
+  /** Cluster icon style */
+  clusterIconStyle = [
+    {
+      url: 'assets/clusterer/circle-solid.svg',
+      height: 26,
+      width: 30,
+      anchor: [4, 0],
+      textColor: '#ff00ff',
+      textSize: 10
+    }, {
+      url: 'assets/clusterer/circle-solid.svg',
+      height: 35,
+      width: 40,
+      anchor: [8, 0],
+      textColor: '#ff0000',
+      textSize: 11
+    }, {
+      url: 'assets/clusterer/circle-solid.svg',
+      width: 50,
+      height: 44,
+      anchor: [12, 0],
+      textColor: '#ffffff',
+      textSize: 12
+    }
+  ];
+
   constructor(
-    private dataService: DataManagementService
+    private dataService: DataManagementService,
+    private dmService: DataMonitoringService,
   ) { }
 
   ngOnInit() {
-    this.dataService.getCurrentLatlng((location) => {
+    this.dataService.getCurrentAddress((address) => {
+      this.currentAddress = address.address;
+      this.currentLocation = address.currentLatlng
+
 
       /**
        * Data sets
        */
-      this.locationLimits = {
-        maxLatitude: location.latitude + 3,
-        maxLongitude: location.longitude + 3,
-        minLatitude: location.latitude - 3,
-        minLongitude: location.longitude - 3,
+      console.log(this.currentAddress);
+      var payload = {
+        nsc: 0x00,
+        tlv: {
+          zoomLevel: 4,
+          nationCode: this.currentAddress.results[0].address_components[7].short_name,
+          stateCode: this.currentAddress.results[0].address_components[6].short_name,
+          cityCode: this.currentAddress.results[0].address_components[4].short_name
+        }
       }
+      this.dmService.RAV(payload, (result) => {
+        if (result != null) {
+          this.data = result.payload.tlv;
+        }
+        console.log('data=>', this.data);
 
-      for (var i = 0; i < 30; i++) {
-        this.data.push({
-          mac: '12:F2:D3:92:2C:FF',
-          activation: 2,
-          latitude: Math.random() * this.locationLimits.maxLatitude + this.locationLimits.minLatitude,
-          longitude: Math.random() * this.locationLimits.maxLongitude + this.locationLimits.minLongitude,
-          timestamp: new Date(1538097883026),
-          temperature: 30,
-          CO: Math.random() * 500 + 0,
-          O3: Math.random() * 500 + 0,
-          NO2: Math.random() * 500 + 0,
-          SO2: Math.random() * 500 + 0,
-          PM25: Math.random() * 500 + 0,
-          PM10: Math.random() * 500 + 0,
-          AQI_CO: Math.floor(Math.random() * 500 + 0),
-          AQI_O3: Math.floor(Math.random() * 500 + 0),
-          AQI_NO2: Math.floor(Math.random() * 500 + 0),
-          AQI_SO2: Math.floor(Math.random() * 500 + 0),
-          AQI_PM25: Math.floor(Math.random() * 500 + 0),
-          AQI_PM10: Math.floor(Math.random() * 500 + 0),
-        });
-      }
+        /**
+         * Google maps initialization
+         */
+        var mapProp = {
+          center: new google.maps.LatLng(Number(this.currentLocation.latitude), Number(this.currentLocation.longitude)),
+          zoom: 4,
+          draggableCursor: '',
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
 
-      //console.log('data=>', this.data);
-
-      /**
-       * Google maps
-       */
-      var mapProp = {
-        center: new google.maps.LatLng(Number(location.latitude), Number(location.longitude)),
-        zoom: 4,
-        draggableCursor: '',
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
-
-      this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+        this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
 
 
-      /**
-       * Marker
-       */
-      for (var i = 0; i < this.data.length; i++) {
+        /**
+         * Marker
+         */
+        var markers = [];
+        for (var i = 0; i < this.data.length; i++) {
 
-        var marker = new google.maps.Marker({
-          map: this.map,
-          position: { lat: this.data[i].latitude, lng: this.data[i].longitude },
-          
-          icon: {
-            anchor: new google.maps.Point(20, 45),
-            labelOrigin: new google.maps.Point(20, 20),
-            origin: new google.maps.Point(0, 0),
-            scaledSize: new google.maps.Size(40, 45),
-            url: this.getAqiIcon(this.aqiAvg(i))
-          },
-    
-          label: {
-            color: this.getAqiFontColor(this.aqiAvg(i)),
-            fontSize: '13px',
-            fontWeight: '400',
-            text: this.aqiAvg(i).toString(),
-          },
+          var marker = new google.maps.Marker({
+            map: this.map,
+            position: { lat: this.data[i].latitude, lng: this.data[i].longitude },
 
-        });
+            icon: {
+              anchor: new google.maps.Point(40, 40),
+              labelOrigin: new google.maps.Point(40, 40),
+              origin: new google.maps.Point(0, 0),
+              scaledSize: new google.maps.Size(80, 80),
+              url: this.getAqiIcon(this.aqiAvg(i))
+            },
 
-      }
+            label: {
+              color: this.getAqiFontColor(this.aqiAvg(i)),
+              fontSize: '13px',
+              fontWeight: '400',
+              text: this.aqiAvg(i).toString(),
+            },
+
+          });
+          markers.push(marker);
+        }
+
+        /**
+         * Clustering
+         */
+        /*var markerClusterer = new MarkerClusterer(this.map, markers, {
+          maxZoom: 7,
+          gridSize: 40,
+          styles: this.clusterIconStyle,
+        });*/
+      });
+    });
+
+    // every 5 seconds
+    const source = timer(0, 5000);
+    //output: 0,1,2,3,4,5......
+    const subscribe = source.subscribe(val => {
 
     });
+
   }
 
+  /**
+   * update markers
+   */
+  updateMarkers(){
+    
+  }
 
+  /**
+   * copy json data
+   * @param data : data which you want to copy
+   */
+  JSON_copy(data: any): any {
+    return JSON.parse(JSON.stringify(data));
+  }
 
   /**
    * get AQI average

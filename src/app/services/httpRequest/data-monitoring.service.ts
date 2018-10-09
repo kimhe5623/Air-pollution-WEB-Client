@@ -29,13 +29,49 @@ export class DataMonitoringService {
       });
   }
 
-  /**
-   * Find nearest location
-   */
-
-
 
   /** RAV */
+  RAV(payload: any, cb) {
+    var usn;
+    if (this.storageService.get('userInfo') != null) {
+      usn = this.storageService.get('userInfo').usn
+    }
+    else usn = 0x000000;
+
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.RAV_REQ, usn);
+
+    this.http.post(`/serverapi`, reqMsg)
+      .subscribe((rspMsg: any) => {
+        cb(rspMsg);
+        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.RAV_RSP, reqMsg.header.endpointId)) {
+          cb(null); return;
+        }
+
+        else {
+          switch (rspMsg.payload.resultCode) {
+            case (0):  // success
+              cb(rspMsg); break;
+
+            case (1): // reject-other
+              alert('Unknown error');
+              cb(null); break;
+
+            case (2):  // reject-unallocated user sequence number
+              alert('Unallocated user sequence number.');
+              var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
+              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              cb(null); break;
+
+            case (3): // reject-incorrect number of signed-in completions
+              alert('Already signed in another computer.');
+              cb(null); break;
+
+            default:
+              cb(null); break;
+          }
+        }
+      });
+  }
 
   /** RHV */
   RHV(payload: any, cb) {

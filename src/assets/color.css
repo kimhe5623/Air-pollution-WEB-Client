@@ -133,7 +133,7 @@
     --aqi-very-unhealthy: #b046e0;
     --aqi-hazardous: #6b132e;
     --grey: #949393;
-    --any: #99999936;
+    --any: #636262ab;
     /*-------------------------*/
     --aqi-good-gradient: radial-gradient(circle, #33e08148, #33e08148, #33e08140, #33e08100, #33e08100,  #33e08100);
     --aqi-moderate-gradient: radial-gradient(circle, #ebe84148, #ebe84148, #ebe84140, #ebe84100, #ebe84100,  #ebe84100);

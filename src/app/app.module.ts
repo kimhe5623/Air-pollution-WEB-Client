@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { WebStorageModule } from 'ngx-store';
-import {} from 'googlemaps';
+//import {} from 'googlemaps';
 import {} from 'markerclustererplus';
 
 import { NgCircleProgressModule } from 'ng-circle-progress';
@@ -88,7 +88,6 @@ import { AdminMainComponent } from './main/administrator/contents/admin-main/adm
 import { TemperatureComponent } from './components/temperature/temperature.component';
 import { AirDataComponent } from './components/air-data/air-data.component';
 import { AirMapsComponent } from './components/air-maps/air-maps.component';
-import { MapClusteringComponent } from './components/map-clustering/map-clustering.component';
 
 @NgModule({
   declarations: [
@@ -123,7 +122,6 @@ import { MapClusteringComponent } from './components/map-clustering/map-clusteri
     TemperatureComponent,
     AirDataComponent,
     AirMapsComponent,
-    MapClusteringComponent,
   ],
   imports: [
     /** Angular Modules */
