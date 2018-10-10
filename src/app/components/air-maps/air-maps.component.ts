@@ -17,6 +17,7 @@ export class AirMapsComponent implements OnInit {
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
   markers: any = {};
+  clickedMarker: string = '';
 
   currentLocation: any;
   currentAddress: any;
@@ -103,12 +104,12 @@ export class AirMapsComponent implements OnInit {
        * Update markers
        */
       // every 1 seconds
-      const source = timer(1, 1000);
+      const source = timer(1, 5000);
       //output: 1,2,3,4,5......
       const subscribe = source.subscribe(val => {
-        if (val % 5 == 0) {
-          this.updateMarkers();
-        }
+        //if (val % 5 == 0) {
+        this.updateMarkers();
+        //}
       });
 
     });
@@ -160,7 +161,7 @@ export class AirMapsComponent implements OnInit {
    */
   addNewMarkers(data: any) {
 
-    console.log('addNewMarkers',data);
+    console.log('addNewMarkers', data);
     for (var key in data) {
 
       var marker = new google.maps.Marker({
@@ -188,7 +189,6 @@ export class AirMapsComponent implements OnInit {
 
       this.markers[key] = marker;
       this.openNewInfoWindow(marker, data[key]);
-
     }
   }
 
@@ -208,13 +208,13 @@ export class AirMapsComponent implements OnInit {
 
           if (this.data[key][key_] != this.markers[key]['data'][key_]) {
             isChanged = true;
-            console.log("is changed!");
+            //console.log("is changed!");
           }
 
         }
 
         if (isChanged) {
-          
+
           this.markers[key].setIcon(
             {
               anchor: new google.maps.Point(40, 40),
@@ -234,7 +234,16 @@ export class AirMapsComponent implements OnInit {
           );
           this.markers[key]['data'] = this.data[key];
 
-          this.openNewInfoWindow(this.markers[key], this.data[key]);
+          this.getInfoWindowContents(this.data[key], (contents) => {
+
+            this.infoWindow.setContent(contents);
+
+            if (key == this.clickedMarker) {
+              this.infoWindow.close(); // Close previously opened infowindow
+              this.infoWindow.open(this.map, this.markers[key]);
+            }
+          });
+
         }
       }
     });
@@ -251,6 +260,7 @@ export class AirMapsComponent implements OnInit {
         this.infoWindow.close(); // Close previously opened infowindow
         this.infoWindow.setContent(contents);
         this.infoWindow.open(this.map, marker);
+        this.clickedMarker = marker['data']['mac'];
       });
     });
   }
