@@ -22,9 +22,9 @@ export class DataMonitoringService {
    * Latlng to address
    */
   latlngToAddress(lat: number, lng: number, cb) {
-
     this.http.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAP_API_KEY}`)
       .subscribe((result) => {
+        //console.log('latlngToAddress function: ', result);
         cb(result);
       });
   }

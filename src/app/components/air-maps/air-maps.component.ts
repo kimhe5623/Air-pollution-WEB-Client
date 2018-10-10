@@ -16,11 +16,12 @@ export class AirMapsComponent implements OnInit {
 
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
+  markers: any = {};
 
   currentLocation: any;
   currentAddress: any;
   data: any = [];
-  mc: MarkerClusterer;
+  infoWindow: google.maps.InfoWindow;
 
   /** Icon urls */
   aqi_icon = {
@@ -73,15 +74,57 @@ export class AirMapsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.reqData((result) => {
+      this.data = result.data;
+
+      /**
+       * Google maps initialization
+       */
+      var mapProp = {
+        center: new google.maps.LatLng(
+          Number(this.data[result.firstKey].latitude),
+          Number(this.data[result.firstKey].longitude)),
+        zoom: 4,
+        draggableCursor: '',
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+
+      this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+
+
+      /**
+       * Marker & Info window
+       */
+      this.markers = {};
+      this.infoWindow = new google.maps.InfoWindow();
+      this.addNewMarkers(this.data);
+
+      /**
+       * Update markers
+       */
+      // every 1 seconds
+      const source = timer(1, 1000);
+      //output: 1,2,3,4,5......
+      const subscribe = source.subscribe(val => {
+        if (val % 5 == 0) {
+          this.updateMarkers();
+        }
+      });
+
+    });
+  }
+
+  // Function definition //
+
+  /**
+   * HTTP: Data request
+   */
+  reqData(cb) {
     this.dataService.getCurrentAddress((address) => {
       this.currentAddress = address.address;
       this.currentLocation = address.currentLatlng
 
-
-      /**
-       * Data sets
-       */
-      console.log(this.currentAddress);
+      //Data sets
       var payload = {
         nsc: 0x00,
         tlv: {
@@ -91,79 +134,175 @@ export class AirMapsComponent implements OnInit {
           cityCode: this.currentAddress.results[0].address_components[4].short_name
         }
       }
+
       this.dmService.RAV(payload, (result) => {
         if (result != null) {
-          this.data = result.payload.tlv;
+
+          var tlvData = result.payload.tlv;
+          var parsedData = { 'firstKey': '', 'data': {} };
+
+          parsedData['firstKey'] = tlvData[0].mac;
+          for (var i = 0; i < tlvData.length; i++) {
+            parsedData['data'][tlvData[i].mac] = tlvData[i];
+          }
+
+          //console.log('parsed Data: ', parsedData);
+          cb(parsedData);
         }
-        console.log('data=>', this.data);
-
-        /**
-         * Google maps initialization
-         */
-        var mapProp = {
-          center: new google.maps.LatLng(Number(this.currentLocation.latitude), Number(this.currentLocation.longitude)),
-          zoom: 4,
-          draggableCursor: '',
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-
-        this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
-
-
-        /**
-         * Marker
-         */
-        var markers = [];
-        for (var i = 0; i < this.data.length; i++) {
-
-          var marker = new google.maps.Marker({
-            map: this.map,
-            position: { lat: this.data[i].latitude, lng: this.data[i].longitude },
-
-            icon: {
-              anchor: new google.maps.Point(40, 40),
-              labelOrigin: new google.maps.Point(40, 40),
-              origin: new google.maps.Point(0, 0),
-              scaledSize: new google.maps.Size(80, 80),
-              url: this.getAqiIcon(this.aqiAvg(i))
-            },
-
-            label: {
-              color: this.getAqiFontColor(this.aqiAvg(i)),
-              fontSize: '13px',
-              fontWeight: '400',
-              text: this.aqiAvg(i).toString(),
-            },
-
-          });
-          markers.push(marker);
-        }
-
-        /**
-         * Clustering
-         */
-        /*var markerClusterer = new MarkerClusterer(this.map, markers, {
-          maxZoom: 7,
-          gridSize: 40,
-          styles: this.clusterIconStyle,
-        });*/
+        else { cb(null); }
       });
     });
+  }
 
-    // every 5 seconds
-    const source = timer(0, 5000);
-    //output: 0,1,2,3,4,5......
-    const subscribe = source.subscribe(val => {
+  /**
+   * @param data: array data
+   * add markers
+   */
+  addNewMarkers(data: any) {
 
-    });
+    for (var key in data) {
 
+      var marker = new google.maps.Marker({
+        map: this.map,
+        position: { lat: data[key].latitude, lng: data[key].longitude },
+
+        icon: {
+          anchor: new google.maps.Point(40, 40),
+          labelOrigin: new google.maps.Point(40, 40),
+          origin: new google.maps.Point(0, 0),
+          scaledSize: new google.maps.Size(80, 80),
+          url: this.getAqiIcon(this.aqiAvg(key))
+        },
+
+        label: {
+          color: this.getAqiFontColor(this.aqiAvg(key)),
+          fontSize: '13px',
+          fontWeight: '400',
+          text: this.aqiAvg(key).toString(),
+        },
+
+        data: data[key]
+
+      });
+
+      this.markers[key] = marker;
+      this.openNewInfoWindow(marker, data[key]);
+
+    }
   }
 
   /**
    * update markers
    */
-  updateMarkers(){
-    
+  updateMarkers() {
+    this.reqData((result) => {
+      this.data = result.data;
+
+      // Marker update
+      for (var key in this.markers) {
+
+        var isChanged: boolean = false;
+        for (var key_ in this.markers[key]) {
+          if (this.data[key][key_] != this.markers[key]['data'][key_]) {
+            isChanged = true;
+            console.log("is changed!");
+          }
+        }
+
+        if (isChanged) {
+          
+          this.markers[key].setIcon(
+            {
+              anchor: new google.maps.Point(40, 40),
+              labelOrigin: new google.maps.Point(40, 40),
+              origin: new google.maps.Point(0, 0),
+              scaledSize: new google.maps.Size(80, 80),
+              url: this.getAqiIcon(this.aqiAvg(key))
+            }
+          );
+          this.markers[key].setLabel(
+            {
+              color: this.getAqiFontColor(this.aqiAvg(key)),
+              fontSize: '13px',
+              fontWeight: '400',
+              text: this.aqiAvg(key).toString(),
+            }
+          );
+          this.markers[key]['data'] = this.data[key];
+          //this.removeMarkerOnMap(this.markers[key]);
+          //this.addNewMarkers({ key: this.data[key] });
+        }
+      }
+    });
+  }
+
+  /**
+   * @param marker : marker
+   * @param eachData : stringfied json data
+   * open new infoWindow
+   */
+  openNewInfoWindow(marker: google.maps.Marker, eachData: any) {
+    marker.addListener('click', () => {
+      this.getInfoWindowContents(eachData, (contents) => {
+        this.infoWindow.close(); // Close previously opened infowindow
+        this.infoWindow.setContent(contents);
+        this.infoWindow.open(this.map, marker);
+      });
+    });
+  }
+
+  /**
+   * @param eachData : each data
+   * get infoWindow contents
+   */
+  getInfoWindowContents(eachData: any, cb) {
+    this.dmService.latlngToAddress(eachData.latitude, eachData.longitude, (address) => {
+
+      var locationName: string;
+      if (address.status == 'OK') { locationName = `<strong>${address.results[0].formatted_address}</strong>`; }
+      else { locationName = `<strong>lat</strong>&nbsp; ${eachData.latitude}<br><strong>lng</strong>&nbsp; ${eachData.longitude}`; }
+
+      var contents = `
+        <style>
+        table, th, td {
+          border: 0.1px solid #ababab;
+        }
+        th, td {
+          padding: 7px;
+        }
+        </style>
+        <h6 style="margin-bottom:5px; line-height: 30px">${locationName}</h6>
+        <p>Wifi MAC address: ${eachData.mac}</p>
+        <table>
+            <tr>
+                <th>CO</th>
+                <th>O<sub>3</sub></th>
+                <th>NO<sub>2</sub></th>
+                <th>SO<sub>2</sub></th>
+                <th>PM2.5</th>
+                <th>PM10</th>
+                <th>Temp</th>
+            </tr>
+            <tr>
+                <td>${eachData.AQI_CO}</td>
+                <td>${eachData.AQI_O3}</td>
+                <td>${eachData.AQI_NO2}</td>
+                <td>${eachData.AQI_SO2}</td>
+                <td>${eachData.AQI_PM25}</td>
+                <td>${eachData.AQI_PM10}</td>
+                <td>${eachData.temperature}</td>
+            </tr>
+        </table> `;
+      cb(contents);
+    });
+  }
+
+  /**
+   * @param marker : marker object
+   *  remove marker on the map
+   */
+  removeMarkerOnMap(marker: any) {
+    marker.setMap(null);
   }
 
   /**
@@ -176,11 +315,11 @@ export class AirMapsComponent implements OnInit {
 
   /**
    * get AQI average
-   * @param idx : index number
+   * @param eachData: each data
    */
-  aqiAvg(idx: number): number {
-    var sum: number = this.data[idx].AQI_CO + this.data[idx].AQI_NO2 + this.data[idx].AQI_O3
-      + this.data[idx].AQI_SO2 + this.data[idx].AQI_PM10 + this.data[idx].AQI_PM25;
+  aqiAvg(eachData: any): number {
+    var sum: number = eachData.AQI_CO + eachData.AQI_NO2 + eachData.AQI_O3
+      + eachData.AQI_SO2 + eachData.AQI_PM10 + eachData.AQI_PM25;
 
     return Math.floor(sum / 6);
   }
