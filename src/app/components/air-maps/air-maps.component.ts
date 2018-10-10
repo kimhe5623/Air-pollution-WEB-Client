@@ -160,6 +160,7 @@ export class AirMapsComponent implements OnInit {
    */
   addNewMarkers(data: any) {
 
+    console.log('addNewMarkers',data);
     for (var key in data) {
 
       var marker = new google.maps.Marker({
@@ -171,14 +172,14 @@ export class AirMapsComponent implements OnInit {
           labelOrigin: new google.maps.Point(40, 40),
           origin: new google.maps.Point(0, 0),
           scaledSize: new google.maps.Size(80, 80),
-          url: this.getAqiIcon(this.aqiAvg(key))
+          url: this.getAqiIcon(this.aqiAvg(data[key]))
         },
 
         label: {
-          color: this.getAqiFontColor(this.aqiAvg(key)),
+          color: this.getAqiFontColor(this.aqiAvg(data[key])),
           fontSize: '13px',
           fontWeight: '400',
-          text: this.aqiAvg(key).toString(),
+          text: this.aqiAvg(data[key]).toString(),
         },
 
         data: data[key]
@@ -202,11 +203,14 @@ export class AirMapsComponent implements OnInit {
       for (var key in this.markers) {
 
         var isChanged: boolean = false;
-        for (var key_ in this.markers[key]) {
+
+        for (var key_ in this.markers[key]['data']) {
+
           if (this.data[key][key_] != this.markers[key]['data'][key_]) {
             isChanged = true;
             console.log("is changed!");
           }
+
         }
 
         if (isChanged) {
@@ -217,20 +221,20 @@ export class AirMapsComponent implements OnInit {
               labelOrigin: new google.maps.Point(40, 40),
               origin: new google.maps.Point(0, 0),
               scaledSize: new google.maps.Size(80, 80),
-              url: this.getAqiIcon(this.aqiAvg(key))
+              url: this.getAqiIcon(this.aqiAvg(this.data[key]))
             }
           );
           this.markers[key].setLabel(
             {
-              color: this.getAqiFontColor(this.aqiAvg(key)),
+              color: this.getAqiFontColor(this.aqiAvg(this.data[key])),
               fontSize: '13px',
               fontWeight: '400',
-              text: this.aqiAvg(key).toString(),
+              text: this.aqiAvg(this.data[key]).toString(),
             }
           );
           this.markers[key]['data'] = this.data[key];
-          //this.removeMarkerOnMap(this.markers[key]);
-          //this.addNewMarkers({ key: this.data[key] });
+
+          this.openNewInfoWindow(this.markers[key], this.data[key]);
         }
       }
     });
