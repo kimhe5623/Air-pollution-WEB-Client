@@ -48,9 +48,9 @@ export class AirDataComponent implements OnInit, DoCheck {
     'border': 'solid 12px var(--aqi-good)',
     'text-align': 'center',
     'margin-right': '8px',
-    'font-size': '40px',
+    'font-size': '43px',
     'padding': '17px',
-    'line-height': 'normal'
+    'line-height': '80px'
   };
 
   airdata_style: any = {
@@ -159,6 +159,7 @@ export class AirDataComponent implements OnInit, DoCheck {
 
     // Data setting
     this.shown_aqi = { key: airtype, value: this.aqi_data[airtype] };
+    this.current_description = this.description[this.getCurrentDescription(this.shown_aqi['value'])];
 
     // Style setting
     for (var key in this.each_air_data_style) {
@@ -166,8 +167,10 @@ export class AirDataComponent implements OnInit, DoCheck {
     }
 
     console.log('hover: ', this.shown_aqi);
+
+    this.aqi_style['border'] = "solid 12px "+ this.current_description[1];
     this.each_air_data_style[airtype]['border'] = "solid 5px " +
-      this.description[this.getCurrentDescription(this.shown_aqi['value'])][1];
+      this.current_description[1];
     this.each_air_data_style[airtype]['background-color'] = "var(--grey)";
     this.each_air_data_style[airtype]['color'] = "#FFF";
 

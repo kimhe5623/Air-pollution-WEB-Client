@@ -58,7 +58,7 @@ export class DashboardNavbarComponent implements OnInit {
   }
 
   clickMenu(menuNum: number) {
-
+    
     switch (menuNum) {
       case (0): // => dashboard
         this.storageService.set('menuNum', 0);
@@ -97,7 +97,7 @@ export class DashboardNavbarComponent implements OnInit {
         var payload: any = {
           nsc: this.storageService.get('nsc')
         };
-        this.umService.SGO(payload, this.storageService.get('userInfo').usn);
+        this.umService.SGO(payload);
         this.router.navigate(['/']);
 
         break;

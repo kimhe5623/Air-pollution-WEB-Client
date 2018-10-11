@@ -59,7 +59,6 @@ import { MDBBootstrapModule } from 'angular-bootstrap-md';
 
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ForgotPasswordComponent } from './forLogin/forgot-password/forgot-password.component';
-import { ForgotPasswordVerificationCodeComponent } from './forLogin/forgot-password-verification-code/forgot-password-verification-code.component';
 import { SignInComponent } from './forLogin/sign-in/sign-in.component';
 import { SignUpComponent } from './forLogin/sign-up/sign-up.component';
 import { SignupVerificationCodeComponent } from './forLogin/signup-verification-code/signup-verification-code.component';
@@ -94,7 +93,6 @@ import { AirMapsComponent } from './components/air-maps/air-maps.component';
     AppComponent,
     PageNotFoundComponent,
     ForgotPasswordComponent,
-    ForgotPasswordVerificationCodeComponent,
     SignInComponent,
     SignUpComponent,
     SignupVerificationCodeComponent,

@@ -3,6 +3,7 @@ import { UnitsType } from 'src/app/components/temperature/temperature.component'
 import { DataMonitoringService } from 'src/app/services/httpRequest/data-monitoring.service';
 import { DataManagementService } from 'src/app/services/data-management.service';
 import { SessionStorageService } from 'ngx-store';
+import { timer } from 'rxjs/observable/timer';
 
 @Component({
   selector: 'app-user-main',
@@ -38,58 +39,58 @@ export class UserMainComponent implements OnInit {
 
   public airChartColors: Array<any> = [
     {
-      backgroundColor: '#aaaaaa36',
-      borderColor: '#99999936',
+      backgroundColor: '#aaaaaa00',
+      borderColor: '#c77676a0',
       borderWidth: 2,
-      pointBackgroundColor: '#99999936',
+      pointBackgroundColor: '#c77676a0',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#99999936'
+      pointHoverBorderColor: '#c77676a0'
     },
     {
-      backgroundColor: '#aaaaaa36',
-      borderColor: '#99999936',
+      backgroundColor: '#aaaaaa00',
+      borderColor: '#ad815ca0',
       borderWidth: 2,
-      pointBackgroundColor: '#99999936',
+      pointBackgroundColor: '#ad815ca0',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#99999936'
+      pointHoverBorderColor: '#ad815ca0'
     },
     {
-      backgroundColor: '#aaaaaa36',
-      borderColor: '#99999936',
+      backgroundColor: '#aaaaaa00',
+      borderColor: '#86b470a0',
       borderWidth: 2,
-      pointBackgroundColor: '#99999936',
+      pointBackgroundColor: '#86b470a0',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#99999936'
+      pointHoverBorderColor: '#86b470a0'
     },
     {
-      backgroundColor: '#aaaaaa36',
-      borderColor: '#99999936',
+      backgroundColor: '#aaaaaa00',
+      borderColor: '#676db6a0',
       borderWidth: 2,
-      pointBackgroundColor: '#99999936',
+      pointBackgroundColor: '#676db6a0',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#99999936'
+      pointHoverBorderColor: '#676db6a0'
     },
     {
-      backgroundColor: '#aaaaaa36',
-      borderColor: '#99999936',
+      backgroundColor: '#aaaaaa00',
+      borderColor: '#a471c2a0',
       borderWidth: 2,
-      pointBackgroundColor: '#99999936',
+      pointBackgroundColor: '#a471c2a0',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#99999936'
+      pointHoverBorderColor: '#a471c2a0'
     },
     {
-      backgroundColor: '#aaaaaa36',
-      borderColor: '#99999936',
+      backgroundColor: '#aaaaaa00',
+      borderColor: '#bd7ba9a0',
       borderWidth: 2,
-      pointBackgroundColor: '#99999936',
+      pointBackgroundColor: '#bd7ba9a0',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#99999936'
+      pointHoverBorderColor: '#bd7ba9a0'
     }
   ];
 
@@ -132,16 +133,37 @@ export class UserMainComponent implements OnInit {
 
   ngOnInit() {
     this.currentUnit = 'C';
+    this.setCurrentHeartdata();
+    this.setNearestSensordata();
 
-    // get current heart data
+    // every 5 seconds
+    const source = timer(1, 5000);
+    //output: 1,2,3,4,5......
+    const subscribe = source.subscribe(val => {
+      this.setCurrentHeartdata();
+    });
+  }
+
+  // public chartClicked(e: any): void { }
+  // public chartHovered(e: any): void { }
+
+  /**
+   * set current heart data
+   */
+  setCurrentHeartdata() {
     var payload = { nsc: this.sessionStorageService.get('userInfo').nsc };
     this.dmService.RHV(payload, (result) => {
       if (result != null) {
         this.currentHeartdata = result.payload;
+        console.log(this.currentHeartdata);
       }
     });
+  }
 
-    // get nearest sensor data
+  /**
+   * Set the nearest sensor data from the current location
+   */
+  setNearestSensordata() {
     this.dataService.getNearestSensorData((data) => {
       this.nearestSensordata = this.dataService.getChartData(data);
 
@@ -151,8 +173,7 @@ export class UserMainComponent implements OnInit {
         }
       }
 
-      /** Set temperature data */
-
+      // Set temperature data
       this.currentCelsius = this.nearestSensordata['temperature']['data'][this.num_of_data - 1];
 
       this.temp_cels = [{ data: this.nearestSensordata['temperature']['data'], label: 'Temp (ºC)' }];
@@ -160,7 +181,7 @@ export class UserMainComponent implements OnInit {
 
       this.num_of_data = this.temp_cels[0]['data'].length;
 
-      /** Set Air data */
+      // Set Air data
       for (var key in this.nearestSensordata) {
         this.currentAirdata[key] = this.nearestSensordata[key]['data'][this.num_of_data - 1];
       }
@@ -174,18 +195,14 @@ export class UserMainComponent implements OnInit {
       this.air_data.push({ data: this.nearestSensordata['AQI_PM25']['data'], label: 'PM2.5 AQI' });
       this.air_data.push({ data: this.nearestSensordata['AQI_PM10']['data'], label: 'PM10 AQI' });
 
-      /** Label */
+      // Label
       this.chartLabels = [];
       for (var i = 0; i < this.num_of_data; i++) {
         this.chartLabels.push(this.dataService.formattingDate(new Date(this.nearestSensordata['timestamp']['data'][i])));
       }
 
-
     });
   }
-
-  public chartClicked(e: any): void { }
-  public chartHovered(e: any): void { }
 
   unitChange(unit: UnitsType) {
     this.currentUnit = unit;

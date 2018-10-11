@@ -9,19 +9,13 @@
     margin-bottom: 10rem;
 }
 
-.card1 {
+.card {
     width: 100%;
+    margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 23px;
 }
-.card2 {
-    width: 100%;
-    margin-right: 5px;
-}
 
-.card3 {
-    width: 100%;
-}
 
 
 .example-header-image {

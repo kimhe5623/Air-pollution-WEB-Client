@@ -104,13 +104,13 @@ export class UserManagementService {
               var userInfo = { usn: rspMsg.payload.usn, nsc: rspMsg.payload.nsc, email: reqMsg.payload.userID };
               this.storageService.set('userInfo', userInfo);
               alert('Welcome!');
-              
+
               // Rendering
-              if(this.authService.isAdministor(Number(rspMsg.payload.usn))) {
+              if (this.authService.isAdministor(Number(rspMsg.payload.usn))) {
                 this.router.navigate(['/administrator']);
               }
               else this.router.navigate([`/dashboard`]);
-              
+
               break;
 
             case (1): // reject-other
@@ -135,10 +135,8 @@ export class UserManagementService {
   }
 
   /** SGO */
-  SGO(payload: any, EP: string): boolean {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SGO_NOT, EP);
-    var expiredDate = new Date();
-    expiredDate.setSeconds(expiredDate.getSeconds() + 5);
+  SGO(payload: any): boolean {
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SGO_NOT, this.storageService.get('userInfo').usn);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
@@ -166,8 +164,68 @@ export class UserManagementService {
   }
 
   /** UPC */
+  UPC(payload: any): boolean {
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.UPC_REQ, this.storageService.get('userInfo').usn);
+
+    this.http.post(`/serverapi`, reqMsg)
+      .subscribe((rspMsg: any) => {
+        switch (rspMsg.payload.resultCode) {
+          case (0):
+            console.log("Successfully signed out");
+            break;
+
+          case (1):
+            console.log("Unknown warning");
+            return false;
+
+          case (2):
+            console.log("Unallocated user sequence number");
+            return false;
+
+          case (3):
+            console.log("Incorrect number of signed-in completions");
+            return false;
+        }
+      })
+
+    return true;
+  }
 
   /** FPU */
+  FPU(payload: any): boolean {
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.FPU_REQ, null);
+
+    this.http.post(`/serverapi`, reqMsg)
+      .subscribe((rspMsg: any) => {
+        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.FPU_RSP, reqMsg.header.endpointId)) return false;
+
+        else {
+          switch (rspMsg.payload.resultCode) {
+            case (0): // success
+              alert('Temporary password was sended to your email')
+              this.router.navigate([`/signin`]);
+              break;
+
+            case (1): // reject-other
+              alert('Unknown error');
+              return false;
+
+            case (2): // reject-conflict of tci
+              alert('Conflict of TCI');
+              return false;
+
+            case (3): // reject-incorrect user information
+              alert('Incorrect user information');
+              return false;
+
+            case (4): // reject-not exist user ID
+              alert('Not exist user ID');
+              return false;
+          }
+        }
+      });
+    return true;
+  }
 
   /** UDR */
 

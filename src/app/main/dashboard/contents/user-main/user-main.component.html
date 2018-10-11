@@ -2,14 +2,14 @@
 <div class="row wrapper">
   <div class="col-12 col-lg-4">
     <div class="row">
-      <mat-card class="card1">
+      <mat-card class="card">
         <div class="row">
           <div class="col-6">
             <h2>Your<br>Current<br>Heart rate<br>is</h2>
           </div>
           <div class="col-6">
             <!-- Heart rate -->
-            <circle-progress [percent]="currentHeartdata.heartrate" [radius]="60" [outerStrokeWidth]="16"
+            <circle-progress [percent]="currentHeartdata.heartrate/2" [radius]="60" [outerStrokeWidth]="16"
               [innerStrokeWidth]="8" outerStrokeColor='var(--heartRate)' innerStrokeColor='var(--heartRate-light)'
               [animation]="true" [animationDuration]="300" [titleFontSize]="30" [showUnits]="false" subtitle='bpm'
               [subtitleFontSize]="20"></circle-progress>
@@ -21,7 +21,7 @@
       </mat-card>
     </div>
     <div class="row">
-      <mat-card class="card2">
+      <mat-card class="card">
         <mat-card-header>
           <h2>Temperature</h2>
         </mat-card-header>
@@ -51,7 +51,7 @@
     </div>
   </div>
   <div class="col-12 col-lg-8">
-    <mat-card class="card3">
+    <mat-card class="card">
       <mat-card-header>
         <mat-card-title>
           <h2>The nearest sensor is</h2>

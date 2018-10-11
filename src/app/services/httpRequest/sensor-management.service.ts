@@ -39,13 +39,13 @@ export class SensorManagementService {
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              this.umService.SGO(SGO_payload);
               return false;
 
             case (3): // reject-unauthorized user sequence number
               alert('Unauthorized user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              this.umService.SGO(SGO_payload);
               return false;
           }
         }
@@ -73,13 +73,13 @@ export class SensorManagementService {
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              this.umService.SGO(SGO_payload);
               return false;
 
             case (3): // reject-unauthorized user sequence number
               alert('Unauthorized user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              this.umService.SGO(SGO_payload);
               return false;
 
             case (4): // reject-not exist WiFi MAC address
@@ -121,13 +121,13 @@ export class SensorManagementService {
             case (2): // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              this.umService.SGO(SGO_payload);
               cb(null); break;
 
             case (3): // reject-unauthorized user sequence number
               alert('Unauthorized user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              this.umService.SGO(SGO_payload);
               cb(null); break;
 
             default:
@@ -159,7 +159,7 @@ export class SensorManagementService {
             case (2): // reject-unallocated user sequence number
               alert('Invalid user sequence number. Login again');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              this.umService.SGO(SGO_payload);
               return false;
           }
         }
@@ -188,7 +188,7 @@ export class SensorManagementService {
             case (2): // reject-unallocated user sequence number
               alert('Invalid user sequence number. Login again');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              this.umService.SGO(SGO_payload);
               return false;
 
             case (3): // reject-not exist Wifi MAC address
@@ -225,7 +225,7 @@ export class SensorManagementService {
             case (2): // reject-unallocated user sequence number
               alert('Invalid user sequence number. Login again');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              this.umService.SGO(SGO_payload);
               return false;
 
             case (3): // reject-not exist Wifi MAC address
@@ -266,7 +266,7 @@ export class SensorManagementService {
             case (2): // reject-unallocated user sequence number
               alert('Invalid user sequence number. Login again');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              this.umService.SGO(SGO_payload);
               cb(null); break;
             
             default:

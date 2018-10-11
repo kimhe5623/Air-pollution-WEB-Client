@@ -5,7 +5,6 @@ import { SignUpComponent } from './forLogin/sign-up/sign-up.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ForgotPasswordComponent } from './forLogin/forgot-password/forgot-password.component';
 import { SignupVerificationCodeComponent } from './forLogin/signup-verification-code/signup-verification-code.component';
-import { ForgotPasswordVerificationCodeComponent } from './forLogin/forgot-password-verification-code/forgot-password-verification-code.component';
 import { SolutionsComponent } from './main/main-page/contents/solutions/solutions.component';
 import { TechnologyComponent } from './main/main-page/contents/technology/technology.component';
 import { UserServiceIntroductionComponent } from './main/main-page/contents/user-service-introduction/user-service-introduction.component';
@@ -36,11 +35,6 @@ export const routes: Routes = [
     path: 'forgot-pw',
     component: ForgotPasswordComponent
   },
-  {
-    path: 'forgot-pw-code',
-    component: ForgotPasswordVerificationCodeComponent
-  },
-
   {
     path: 'dashboard',
     children: [

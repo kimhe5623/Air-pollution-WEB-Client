@@ -126,14 +126,14 @@
     --heartRate: #e77080;
     --heartRate-light: #f8bbc3;
     /*--------------------------*/
-    --aqi-good: #33e081;
-    --aqi-moderate: #ebe841;
-    --aqi-unhealthy-for-sensitive-groups: #f19040;
-    --aqi-unhealthy: #ec4545;
-    --aqi-very-unhealthy: #b046e0;
-    --aqi-hazardous: #6b132e;
-    --grey: #949393;
-    --any: #636262ab;
+    --aqi-good: #33e081ab;
+    --aqi-moderate: #ebe841ab;
+    --aqi-unhealthy-for-sensitive-groups: #f19040ab;
+    --aqi-unhealthy: #ec4545ab;
+    --aqi-very-unhealthy: #b046e0ab;
+    --aqi-hazardous: #6b132eab;
+    --grey: #949393ab;
+    --any: #c77676ab;
     /*-------------------------*/
     --aqi-good-gradient: radial-gradient(circle, #33e08148, #33e08148, #33e08140, #33e08100, #33e08100,  #33e08100);
     --aqi-moderate-gradient: radial-gradient(circle, #ebe84148, #ebe84148, #ebe84140, #ebe84100, #ebe84100,  #ebe84100);

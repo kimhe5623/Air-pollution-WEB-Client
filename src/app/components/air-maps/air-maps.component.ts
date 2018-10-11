@@ -103,13 +103,11 @@ export class AirMapsComponent implements OnInit {
       /**
        * Update markers
        */
-      // every 1 seconds
+      // every 5 seconds
       const source = timer(1, 5000);
       //output: 1,2,3,4,5......
       const subscribe = source.subscribe(val => {
-        //if (val % 5 == 0) {
         this.updateMarkers();
-        //}
       });
 
     });
@@ -161,6 +159,7 @@ export class AirMapsComponent implements OnInit {
    */
   addNewMarkers(data: any) {
 
+    this.data = [];
     console.log('addNewMarkers', data);
     for (var key in data) {
 
@@ -188,8 +187,9 @@ export class AirMapsComponent implements OnInit {
       });
 
       this.markers[key] = marker;
-      this.openNewInfoWindow(marker, data[key]);
     }
+
+    this.addAllInfoWindow();
   }
 
   /**
@@ -204,14 +204,13 @@ export class AirMapsComponent implements OnInit {
 
         var isChanged: boolean = false;
 
+        // Comparing both of data
         for (var key_ in this.markers[key]['data']) {
-
           if (this.data[key][key_] != this.markers[key]['data'][key_]) {
             isChanged = true;
-            //console.log("is changed!");
           }
-
         }
+
 
         if (isChanged) {
 
@@ -234,15 +233,15 @@ export class AirMapsComponent implements OnInit {
           );
           this.markers[key]['data'] = this.data[key];
 
-          this.getInfoWindowContents(this.data[key], (contents) => {
+          this.addInfoWindow(key);
 
-            this.infoWindow.setContent(contents);
-
-            if (key == this.clickedMarker) {
-              this.infoWindow.close(); // Close previously opened infowindow
-              this.infoWindow.open(this.map, this.markers[key]);
-            }
-          });
+          if (key === this.clickedMarker) {
+            this.getInfoWindowContents(this.markers[key]['data'], (contents) => {
+              this.infoWindow.close();
+              this.infoWindow.setContent(contents);
+              this.infoWindow.open(this.map, this.markers[this.clickedMarker]);
+            });
+          }
 
         }
       }
@@ -250,19 +249,52 @@ export class AirMapsComponent implements OnInit {
   }
 
   /**
-   * @param marker : marker
-   * @param eachData : stringfied json data
-   * open new infoWindow
+   * add All listener for infoWindow
    */
-  openNewInfoWindow(marker: google.maps.Marker, eachData: any) {
-    marker.addListener('click', () => {
-      this.getInfoWindowContents(eachData, (contents) => {
+  addAllInfoWindow() {
+
+    for (var key in this.markers) {
+
+      console.log(this.markers[key]['data']);
+
+      google.maps.event.addListener(this.markers[key], 'click', () => {
+
+        this.getInfoWindowContents(this.markers[key]['data'], (contents) => {
+          this.infoWindow.close(); // Close previously opened infowindow
+          this.infoWindow.setContent(contents);
+          this.infoWindow.open(this.map, this.markers[key]);
+          this.clickedMarker = this.markers[key]['data']['mac'];
+
+          console.log('click:', this.clickedMarker);
+
+        });
+
+      });
+
+    }
+  }
+
+  /**
+   * add each listener for infoWindow
+   */
+  addInfoWindow(key) {
+
+    google.maps.event.clearListeners(this.markers[key], 'click');
+
+    google.maps.event.addListener(this.markers[key], 'click', () => {
+
+      this.getInfoWindowContents(this.markers[key]['data'], (contents) => {
         this.infoWindow.close(); // Close previously opened infowindow
         this.infoWindow.setContent(contents);
-        this.infoWindow.open(this.map, marker);
-        this.clickedMarker = marker['data']['mac'];
+        this.infoWindow.open(this.map, this.markers[key]);
+        this.clickedMarker = this.markers[key]['data']['mac'];
+
+        console.log('click:', this.clickedMarker);
+
       });
+
     });
+
   }
 
   /**

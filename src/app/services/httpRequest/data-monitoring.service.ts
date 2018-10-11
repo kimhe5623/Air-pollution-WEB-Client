@@ -59,7 +59,7 @@ export class DataMonitoringService {
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              this.umService.SGO(SGO_payload);
               cb(null); break;
 
             case (3): // reject-incorrect number of signed-in completions
@@ -96,7 +96,7 @@ export class DataMonitoringService {
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              this.umService.SGO(SGO_payload);
               cb(null); break;
 
             case (3): // reject-incorrect number of signed-in completions
@@ -132,7 +132,7 @@ export class DataMonitoringService {
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, this.storageService.get('userInfo').usn);
+              this.umService.SGO(SGO_payload);
               cb(null); break;
 
             case (3): // reject-requested by an unauthorized user sequence number
