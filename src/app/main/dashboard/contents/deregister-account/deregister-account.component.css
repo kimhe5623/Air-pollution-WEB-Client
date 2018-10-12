@@ -25,13 +25,3 @@
 .block{
     display: block;
 }
-
-/** msgs */
-.container{
-    width: 600px;
-    text-align: center;
-    margin-top: 30px;
-    line-height: 2.0;
-    font-size: 18px;
-    display: inline-block;
-}

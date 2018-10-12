@@ -4,7 +4,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'sensor-association-dialog',
   templateUrl: 'sensor-association-dialog.html',
   styleUrls: ['sensor-association-dialog.css']
 })

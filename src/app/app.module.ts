@@ -81,12 +81,14 @@ import { PersonalSensorRegComponent } from './main/dashboard/contents/sensor/per
 import { SensorDeletionDialog } from './dialogs/sensor-deletion-dialog/sensor-deletion-dialog';
 import { SensorAssociationDialog } from './dialogs/sensor-association-dialog/sensor-association-dialog';
 import { SensorDeregistrationDialog } from './dialogs/sensor-deregistration-dialog/sensor-deregistration-dialog';
+import { UserDeregistrationConfirmDialog } from './dialogs/user-deregistration-confirm-dialog/user-deregistration-confirm-dialog';
 import { TimerComponent } from './timer/timer.component';
 import { Header } from 'src/app/header';
 import { AdminMainComponent } from './main/administrator/contents/admin-main/admin-main.component';
 import { TemperatureComponent } from './components/temperature/temperature.component';
 import { AirDataComponent } from './components/air-data/air-data.component';
 import { AirMapsComponent } from './components/air-maps/air-maps.component';
+import { DeregisterAccountComponent } from './main/dashboard/contents/deregister-account/deregister-account.component';
 
 @NgModule({
   declarations: [
@@ -115,11 +117,13 @@ import { AirMapsComponent } from './components/air-maps/air-maps.component';
     SensorAssociationDialog,
     SensorDeletionDialog,
     SensorDeregistrationDialog,
+    UserDeregistrationConfirmDialog,
     TimerComponent,
     AdminMainComponent,
     TemperatureComponent,
     AirDataComponent,
     AirMapsComponent,
+    DeregisterAccountComponent,
   ],
   imports: [
     /** Angular Modules */
@@ -191,7 +195,8 @@ import { AirMapsComponent } from './components/air-maps/air-maps.component';
   entryComponents: [
     SensorAssociationDialog,
     SensorDeletionDialog,
-    SensorDeregistrationDialog
+    SensorDeregistrationDialog,
+    UserDeregistrationConfirmDialog
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [],

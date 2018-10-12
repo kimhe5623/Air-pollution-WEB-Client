@@ -140,22 +140,26 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        switch (rspMsg.payload.resultCode) {
-          case (0):
-            console.log("Successfully signed out");
-            break;
+        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.UDR_RSP, reqMsg.header.endpointId)) return false;
 
-          case (1):
-            console.log("Unknown warning");
-            return false;
+        else {
+          switch (rspMsg.payload.resultCode) {
+            case (0): // success
+              console.log("Successfully signed out");
+              break;
 
-          case (2):
-            console.log("Unallocated user sequence number");
-            return false;
+            case (1): // warning-other
+              console.log("Unknown warning");
+              return false;
 
-          case (3):
-            console.log("Incorrect number of signed-in completions");
-            return false;
+            case (2): // warning-unallocated user sequence number
+              console.log("Unallocated user sequence number");
+              return false;
+
+            case (3): // warning-incorrect number of signed-in completions
+              console.log("Incorrect number of signed-in completions");
+              return false;
+          }
         }
       })
 
@@ -169,22 +173,30 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        switch (rspMsg.payload.resultCode) {
-          case (0):
-            console.log("Successfully signed out");
-            break;
+        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.UPC_RSP, reqMsg.header.endpointId)) return false;
 
-          case (1):
-            console.log("Unknown warning");
-            return false;
+        else {
+          switch (rspMsg.payload.resultCode) {
+            case (0): // success
+              alert("Password was successfully changed");
+              break;
 
-          case (2):
-            console.log("Unallocated user sequence number");
-            return false;
+            case (1): // reject-other
+              alert("Unknown warning");
+              return false;
 
-          case (3):
-            console.log("Incorrect number of signed-in completions");
-            return false;
+            case (2): // reject-unallocated user sequence number
+              alert("Unallocated user sequence number");
+              return false;
+
+            case (3): // reject-incorrect number of signed-in completions
+              alert("Incorrect number of signed-in completions");
+              return false;
+
+            case (4): // reject-incorrect current user password
+              alert("Incorrect current password");
+              return false;
+          }
         }
       })
 
@@ -228,6 +240,42 @@ export class UserManagementService {
   }
 
   /** UDR */
+  UDR(payload: any): boolean {
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.UDR_REQ, this.storageService.get('userInfo').usn);
+
+    this.http.post(`/serverapi`, reqMsg)
+      .subscribe((rspMsg: any) => {
+        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.UDR_RSP, reqMsg.header.endpointId)) return false;
+
+        else {
+          switch (rspMsg.payload.resultCode) {
+            case (0): // success
+              alert("Successfully deregistered");
+              this.storageService.clear('all');
+              this.router.navigate([`/`]);
+              break;
+
+            case (1): // reject-other
+              alert("Unknown warning");
+              return false;
+
+            case (2): // reject-unallocated user sequence number
+              alert("Unallocated user sequence number");
+              return false;
+
+            case (3): // reject-incorrect number of signed-in completions
+              alert("Incorrect number of signed-in completions");
+              return false;
+
+            case (4): // reject-incorrect current user password
+              alert("Incorrect entered user password");
+              return false;
+          }
+        }
+      });
+
+    return true;
+  }
 
   /** AUV */
 }

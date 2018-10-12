@@ -75,6 +75,15 @@
     color: #0ac0c0;
 }
 
+.link-error:link,
+.link-error:visited {
+    color: var(--error);
+}
+
+.link-error:hover {
+    color: #c25988;
+}
+
 .addition{
     color: var(--on-addition);
     background-color: var(--addition);

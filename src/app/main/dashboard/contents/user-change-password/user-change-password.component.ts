@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { UserManagementService } from 'src/app/services/httpRequest/user-management.service';
+import { Router } from '@angular/router';
+import { StorageService } from '../../../../services/storage.service';
 
 @Component({
   selector: 'app-user-change-password',
@@ -14,7 +16,9 @@ export class UserChangePasswordComponent implements OnInit {
   errorhide: boolean;
 
   constructor(
-    private umService: UserManagementService
+    private umService: UserManagementService,
+    private router: Router,
+    private storageService: StorageService
   ) {
     this.currentPassword = new FormControl('', Validators.required);
     this.newPassword = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9!@.#$%^&*?_~]{6,16}$")]);
@@ -39,10 +43,13 @@ export class UserChangePasswordComponent implements OnInit {
     this.errorhide = false;
 
     if (!this.currentPassword.invalid && !this.newPassword.invalid) {
-      
+
       var payload = {
-        currentPassword: this.currentPassword.value,
-        newPassword: this.newPassword.value,
+        nsc: this.storageService.get('userInfo').nsc,
+        tlv: {
+          currentPassword: this.currentPassword.value,
+          newPassword: this.newPassword.value,
+        }
       }
 
       var success: boolean = this.umService.UPC(payload);
@@ -51,8 +58,11 @@ export class UserChangePasswordComponent implements OnInit {
         alert('Failed!');
       }
       else this.ngOnInit();
-
     }
+  }
+
+  clickDeregister() {
+    this.router.navigate([`/dashboard/deregister-account`], { skipLocationChange: true });
   }
 
 }

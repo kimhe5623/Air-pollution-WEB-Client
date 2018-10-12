@@ -3,20 +3,16 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
-  templateUrl: 'sensor-deregistration-dialog.html',
-  styleUrls: ['sensor-deregistration-dialog.css']
+  templateUrl: 'user-deregistration-confirm-dialog.html',
+  styleUrls: ['user-deregistration-confirm-dialog.css']
 })
-export class SensorDeregistrationDialog {
+export class UserDeregistrationConfirmDialog {
   constructor(
-    public dialogRef: MatDialogRef<SensorDeregistrationDialog>,
+    public dialogRef: MatDialogRef<UserDeregistrationConfirmDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.data.isCanceled = true;
-    this.data.reasonCode = 0;
   }
 
-  choose(data) {
-    this.data.reasonCode = data.value;
-  }
   btnClick(isCanceled: boolean) {
     this.data.isCanceled = isCanceled;
   }
@@ -28,6 +24,4 @@ export class SensorDeregistrationDialog {
 
 export interface DialogData {
   isCanceled: boolean;
-  num_of_selected_sensor: number;
-  reasonCode: number;
 }

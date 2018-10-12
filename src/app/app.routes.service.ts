@@ -17,6 +17,7 @@ import { PersonalSensorRegComponent } from './main/dashboard/contents/sensor/per
 import { AdminSensorManagementComponent } from './main/administrator/contents/sensor/admin-sensor-management/admin-sensor-management.component';
 import { UsersManagementComponent } from './main/administrator/contents/users-management/users-management.component';
 import { AdminMainComponent } from './main/administrator/contents/admin-main/admin-main.component';
+import { DeregisterAccountComponent } from './main/dashboard/contents/deregister-account/deregister-account.component';
 
 export const routes: Routes = [
   {
@@ -50,6 +51,10 @@ export const routes: Routes = [
       {
         path: 'changepw',
         component: UserChangePasswordComponent
+      },
+      {
+        path: 'deregister-account',
+        component: DeregisterAccountComponent
       },
       {
         path: 'sensor-management',

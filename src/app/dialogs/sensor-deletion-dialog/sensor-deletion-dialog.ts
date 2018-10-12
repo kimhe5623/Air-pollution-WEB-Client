@@ -3,7 +3,6 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
-  selector: 'sensor-deletion-dialog',
   templateUrl: 'sensor-deletion-dialog.html',
   styleUrls: ['sensor-deletion-dialog.css']
 })

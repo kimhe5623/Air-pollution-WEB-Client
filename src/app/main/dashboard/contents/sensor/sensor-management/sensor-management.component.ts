@@ -5,7 +5,6 @@ import { SensorAssociationDialog } from '../../../../../dialogs/sensor-associati
 import { SensorDeletionDialog } from '../../../../../dialogs/sensor-deletion-dialog/sensor-deletion-dialog';
 import { StorageService } from 'src/app/services/storage.service';
 import { SensorManagementService } from 'src/app/services/httpRequest/sensor-management.service';
-import { OPERATOR } from 'src/app/header'
 
 @Component({
   selector: 'app-sensor-management',
