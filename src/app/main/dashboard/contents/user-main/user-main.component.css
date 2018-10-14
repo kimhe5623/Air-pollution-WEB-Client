@@ -8,6 +8,10 @@
     margin-top: 10rem;
     margin-bottom: 10rem;
 }
+.secondRow{
+    width: 80%;
+    margin: auto auto;
+}
 
 .card {
     width: 100%;

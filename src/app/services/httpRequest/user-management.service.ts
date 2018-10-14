@@ -278,4 +278,36 @@ export class UserManagementService {
   }
 
   /** AUV */
+  AUV(payload: any, cb) {
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.AUV_REQ, this.storageService.get('userInfo').usn);
+
+    this.http.post(`/serverapi`, reqMsg)
+      .subscribe((rspMsg: any) => {
+        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.AUV_RSP, reqMsg.header.endpointId)) return false;
+
+        else {
+          switch (rspMsg.payload.resultCode) {
+            case (0): // success
+              cb(rspMsg);
+              break;
+
+            case (1): // reject-other
+              alert("Unknown warning");
+              cb(null);
+            case (2): // reject-unallocated user sequence number
+              alert("Unallocated user sequence number");
+              cb(null);
+
+            case (3): // reject-incorrect number of signed-in completions
+              alert("Incorrect number of signed-in completions");
+              cb(null);
+
+            case (4): // reject-unauthorized user sequence number
+              alert("Not an administrator. Login again");
+              this.SGO({nsc: this.storageService.get('userInfo').nsc})
+              cb(null);
+          }
+        }
+      });
+  }
 }

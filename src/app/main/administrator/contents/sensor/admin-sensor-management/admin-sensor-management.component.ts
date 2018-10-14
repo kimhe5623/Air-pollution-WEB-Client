@@ -27,6 +27,7 @@ export class AdminSensorManagementComponent implements OnInit {
     { 'width': '4rem' },  // City
     { 'width': '13rem' }, // UserID
   ];
+
   SENSOR_LIST: PeriodicElement[] = [];
   selection = new SelectionModel<PeriodicElement>(true, []);
   index: number = 0;
@@ -67,11 +68,15 @@ export class AdminSensorManagementComponent implements OnInit {
       nsc: this.storageService.get('userInfo').nsc,
     }
 
+    this.reqData(payload);
+  }
+
+  /** request data */
+  reqData(payload: any){
     this.smService.ASV(payload, (result) => {
 
       if (result != null) {
         this.existSensor = result.payload.length != 0 ? true : false;
-
         this.SENSOR_LIST = result.payload.sensorList;
       }
       else alert('Failed');
@@ -89,21 +94,21 @@ export class AdminSensorManagementComponent implements OnInit {
       options: this.search_options_json
     }
 
-    this.smService.ASV(payload, (result) => {
-
-      if (result != null) {
-        this.existSensor = result.payload.length != 0 ? true : false;
-
-        this.SENSOR_LIST = result.payload.sensorList;
-      }
-      else alert('Failed');
-
-    });
+    console.log(payload);
+    this.reqData(payload);
   }
 
   deleteSearchOption(key: string) {
     delete this.search_options_json[key];
     this.jsonToArray(this.search_options_json);
+
+    var payload: any = {
+      nsc: this.storageService.get('userInfo').nsc,
+      options: this.search_options_json
+    }
+
+    console.log(payload);
+    this.reqData(payload);
   }
 
   jsonToArray(json: any) {

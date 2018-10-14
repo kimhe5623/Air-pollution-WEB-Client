@@ -116,6 +116,7 @@ export class UserMainComponent implements OnInit {
   /**
    * AQI, Heart data
    */
+  nearestSensorAddress: string = '';
   nearestSensordata: any = {};
   currentAirdata: any = {};
   currentAirdata_stringfied: string = '';
@@ -155,7 +156,7 @@ export class UserMainComponent implements OnInit {
     this.dmService.RHV(payload, (result) => {
       if (result != null) {
         this.currentHeartdata = result.payload;
-        console.log(this.currentHeartdata);
+        //console.log(this.currentHeartdata);
       }
     });
   }
@@ -165,40 +166,46 @@ export class UserMainComponent implements OnInit {
    */
   setNearestSensordata() {
     this.dataService.getNearestSensorData((data) => {
-      this.nearestSensordata = this.dataService.getChartData(data);
 
-      if (this.nearestSensordata['timestamp']['data'].length > 16) {
-        for (var key in this.nearestSensordata) {
-          this.nearestSensordata[key]['data'] = this.dataService.extractDataTo(16, this.nearestSensordata[key]['data']);
+      if (data != null) {
+        console.log('setNearestSensordata: ', data);
+        this.dmService.latlngToAddress(data[0]['latitude'], data[0]['longitude'], (address)=>{
+          console.log('nearestSensorAddress: ', address);
+        });
+        
+        if (this.nearestSensordata['timestamp']['data'].length > 16) {
+          for (var key in this.nearestSensordata) {
+            this.nearestSensordata[key]['data'] = this.dataService.extractDataTo(16, this.nearestSensordata[key]['data']);
+          }
         }
-      }
 
-      // Set temperature data
-      this.currentCelsius = this.nearestSensordata['temperature']['data'][this.num_of_data - 1];
+        // Set temperature data
+        this.currentCelsius = this.nearestSensordata['temperature']['data'][this.num_of_data - 1];
 
-      this.temp_cels = [{ data: this.nearestSensordata['temperature']['data'], label: 'Temp (ºC)' }];
-      this.temp_fahr = [{ data: this.dataService.CelsiusToFahr(this.temp_cels[0].data), label: 'Temp (ºF)' }];
+        this.temp_cels = [{ data: this.nearestSensordata['temperature']['data'], label: 'Temp (ºC)' }];
+        this.temp_fahr = [{ data: this.dataService.CelsiusToFahr(this.temp_cels[0].data), label: 'Temp (ºF)' }];
 
-      this.num_of_data = this.temp_cels[0]['data'].length;
+        this.num_of_data = this.temp_cels[0]['data'].length;
 
-      // Set Air data
-      for (var key in this.nearestSensordata) {
-        this.currentAirdata[key] = this.nearestSensordata[key]['data'][this.num_of_data - 1];
-      }
-      console.log(">>main component init");
+        // Set Air data
+        for (var key in this.nearestSensordata) {
+          this.currentAirdata[key] = this.nearestSensordata[key]['data'][this.num_of_data - 1];
+        }
+        console.log(">>main component init");
 
-      this.air_data = [];
-      this.air_data.push({ data: this.nearestSensordata['AQI_CO']['data'], label: 'CO AQI' });
-      this.air_data.push({ data: this.nearestSensordata['AQI_O3']['data'], label: 'O3 AQI' });
-      this.air_data.push({ data: this.nearestSensordata['AQI_NO2']['data'], label: 'NO2 AQI' });
-      this.air_data.push({ data: this.nearestSensordata['AQI_SO2']['data'], label: 'SO2 AQI' });
-      this.air_data.push({ data: this.nearestSensordata['AQI_PM25']['data'], label: 'PM2.5 AQI' });
-      this.air_data.push({ data: this.nearestSensordata['AQI_PM10']['data'], label: 'PM10 AQI' });
+        this.air_data = [];
+        this.air_data.push({ data: this.nearestSensordata['AQI_CO']['data'], label: 'CO AQI' });
+        this.air_data.push({ data: this.nearestSensordata['AQI_O3']['data'], label: 'O3 AQI' });
+        this.air_data.push({ data: this.nearestSensordata['AQI_NO2']['data'], label: 'NO2 AQI' });
+        this.air_data.push({ data: this.nearestSensordata['AQI_SO2']['data'], label: 'SO2 AQI' });
+        this.air_data.push({ data: this.nearestSensordata['AQI_PM25']['data'], label: 'PM2.5 AQI' });
+        this.air_data.push({ data: this.nearestSensordata['AQI_PM10']['data'], label: 'PM10 AQI' });
 
-      // Label
-      this.chartLabels = [];
-      for (var i = 0; i < this.num_of_data; i++) {
-        this.chartLabels.push(this.dataService.formattingDate(new Date(this.nearestSensordata['timestamp']['data'][i])));
+        // Label
+        this.chartLabels = [];
+        for (var i = 0; i < this.num_of_data; i++) {
+          this.chartLabels.push(this.dataService.formattingDate(new Date(this.nearestSensordata['timestamp']['data'][i])));
+        }
       }
 
     });
