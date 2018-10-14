@@ -171,8 +171,11 @@ export class UserMainComponent implements OnInit {
         console.log('setNearestSensordata: ', data);
         this.dmService.latlngToAddress(data[0]['latitude'], data[0]['longitude'], (address)=>{
           console.log('nearestSensorAddress: ', address);
+          this.nearestSensorAddress = address.results[0].formatted_address;
         });
-        
+
+        this.nearestSensordata = this.dataService.getChartData(data);
+
         if (this.nearestSensordata['timestamp']['data'].length > 16) {
           for (var key in this.nearestSensordata) {
             this.nearestSensordata[key]['data'] = this.dataService.extractDataTo(16, this.nearestSensordata[key]['data']);
