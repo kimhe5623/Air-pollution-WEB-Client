@@ -148,5 +148,40 @@ export class DataMonitoringService {
 
   /** SHR */
   /** HHV */
+  HHV(payload: any, cb) {
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.HHV_REQ, this.storageService.get('userInfo').usn);
+
+    this.http.post(`/serverapi`, reqMsg)
+      .subscribe((rspMsg: any) => {
+        cb(rspMsg);
+        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.HHV_RSP, reqMsg.header.endpointId)) {
+          cb(null); return;
+        }
+
+        else {
+          switch (rspMsg.payload.resultCode) {
+            case (0):  // success
+              cb(rspMsg); break;
+            case (1): // reject-other
+              alert('Unknown error');
+              cb(null); break;
+
+            case (2):  // reject-unallocated user sequence number
+              alert('Unallocated user sequence number.');
+              var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
+              this.umService.SGO(SGO_payload);
+              cb(null); break;
+
+            case (3): // reject-incorrect number of signed in completions
+              alert('Already');
+              cb(null); break;
+
+            case (4): // reject-unauthorized user sequece number
+              cb(null); break;
+          }
+        }
+      });
+  }
+
   /** KAS */
 }

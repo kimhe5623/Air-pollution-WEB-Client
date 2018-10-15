@@ -18,6 +18,8 @@ import { AdminSensorManagementComponent } from './main/administrator/contents/se
 import { UsersManagementComponent } from './main/administrator/contents/users-management/users-management.component';
 import { AdminMainComponent } from './main/administrator/contents/admin-main/admin-main.component';
 import { DeregisterAccountComponent } from './main/dashboard/contents/deregister-account/deregister-account.component';
+import { AirSensorHistoryComponent } from './main/dashboard/contents/air-sensor-history/air-sensor-history.component';
+import { HeartHistoryComponent } from './main/dashboard/contents/heart-history/heart-history.component';
 
 export const routes: Routes = [
   {
@@ -63,6 +65,14 @@ export const routes: Routes = [
       {
         path: 'personal-sensor-management',
         component: PersonalSensorRegComponent
+      },
+      {
+        path: 'air-sensor-history',
+        component: AirSensorHistoryComponent
+      },
+      {
+        path: 'heart-history',
+        component: HeartHistoryComponent
       }
     ]
   },

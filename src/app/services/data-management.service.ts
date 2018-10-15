@@ -139,6 +139,7 @@ export class DataManagementService {
    * get Chart data 
    */
   getChartData(data: any): any {
+    console.log('getChartData Input: ', data);
     var chartData: any = {};
 
     for (var key in data[0]) {
@@ -152,6 +153,7 @@ export class DataManagementService {
       }
     }
 
+    console.log('getChartData Output: ', chartData);
     return chartData;
   }
 

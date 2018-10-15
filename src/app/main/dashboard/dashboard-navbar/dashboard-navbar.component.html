@@ -23,10 +23,21 @@
         </div>
       </li>
 
-      <li class="nav-item waves-light space10" mdbWavesEffect>
-        <a class="nav-link font135 margin" [ngClass]="{'active': currentMenu.undefined}" (click)="clickMenu(7)">Undefined
-        </a>
-      </li>
+      <li class="nav-item dropdown space10" dropdown>
+          <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light font135 margin" mdbWavesEffect>
+            History
+            <span class="caret"></span>
+          </a>
+          <div *dropdownMenu class="dropdown-menu" role="menu">
+            <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.airSensorHistory}" (click)="clickMenu(7)" mdbWavesEffect>
+              Air sensor
+            </a>
+            <div class="divider dropdown-divider"></div>
+            <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.HeartHistory}" (click)="clickMenu(8)" mdbWavesEffect>
+              Heart
+            </a>
+          </div>
+        </li>
     </ul>
 
     <ul class="navbar-nav nav-flex-icons">
