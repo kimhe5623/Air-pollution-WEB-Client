@@ -10,5 +10,8 @@
 .card{
     margin: auto auto;
     width: 100%;
-    text-align: center;
+}
+
+.slider{
+    width: 100%;
 }

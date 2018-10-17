@@ -10,7 +10,9 @@
 .card{
     margin: auto auto;
     width: 100%;
-    text-align: center;
+}
+.hidden{
+    visibility: hidden;
 }
 
 /** Button */

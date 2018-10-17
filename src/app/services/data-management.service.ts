@@ -16,15 +16,16 @@ export class DataManagementService {
    * Date formatting
    */
   formattingDate(date: Date): string {
+    var d = new Date(date);
     function pad2(n) { return n < 10 ? '0' + n : n }
 
     var parsedDate = [
-      date.getFullYear().toString(),
-      pad2(date.getMonth() + 1),
-      pad2(date.getDate()),
-      pad2(date.getHours()),
-      pad2(date.getMinutes()),
-      pad2(date.getSeconds())
+      d.getFullYear().toString(),
+      pad2(d.getMonth() + 1),
+      pad2(d.getDate()),
+      pad2(d.getHours()),
+      pad2(d.getMinutes()),
+      pad2(d.getSeconds())
     ];
 
     var result: string =  parsedDate[0] + '/' + parsedDate[1] + '/' + parsedDate[2] + ' '

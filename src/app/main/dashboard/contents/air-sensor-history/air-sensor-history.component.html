@@ -1,6 +1,10 @@
 <app-dashboard-navbar></app-dashboard-navbar>
 <div class="wrapper">
-  <h1 class="title">Air Sensor History</h1>
+  <h1 class="title">Air History</h1>
   <mat-card class="card">
+
+    <mat-slider class="slider" [disabled]="disabled" [invert]="invert" [max]="max" [min]="min" [step]="step"
+      [thumbLabel]="thumbLabel" [tickInterval]="tickInterval" [(ngModel)]="value" [vertical]="vertical">
+    </mat-slider>
   </mat-card>
 </div>
