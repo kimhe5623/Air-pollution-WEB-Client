@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { } from 'googlemaps';
 import { DataManagementService } from '../../services/data-management.service';
 import { DataMonitoringService } from '../../services/httpRequest/data-monitoring.service';
@@ -84,7 +83,8 @@ export class AirMapsComponent implements OnInit {
       var mapProp = {
         center: new google.maps.LatLng(
           Number(this.data[result.firstKey].latitude),
-          Number(this.data[result.firstKey].longitude)),
+          Number(this.data[result.firstKey].longitude)
+          ),
         zoom: 4,
         draggableCursor: '',
         mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -160,7 +160,7 @@ export class AirMapsComponent implements OnInit {
   addNewMarkers(data: any) {
 
     this.data = [];
-    console.log('addNewMarkers', data);
+    //console.log('addNewMarkers', data);
     for (var key in data) {
 
       var marker = new google.maps.Marker({
@@ -255,7 +255,7 @@ export class AirMapsComponent implements OnInit {
 
     for (var key in this.markers) {
 
-      console.log(this.markers[key]['data']);
+      //console.log('addListener =>', this.markers[key]['data']);
 
       google.maps.event.addListener(this.markers[key], 'click', () => {
 
@@ -265,7 +265,7 @@ export class AirMapsComponent implements OnInit {
           this.infoWindow.open(this.map, this.markers[key]);
           this.clickedMarker = this.markers[key]['data']['mac'];
 
-          console.log('click:', this.clickedMarker);
+          //console.log('click:', this.clickedMarker);
 
         });
 
@@ -289,7 +289,7 @@ export class AirMapsComponent implements OnInit {
         this.infoWindow.open(this.map, this.markers[key]);
         this.clickedMarker = this.markers[key]['data']['mac'];
 
-        console.log('click:', this.clickedMarker);
+        //console.log('click:', this.clickedMarker);
 
       });
 

@@ -6,6 +6,9 @@
     font-size: 2.5rem;
     padding-bottom: 15px;
 }
+.secondTitle{
+    margin-top: 10px;
+}
 
 .block {
     display: block;

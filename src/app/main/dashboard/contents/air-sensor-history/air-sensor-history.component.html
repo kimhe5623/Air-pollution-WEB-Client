@@ -1,10 +1,29 @@
 <app-dashboard-navbar></app-dashboard-navbar>
 <div class="wrapper">
   <h1 class="title">Air History</h1>
-  <mat-card class="card">
-
-    <mat-slider class="slider" [disabled]="disabled" [invert]="invert" [max]="max" [min]="min" [step]="step"
-      [thumbLabel]="thumbLabel" [tickInterval]="tickInterval" [(ngModel)]="value" [vertical]="vertical">
-    </mat-slider>
+  <!-- Date picker -->
+  <form (ngSubmit)="searchHistory()">
+    <mat-form-field class="example-full-width">
+      <input matInput [matDatepicker]="start" placeholder="Start date" [formControl]="startDate">
+      <mat-datepicker-toggle matSuffix [for]="start">
+        <mat-icon style="font-size: 1.5rem;" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #start></mat-datepicker>
+    </mat-form-field>
+    &nbsp;
+    <mat-form-field class="example-full-width">
+      <input matInput [matDatepicker]="end" placeholder="End date" [formControl]="endDate">
+      <mat-datepicker-toggle matSuffix [for]="end">
+        <mat-icon style="font-size: 1.5rem;" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #end></mat-datepicker>
+    </mat-form-field>
+    <button type="submit" class="btn waves-light primary-variant on-primary buttonStyle" [disabled]="endDate.invalid || startDate.invalid"
+      mdbWavesEffect>
+      Search</button>
+  </form>
+  <mat-card class="card" [ngClass]="{'hidden':!isSearched}">
+    <mat-slider class="slider" [max]="max" [min]="min" [thumbLabel]="thumbLabel" [(ngModel)]="value"></mat-slider>
+    <div #gmap style="width:100%;height:600px"></div>
   </mat-card>
 </div>

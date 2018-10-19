@@ -91,6 +91,7 @@ import { AirMapsComponent } from './components/air-maps/air-maps.component';
 import { DeregisterAccountComponent } from './main/dashboard/contents/deregister-account/deregister-account.component';
 import { AirSensorHistoryComponent } from './main/dashboard/contents/air-sensor-history/air-sensor-history.component';
 import { HeartHistoryComponent } from './main/dashboard/contents/heart-history/heart-history.component';
+import { SensorMapsComponent } from './components/sensor-maps/sensor-maps.component';
 
 @NgModule({
   declarations: [
@@ -128,6 +129,7 @@ import { HeartHistoryComponent } from './main/dashboard/contents/heart-history/h
     DeregisterAccountComponent,
     AirSensorHistoryComponent,
     HeartHistoryComponent,
+    SensorMapsComponent,
   ],
   imports: [
     /** Angular Modules */
