@@ -12,12 +12,12 @@
       <h1>Sign in to <strong>AiR</strong>ound</h1>
       <p>Welcome to your account dashboard</p>
       <mat-form-field>
-        <input matInput placeholder="Email" formControlName="email">
+        <input type="text" matInput placeholder="Email" formControlName="email">
         <mat-error *ngIf="signinForm.get('email').invalid && !errorhide">{{getEmailErrorMessage()}}</mat-error>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput placeholder="Password" formControlName="password">
+        <input type="password" matInput placeholder="Password" formControlName="password">
         <mat-error *ngIf="signinForm.get('password').invalid && !errorhide">{{getPasswordErrorMessage()}}</mat-error>
       </mat-form-field>
 

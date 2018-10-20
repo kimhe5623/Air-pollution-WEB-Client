@@ -7,7 +7,11 @@
     margin: auto auto;
     margin-top: 10rem;
 }
-.secondRow{
+.midRow{
+    width: 80%;
+    margin: auto auto;
+}
+.lastRow{
     width: 80%;
     margin: auto auto;
     margin-bottom: 10rem;

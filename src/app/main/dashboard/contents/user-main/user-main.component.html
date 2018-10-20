@@ -16,7 +16,7 @@
           </div>
         </div>
         <mat-card-actions style="text-align: right">
-          <a mat-button>More details..</a>
+          <a [routerLink]="['/dashboard/heart-history']" mat-button>More details..</a>
         </mat-card-actions>
       </mat-card>
     </div>
@@ -45,7 +45,7 @@
           </div>
         </mat-card-content>
         <mat-card-actions style="text-align: right">
-          <a mat-button>More details..</a>
+          <a [routerLink]="['/dashboard/air-sensor-history']" routerLinkActive="router-link-active"  mat-button>More details..</a>
         </mat-card-actions>
       </mat-card>
     </div>
@@ -73,12 +73,12 @@
         </div>
       </mat-card-content>
       <mat-card-actions style="text-align: right">
-        <a mat-button>More details..</a>
+        <a [routerLink]="['/dashboard/air-sensor-history']" mat-button>More details..</a>
       </mat-card-actions>
     </mat-card>
   </div>
 </div>
-<div class="row secondRow">
+<div class="row midRow">
   <div class="col">
     <mat-card class="card">
       <mat-card-header>
@@ -88,6 +88,20 @@
       </mat-card-header>
       <mat-card-content>
         <app-air-maps></app-air-maps>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+<div class="row lastRow">
+  <div class="col">
+    <mat-card class="card">
+      <mat-card-header>
+        <mat-card-title>
+          <h2>My Sensors</h2>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-sensor-maps [isSignedin]="true"></app-sensor-maps>
       </mat-card-content>
     </mat-card>
   </div>

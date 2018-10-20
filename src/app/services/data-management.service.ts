@@ -12,6 +12,18 @@ export class DataManagementService {
     private dmService: DataMonitoringService
   ) { }
 
+  /**
+   * Check if its value exists
+   */
+  checkValueExist(value: any, array: any): boolean{
+    var isExist: boolean = false;
+
+    for(var i=0; i<array.length; i++){
+      if(value === array[i]) isExist = true;
+    }
+
+    return isExist;
+  }
   /** 
    * Date formatting
    */

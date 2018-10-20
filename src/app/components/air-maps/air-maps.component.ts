@@ -31,7 +31,7 @@ export class AirMapsComponent implements OnInit {
     unhealthy: 'assets/map/marker/unhealthy.svg',
     very_unhealthy: 'assets/map/marker/very-unhealthy.svg',
     hazardous: 'assets/map/marker/hazardous.svg',
-  }
+  };
   /** Label color */
   aqi_label_color = {
     good: '#000000',
@@ -40,33 +40,8 @@ export class AirMapsComponent implements OnInit {
     unhealthy: '#ffffff',
     very_unhealthy: '#ffffff',
     hazardous: '#ffffff',
-  }
+  };
 
-  /** Cluster icon style */
-  clusterIconStyle = [
-    {
-      url: 'assets/clusterer/circle-solid.svg',
-      height: 26,
-      width: 30,
-      anchor: [4, 0],
-      textColor: '#ff00ff',
-      textSize: 10
-    }, {
-      url: 'assets/clusterer/circle-solid.svg',
-      height: 35,
-      width: 40,
-      anchor: [8, 0],
-      textColor: '#ff0000',
-      textSize: 11
-    }, {
-      url: 'assets/clusterer/circle-solid.svg',
-      width: 50,
-      height: 44,
-      anchor: [12, 0],
-      textColor: '#ffffff',
-      textSize: 12
-    }
-  ];
 
   constructor(
     private dataService: DataManagementService,
@@ -153,6 +128,8 @@ export class AirMapsComponent implements OnInit {
     });
   }
 
+
+  //==========================================================
   /**
    * @param data: array data
    * add markers
@@ -187,9 +164,10 @@ export class AirMapsComponent implements OnInit {
       });
 
       this.markers[key] = marker;
+
+      this.addInfoWindow(key);
     }
 
-    this.addAllInfoWindow();
   }
 
   /**
@@ -246,32 +224,6 @@ export class AirMapsComponent implements OnInit {
         }
       }
     });
-  }
-
-  /**
-   * add All listener for infoWindow
-   */
-  addAllInfoWindow() {
-
-    for (var key in this.markers) {
-
-      //console.log('addListener =>', this.markers[key]['data']);
-
-      google.maps.event.addListener(this.markers[key], 'click', () => {
-
-        this.getInfoWindowContents(this.markers[key]['data'], (contents) => {
-          this.infoWindow.close(); // Close previously opened infowindow
-          this.infoWindow.setContent(contents);
-          this.infoWindow.open(this.map, this.markers[key]);
-          this.clickedMarker = this.markers[key]['data']['mac'];
-
-          //console.log('click:', this.clickedMarker);
-
-        });
-
-      });
-
-    }
   }
 
   /**
