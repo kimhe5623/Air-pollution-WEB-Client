@@ -63,6 +63,7 @@ export class AirSensorHistoryComponent implements OnInit {
    * Data
    */
   airData: any = {};
+  airDataForCharts: any = {};
   timeLists: any = [];
   selectedTime: string = "";
   firstKeys: any = {};
@@ -74,6 +75,117 @@ export class AirSensorHistoryComponent implements OnInit {
   newKeys: any = [];
   existedKeys: any = [];
 
+  /**
+   * Chart
+   */
+  public chartType: string = 'line';
+
+  public airChartDataAll: Array<any> = [{ data: [], label: '' }];
+  public airChartData: Array<any> = [{ data: [], label: '' }];
+  public chartLabels: Array<any> = [];
+
+  public airChartColors: Array<any> = [
+    {
+      backgroundColor: '#aaaaaa00',
+      borderColor: '#c77676a0',
+      borderWidth: 2,
+      pointBackgroundColor: '#c77676a0',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#c77676a0'
+    },
+    {
+      backgroundColor: '#aaaaaa00',
+      borderColor: '#ad815ca0',
+      borderWidth: 2,
+      pointBackgroundColor: '#ad815ca0',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#ad815ca0'
+    },
+    {
+      backgroundColor: '#aaaaaa00',
+      borderColor: '#86b470a0',
+      borderWidth: 2,
+      pointBackgroundColor: '#86b470a0',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#86b470a0'
+    },
+    {
+      backgroundColor: '#aaaaaa00',
+      borderColor: '#676db6a0',
+      borderWidth: 2,
+      pointBackgroundColor: '#676db6a0',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#676db6a0'
+    },
+    {
+      backgroundColor: '#aaaaaa00',
+      borderColor: '#a471c2a0',
+      borderWidth: 2,
+      pointBackgroundColor: '#a471c2a0',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#a471c2a0'
+    },
+    {
+      backgroundColor: '#aaaaaa00',
+      borderColor: '#bd7ba9a0',
+      borderWidth: 2,
+      pointBackgroundColor: '#bd7ba9a0',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#bd7ba9a0'
+    },
+    {
+      backgroundColor: '#ffeb9033',
+      borderColor: '#ffe190a9',
+      borderWidth: 2,
+      pointBackgroundColor: '#ffe190a9',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: '#ffe190a9'
+    },
+  ];
+
+  public chartOptions: any = {
+    responsive: true,
+    trackColor: false,
+    scales: {
+      xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Timestamp'
+        }
+      }],
+      yAxes: [{
+        id: 'AQI',
+        type: 'linear',
+        position: 'left',
+        scalePositionLeft: true,
+        scaleLabel: {
+          display: true,
+          labelString: 'Air Quality Index',
+        }
+      },
+      {
+        id: 'temperature',
+        type: 'linear',
+        position: 'right',
+        scalePositionLeft: false,
+        scaleLabel: {
+          display: true,
+          labelString: 'Temperature',
+        }
+      },
+      ]
+    }
+  };
+
+
+  /**----*/
   isSearched: boolean = false;
 
   constructor(
@@ -129,12 +241,19 @@ export class AirSensorHistoryComponent implements OnInit {
             /** Data parsing for "this.firstKeys" */
             this.firstKeys[currentTsp.toString()] = tlvData[i].mac;
           }
+
+          /** Data parsing for "this.airDataForChart" */
+          this.airDataForCharts[tlvData[i].mac] = [];
         }
 
         for (var i = 0; i < tlvData.length; i++) {
           var currentTsp: number = new Date(tlvData[i].timestamp).getTime();
           tspBasedData[currentTsp.toString()][tlvData[i].mac] = tlvData[i];
+
+          this.airDataForCharts[tlvData[i].mac].push(tlvData[i]);
         }
+
+        console.log('airDataForCharts => ', this.airDataForCharts);
 
         this.timeLists.sort();
         this.timeSliderMax = this.timeLists.length - 1;
@@ -168,8 +287,37 @@ export class AirSensorHistoryComponent implements OnInit {
 
       if (result != null) {
         this.mapInit();
+
+        // Chart data
+        this.airChartDataAll = this.dataService.getChartData(this.airDataForCharts[this.firstKeys[this.timeLists[0]]]);
+        this.airChartSetting();
+
+
+        // Chart Label data
+        this.chartLabels = [];
+        for (var i = 0; i < this.airChartDataAll['timestamp']['data'].length; i++) {
+          this.chartLabels.push(this.dataService.formattingDate(this.airChartDataAll['timestamp']['data'][i]))
+        }
+
+        console.log('airChartDataAll => ', this.airChartDataAll);
+        console.log('chartLables => ', this.chartLabels);
       }
     });
+  }
+
+
+  /**
+   * this.airChart setting fn
+   */
+  airChartSetting(){
+    this.airChartData = [];
+    this.airChartData.push({ yAxisID: 'AQI', data: this.airChartDataAll['AQI_CO']['data'], label: 'CO AQI' });
+    this.airChartData.push({ yAxisID: 'AQI', data: this.airChartDataAll['AQI_O3']['data'], label: 'O3 AQI' });
+    this.airChartData.push({ yAxisID: 'AQI', data: this.airChartDataAll['AQI_NO2']['data'], label: 'NO2 AQI' });
+    this.airChartData.push({ yAxisID: 'AQI', data: this.airChartDataAll['AQI_SO2']['data'], label: 'SO2 AQI' });
+    this.airChartData.push({ yAxisID: 'AQI', data: this.airChartDataAll['AQI_PM25']['data'], label: 'PM2.5 AQI' });
+    this.airChartData.push({ yAxisID: 'AQI', data: this.airChartDataAll['AQI_PM10']['data'], label: 'PM10 AQI' });
+    this.airChartData.push({ yAxisID: 'temperature', data: this.airChartDataAll['temperature']['data'], label: 'Temperature' });
   }
 
   /**
@@ -197,6 +345,8 @@ export class AirSensorHistoryComponent implements OnInit {
         this.removeMarkerOnMap(this.removedKeys[i]);
       }
     });
+
+
     this.previousTimeSliderValue = this.timeSliderValue;
   }
 
@@ -398,6 +548,18 @@ export class AirSensorHistoryComponent implements OnInit {
 
         //console.log('click:', this.clickedMarker);
 
+        // Update the Chart data
+        this.airChartDataAll = this.dataService.getChartData(this.airDataForCharts[key]);
+        this.airChartSetting();
+        console.log('updated airChartDataAll => ', this.airChartDataAll);
+
+        // Chart Label data
+        this.chartLabels = [];
+        for (var i = 0; i < this.airChartDataAll['timestamp']['data'].length; i++) {
+          this.chartLabels.push(this.dataService.formattingDate(this.airChartDataAll['timestamp']['data'][i]))
+        }
+        console.log('updated chartLabels => ', this.chartLabels);
+
       });
 
     });
@@ -456,7 +618,7 @@ export class AirSensorHistoryComponent implements OnInit {
     });
   }
 
-  clickbutton(){
+  clickbutton() {
     alert("click button!");
   }
   /**

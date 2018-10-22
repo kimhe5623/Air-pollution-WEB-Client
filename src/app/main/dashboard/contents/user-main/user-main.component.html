@@ -68,7 +68,7 @@
         <!-- AQI chart -->
         <div style="display: block; margin-top: 30px;">
           <canvas mdbChart [chartType]="chartType" [datasets]="air_data" [labels]="chartLabels" [colors]="airChartColors"
-            [options]="chartOptions" [legend]="true" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)">
+            [options]="chartOptions" [legend]="true">
           </canvas>
         </div>
       </mat-card-content>
