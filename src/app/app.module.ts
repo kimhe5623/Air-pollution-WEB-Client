@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { WebStorageModule } from 'ngx-store';
-//import {} from 'googlemaps';
+import "core-js/shim";
 import {} from 'markerclustererplus';
 
 import { NgCircleProgressModule } from 'ng-circle-progress';
@@ -92,6 +92,25 @@ import { DeregisterAccountComponent } from './main/dashboard/contents/deregister
 import { AirSensorHistoryComponent } from './main/dashboard/contents/air-sensor-history/air-sensor-history.component';
 import { HeartHistoryComponent } from './main/dashboard/contents/heart-history/heart-history.component';
 import { SensorMapsComponent } from './components/sensor-maps/sensor-maps.component';
+import { AirSensorHistoryContentsComponent } from './components/contents/air-sensor-history-contents/air-sensor-history-contents.component';
+import { DeregisterAccountContentsComponent } from './components/contents/deregister-account-contents/deregister-account-contents.component';
+import { HeartHistoryContentsComponent } from './components/contents/heart-history-contents/heart-history-contents.component';
+import { PersonalSensorRegistrationContentsComponent } from './components/contents/personal-sensor-registration-contents/personal-sensor-registration-contents.component';
+import { SensorManagementContentsComponent } from './components/contents/sensor-management-contents/sensor-management-contents.component';
+import { UserChangePasswordContentsComponent } from './components/contents/user-change-password-contents/user-change-password-contents.component';
+import { UserMainContentsComponent } from './components/contents/user-main-contents/user-main-contents.component';
+import { AdminUserManagementContentsComponent } from './components/contents/for-admin/admin-user-management-contents/admin-user-management-contents.component';
+import { AdminSensorManagementContentsComponent } from './components/contents/for-admin/admin-sensor-management-contents/admin-sensor-management-contents.component';
+import { AdminProfileComponent } from './main/administrator/contents/admin-profile/admin-profile.component';
+import { AdminChangepwComponent } from './main/administrator/contents/admin-changepw/admin-changepw.component';
+import { AdminHeartHistoryComponent } from './main/administrator/contents/admin-heart-history/admin-heart-history.component';
+import { AdminDeregisterAccountComponent } from './main/administrator/contents/admin-deregister-account/admin-deregister-account.component';
+import { AdminPersonalSensorRegistrationComponent } from './main/administrator/contents/sensor/admin-personal-sensor-registration/admin-personal-sensor-registration.component';
+import { AdminSensorListComponent } from './main/administrator/contents/sensor/admin-sensor-list/admin-sensor-list.component';
+import { AdminAirSensorHistoryComponent } from './main/administrator/contents/admin-air-sensor-history/admin-air-sensor-history.component';
+import { AmchartTestComponent } from './components/amchart-test/amchart-test.component';
+import { TestComponent } from './main/test/test.component';
+import { AmchartTest2Component } from './components/amchart-test2/amchart-test2.component';
 
 @NgModule({
   declarations: [
@@ -130,6 +149,25 @@ import { SensorMapsComponent } from './components/sensor-maps/sensor-maps.compon
     AirSensorHistoryComponent,
     HeartHistoryComponent,
     SensorMapsComponent,
+    AirSensorHistoryContentsComponent,
+    DeregisterAccountContentsComponent,
+    HeartHistoryContentsComponent,
+    PersonalSensorRegistrationContentsComponent,
+    SensorManagementContentsComponent,
+    UserChangePasswordContentsComponent,
+    UserMainContentsComponent,
+    AdminUserManagementContentsComponent,
+    AdminSensorManagementContentsComponent,
+    AdminProfileComponent,
+    AdminChangepwComponent,
+    AdminHeartHistoryComponent,
+    AdminDeregisterAccountComponent,
+    AdminPersonalSensorRegistrationComponent,
+    AdminSensorListComponent,
+    AdminAirSensorHistoryComponent,
+    AmchartTestComponent,
+    TestComponent,
+    AmchartTest2Component,
   ],
   imports: [
     /** Angular Modules */
@@ -197,6 +235,7 @@ import { SensorMapsComponent } from './components/sensor-maps/sensor-maps.compon
 
     /** Header */
     Header,
+
   ],
   entryComponents: [
     SensorAssociationDialog,

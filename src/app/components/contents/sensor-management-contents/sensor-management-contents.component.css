@@ -1,0 +1,82 @@
+.buttonsGroup {
+    height: auto;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.roundBtn {
+    width: 3.5rem;
+    border-radius: 20px;
+    font-size: 2rem;
+    padding: 0 1.2rem;
+}
+
+.buttonStyle1 {
+    margin-right: 20px;
+}
+
+.tableheader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 24px;
+    background-color: var(--on-surface-light);
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.checkboxWidth{
+    width: 3.5rem;
+}
+.eachtitle {
+    font-size: 1.1rem;
+    margin-right: 3rem;
+
+}
+
+.contents {
+    padding: 0.5rem 0.5rem;
+}
+
+p {
+    margin: 0.5rem 0.5rem;
+    font-size: 1.1rem;
+    line-height: 1.5rem;
+}
+
+mat-panel-title {
+    font-size: 1.17rem;
+}
+
+.registered {
+    color: var(--registered);
+}
+
+.associated {
+    color: var(--associated);
+}
+
+.operating {
+    color: var(--operating);
+}
+
+.span1{
+  width: 1rem;
+  text-align: left;
+}
+.span2 {
+    width: 2rem;
+    text-align: left;
+}
+.span3 {
+    width: 3rem;
+    text-align: left;
+}
+.span4 {
+  width: 4rem;
+  text-align: left;
+}
+.span5 {
+  width: 5rem;
+  text-align: left;
+}

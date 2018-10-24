@@ -20,8 +20,19 @@ import { AdminMainComponent } from './main/administrator/contents/admin-main/adm
 import { DeregisterAccountComponent } from './main/dashboard/contents/deregister-account/deregister-account.component';
 import { AirSensorHistoryComponent } from './main/dashboard/contents/air-sensor-history/air-sensor-history.component';
 import { HeartHistoryComponent } from './main/dashboard/contents/heart-history/heart-history.component';
+import { AdminSensorListComponent } from './main/administrator/contents/sensor/admin-sensor-list/admin-sensor-list.component';
+import { AdminPersonalSensorRegistrationComponent } from './main/administrator/contents/sensor/admin-personal-sensor-registration/admin-personal-sensor-registration.component';
+import { AdminAirSensorHistoryComponent } from './main/administrator/contents/admin-air-sensor-history/admin-air-sensor-history.component';
+import { AdminHeartHistoryComponent } from './main/administrator/contents/admin-heart-history/admin-heart-history.component';
+import { AdminProfileComponent } from './main/administrator/contents/admin-profile/admin-profile.component';
+import { AdminChangepwComponent } from './main/administrator/contents/admin-changepw/admin-changepw.component';
+import { TestComponent } from './main/test/test.component';
 
 export const routes: Routes = [
+  {
+    path: 'test',
+    component: TestComponent
+  },
   {
     path: 'signin',
     component: SignInComponent
@@ -59,7 +70,7 @@ export const routes: Routes = [
         component: DeregisterAccountComponent
       },
       {
-        path: 'sensor-management',
+        path: 'sensor-list',
         component: SensorManagementComponent
       },
       {
@@ -86,15 +97,35 @@ export const routes: Routes = [
         component: AdminMainComponent
       },
       {
-        path: 'airound-umain',
-        component: AdminMainComponent
+        path: 'user-sensor-management',
+        component: AdminSensorListComponent
       },
       {
-        path: 'sensor-management',
+        path: 'personal-sensor-management',
+        component: AdminPersonalSensorRegistrationComponent
+      },
+      {
+        path: 'air-sensor-history',
+        component: AdminAirSensorHistoryComponent
+      },
+      {
+        path: 'heart-history',
+        component: AdminHeartHistoryComponent
+      },
+      {
+        path: 'profile',
+        component: AdminProfileComponent
+      },
+      {
+        path: 'changepw',
+        component: AdminChangepwComponent
+      },
+      {
+        path: 'admin-sensor-management',
         component: AdminSensorManagementComponent
       },
       {
-        path: 'user-management',
+        path: 'admin-user-management',
         component: UsersManagementComponent
       }
     ]

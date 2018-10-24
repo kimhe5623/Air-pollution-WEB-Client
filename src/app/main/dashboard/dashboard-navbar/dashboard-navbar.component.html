@@ -19,7 +19,7 @@
             Sensor Management
           </a>
           <div class="divider dropdown-divider"></div>
-          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.personalsensor}" (click)="clickMenu(6)"
+          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.personalsensor}" (click)="clickMenu(2)"
             mdbWavesEffect>
             My personal sensors
           </a>
@@ -33,12 +33,12 @@
           <span class="caret"></span>
         </a>
         <div *dropdownMenu class="dropdown-menu" role="menu">
-          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.airSensorHistory}" (click)="clickMenu(7)"
+          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.airSensorHistory}" (click)="clickMenu(3)"
             mdbWavesEffect>
             Air sensor
           </a>
           <div class="divider dropdown-divider"></div>
-          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.HeartHistory}" (click)="clickMenu(8)"
+          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.HeartHistory}" (click)="clickMenu(4)"
             mdbWavesEffect>
             Heart
           </a>
@@ -58,15 +58,15 @@
             {{userInfo.email}}
           </p>
           <div class="divider dropdown-divider"></div>
-          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.profile}" (click)="clickMenu(3)"
+          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.profile}" (click)="clickMenu(5)"
             mdbWavesEffect>
             <i class="fa fa-id-card-o space10" aria-hidden="true"></i>Profile
           </a>
-          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.changepw}" (click)="clickMenu(4)"
+          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.changepw}" (click)="clickMenu(6)"
             mdbWavesEffect>
             <i class="fa fa-refresh space10" aria-hidden="true"></i>Change password
           </a>
-          <a class="dropdown-item waves-light font120" (click)="clickMenu(5)" mdbWavesEffect>
+          <a class="dropdown-item waves-light font120" (click)="clickMenu(7)" mdbWavesEffect>
             <i class="fa fa-sign-out space10" aria-hidden="true"></i>Sign out
           </a>
         </div>

@@ -14,8 +14,14 @@ export class AdminNavbarComponent implements OnInit {
   }
 
   currentMenu: any = {
-    sensor: false,
-    users: false,
+    changepw: false,
+    profile: false,
+    sensormg: false,
+    personalsensor: false,
+    airSensorHistory: false,
+    HeartHistory: false,
+    adminSensormg: false,
+    adminUsermg: false,
   }
 
   constructor(
@@ -30,17 +36,37 @@ export class AdminNavbarComponent implements OnInit {
   }
 
   setMenu(menuNum: number) {
-    this.currentMenu.sensors = false;
-    this.currentMenu.users = false;
+    for (var key in this.currentMenu) {
+      this.currentMenu[key] = false;
+    }
 
     switch (menuNum) {
       case (1):
-        this.currentMenu.sensors = true;
+        this.currentMenu.sensormg = true;
         break;
       case (2):
-        this.currentMenu.users = true;
+        this.currentMenu.personalsensor = true;
         break;
-      //case (3): ----------> sign out
+      case (3):
+        this.currentMenu.airSensorHistory = true;
+        break;
+      case (4):
+        this.currentMenu.HeartHistory = true;
+        break;
+      case (5):
+        this.currentMenu.adminUsermg = true;
+        break;
+      case (6):
+        this.currentMenu.adminSensormg = true;
+        break;
+      case (7):
+        this.currentMenu.profile = true;
+        break;
+      case (8):
+        this.currentMenu.changepw = true;
+        break;
+      //case (9) => sign out
+
     }
   }
 
@@ -49,23 +75,50 @@ export class AdminNavbarComponent implements OnInit {
     switch (menuNum) {
       case (0): // => dashboard
         this.storageService.set('menuNum', 0);
-        this.router.navigate(['/administrator'], { skipLocationChange: true });
+        this.router.navigate(['/administrator']);
         break;
 
-
-      case (1): // => sensor
+      case (1): // => sensor management
         this.storageService.set('menuNum', 1);
-        this.router.navigate([`/administrator/sensor-management`], { skipLocationChange: true });
+        this.router.navigate([`/administrator/user-sensor-management`]);
         break;
 
-
-      case (2): // => user
+      case (2): // => personal sensor management
         this.storageService.set('menuNum', 2);
-        this.router.navigate([`/administrator/user-management`], { skipLocationChange: true });
+        this.router.navigate(['/administrator/personal-sensor-management']);
         break;
 
+      case (3): // => air sensor history
+        this.storageService.set('menuNum', 3);
+        this.router.navigate(['/administrator/air-sensor-history']);
+        break;
 
-      case (3): // => sign out
+      case (4): // => heart history
+        this.storageService.set('menuNum', 4);
+        this.router.navigate(['/administrator/heart-history']);
+        break;
+
+      case (5): // => admin user management
+        this.storageService.set('menuNum', 5);
+        this.router.navigate(['/administrator/admin-user-management']);
+        break;
+
+      case (6): // => admin sensor management
+        this.storageService.set('menuNum', 6);
+        this.router.navigate(['/administrator/admin-sensor-management']);
+        break;
+
+      case (7): // => profile
+        this.storageService.set('menuNum', 7);
+        this.router.navigate(['/administrator/profile']);
+        break;
+
+      case (8): // => changepw
+        this.storageService.set('menuNum', 8);
+        this.router.navigate(['/administrator/changepw']);
+        break;
+
+      case (9): // => sign out
         alert('sign out!');
 
         /** HTTP NOTIFICATION */

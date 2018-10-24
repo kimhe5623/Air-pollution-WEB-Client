@@ -14,7 +14,6 @@ export class DashboardNavbarComponent implements OnInit {
   }
 
   currentMenu: any = {
-    undefined: false,
     changepw: false,
     profile: false,
     sensormg: false,
@@ -43,24 +42,23 @@ export class DashboardNavbarComponent implements OnInit {
         this.currentMenu.sensormg = true;
         break;
       case (2):
-        this.currentMenu.undefined = true;
-        break;
-      case (3):
-        this.currentMenu.profile = true;
-        break;
-      case (4):
-        this.currentMenu.changepw = true;
-        break;
-      //case (5): -------> sign out
-      case (6):
         this.currentMenu.personalsensor = true;
         break;
-      case (7):
+      case (3):
         this.currentMenu.airSensorHistory = true;
         break;
-      case (8):
+      case (4):
         this.currentMenu.HeartHistory = true;
         break;
+      case (5):
+        this.currentMenu.profile = true;
+        break;
+      case (6):
+        this.currentMenu.changepw = true;
+        break;
+      //case (7): -------> sign out
+
+
     }
   }
 
@@ -75,29 +73,38 @@ export class DashboardNavbarComponent implements OnInit {
 
       case (1): // => sensor management
         this.storageService.set('menuNum', 1);
-        this.router.navigate([`/dashboard/sensor-management`]);
+        this.router.navigate([`/dashboard/sensor-list`]);
         break;
 
-
-      case (2): // => undefined
+      case (2): // => personal sensor management
         this.storageService.set('menuNum', 2);
-        this.router.navigate(['/dashboard/undefined']);
+        this.router.navigate(['/dashboard/personal-sensor-management']);
+        break;
+
+      case (3): // => air sensor history
+        this.storageService.set('menuNum', 3);
+        this.router.navigate(['dashboard/air-sensor-history']);
+        break;
+
+      case (4): // => heart history
+        this.storageService.set('menuNum', 4);
+        this.router.navigate(['/dashboard/heart-history']);
         break;
 
 
-      case (3): // => profile
-        this.storageService.set('menuNum', 3);
+      case (5): // => profile
+        this.storageService.set('menuNum', 5);
         this.router.navigate(['/dashboard/profile']);
         break;
 
 
-      case (4): // => changepw
-        this.storageService.set('menuNum', 4);
+      case (6): // => changepw
+        this.storageService.set('menuNum', 6);
         this.router.navigate(['/dashboard/changepw']);
         break;
 
 
-      case (5): // => sign out
+      case (7): // => sign out
         alert('sign out!');
 
         /** HTTP NOTIFICATION */
@@ -109,21 +116,6 @@ export class DashboardNavbarComponent implements OnInit {
 
         break;
 
-
-      case (6): // => personal sensor management
-        this.storageService.set('menuNum', 6);
-        this.router.navigate(['/dashboard/personal-sensor-management']);
-        break;
-
-      case (7): // => air sensor history
-        this.storageService.set('menuNum', 7);
-        this.router.navigate(['dashboard/air-sensor-history']);
-        break;
-
-      case (8): // => heart history
-        this.storageService.set('menuNum', 8);
-        this.router.navigate(['/dashboard/heart-history']);
-        break;
     }
   }
 

@@ -8,15 +8,61 @@
   <links>
 
     <ul class="navbar-nav mr-auto" style="margin-left: 2rem">
-
-      <li class="nav-item waves-light space10" mdbWavesEffect>
-        <a class="nav-link font135 margin" [ngClass]="{'active': currentMenu.sensors}" (click)="clickMenu(1)">Sensors
+      <li class="nav-item dropdown space10" dropdown>
+        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light font135 margin"
+          mdbWavesEffect>
+          Sensor
+          <span class="caret"></span>
         </a>
+        <div *dropdownMenu class="dropdown-menu" role="menu">
+          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.sensormg}" (click)="clickMenu(1)"
+            mdbWavesEffect>
+            User Sensor Management
+          </a>
+          <div class="divider dropdown-divider"></div>
+          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.personalsensor}" (click)="clickMenu(2)"
+            mdbWavesEffect>
+            My personal sensors
+          </a>
+        </div>
       </li>
 
-      <li class="nav-item waves-light space10" mdbWavesEffect>
-        <a class="nav-link font135 margin" [ngClass]="{'active': currentMenu.users}" (click)="clickMenu(2)">Users
+      <li class="nav-item dropdown space10" dropdown>
+        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light font135 margin"
+          mdbWavesEffect>
+          History
+          <span class="caret"></span>
         </a>
+        <div *dropdownMenu class="dropdown-menu" role="menu">
+          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.airSensorHistory}" (click)="clickMenu(3)"
+            mdbWavesEffect>
+            Air sensor
+          </a>
+          <div class="divider dropdown-divider"></div>
+          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.HeartHistory}" (click)="clickMenu(4)"
+            mdbWavesEffect>
+            Heart
+          </a>
+        </div>
+      </li>
+
+      <li class="nav-item dropdown space10" dropdown>
+        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light font135 margin"
+          mdbWavesEffect>
+          Administrator
+          <span class="caret"></span>
+        </a>
+        <div *dropdownMenu class="dropdown-menu" role="menu">
+          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.adminUsermg}" (click)="clickMenu(5)"
+            mdbWavesEffect>
+            Admin User management
+          </a>
+          <div class="divider dropdown-divider"></div>
+          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.adminSensormg}" (click)="clickMenu(6)"
+            mdbWavesEffect>
+            Admin Sensor management
+          </a>
+        </div>
       </li>
     </ul>
 
@@ -32,8 +78,15 @@
             {{userInfo.email}}
           </p>
           <div class="divider dropdown-divider"></div>
-
-          <a class="dropdown-item waves-light font120" (click)="clickMenu(3)" mdbWavesEffect>
+          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.profile}" (click)="clickMenu(7)"
+            mdbWavesEffect>
+            <i class="fa fa-id-card-o space10" aria-hidden="true"></i>Profile
+          </a>
+          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.changepw}" (click)="clickMenu(8)"
+            mdbWavesEffect>
+            <i class="fa fa-refresh space10" aria-hidden="true"></i>Change password
+          </a>
+          <a class="dropdown-item waves-light font120" (click)="clickMenu(9)" mdbWavesEffect>
             <i class="fa fa-sign-out space10" aria-hidden="true"></i>Sign out
           </a>
         </div>

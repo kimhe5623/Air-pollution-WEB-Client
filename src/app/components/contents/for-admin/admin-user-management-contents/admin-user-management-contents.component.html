@@ -1,0 +1,86 @@
+<div class="wrapper">
+    <h1 class="title">Administrator - <strong>User management</strong></h1>
+    <div class="chipWrapper">
+      <span class="badge badgeStyle" *ngFor="let option of search_options_array let idx=index">
+        <strong>{{option.key}}</strong>&nbsp;&nbsp;{{option.value}}
+        <i class="close fa fa-times closeButton" (click)="deleteSearchOption(option.key)"></i>
+      </span>
+    </div>
+    <!-- Search form -->
+    <form [formGroup]="searchForm" (ngSubmit)="addSearchOption()">
+      <mat-form-field class="searchSelect" [floatLabel]="searchForm.value.floatLabel">
+        <mat-select placeholder="Option" formControlName="option">
+          <mat-option>--</mat-option>
+          <mat-option value="userID">User ID</mat-option>
+          <mat-option value="firstname">First name</mat-option>
+          <mat-option value="lastname">Last name</mat-option>
+          <mat-option value="membershipLevel">Membership level</mat-option>
+          <mat-option value="membershipExpDate">Membership exp date</mat-option>
+          <mat-option value="registrationState">Registration state</mat-option>
+          <mat-option value="signinState">Sign in state</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="searchInput" [floatLabel]="searchForm.value.floatLabel">
+        <input matInput placeholder="Search" formControlName="input">
+      </mat-form-field>
+      <button type="submit" class="btn waves-light secondary-variant searchButton"><i class="fas fa-search"></i></button>
+    </form>
+    <div class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource">
+  
+        <!-- No. Column -->
+        <ng-container matColumnDef="no">
+          <th mat-header-cell *matHeaderCellDef> No. </th>
+          <td mat-cell *matCellDef="let element"> {{element.no}} </td>
+        </ng-container>
+  
+        <!-- userID Column -->
+        <ng-container matColumnDef="userID">
+          <th mat-header-cell *matHeaderCellDef> user ID </th>
+          <td mat-cell *matCellDef="let element"> {{element.userID}} </td>
+        </ng-container>
+  
+        <!-- Firstname Column -->
+        <ng-container matColumnDef="firstname">
+          <th mat-header-cell *matHeaderCellDef> First name </th>
+          <td mat-cell *matCellDef="let element"> {{element.firstname}} </td>
+        </ng-container>
+  
+        <!-- Lastname Column -->
+        <ng-container matColumnDef="lastname">
+          <th mat-header-cell *matHeaderCellDef> Last name </th>
+          <td mat-cell *matCellDef="let element"> {{element.lastname}} </td>
+        </ng-container>
+  
+        <!-- Membership level Column -->
+        <ng-container matColumnDef="membershipLevel">
+          <th mat-header-cell *matHeaderCellDef> Memebership level </th>
+          <td mat-cell *matCellDef="let element"> {{element.membershipLevel}} </td>
+        </ng-container>
+  
+        <!-- Membership exp date Column -->
+        <ng-container matColumnDef="membershipExpDate">
+          <th mat-header-cell *matHeaderCellDef> Membership exp date </th>
+          <td mat-cell *matCellDef="let element"> {{element.membershipExpDate}} </td>
+        </ng-container>
+  
+        <!-- Registration state Column -->
+        <ng-container matColumnDef="registrationState">
+          <th mat-header-cell *matHeaderCellDef> Registration state </th>
+          <td mat-cell *matCellDef="let element"> {{element.registrationState}} </td>
+        </ng-container>
+  
+        <!-- Sign in state Column -->
+        <ng-container matColumnDef="signinState">
+          <th mat-header-cell *matHeaderCellDef> Sign in state </th>
+          <td mat-cell *matCellDef="let element"> {{element.signinState}} </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+  
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+  
+  </div>

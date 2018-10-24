@@ -45,7 +45,7 @@
 
 .active {
     text-decoration: none;
-    background-color: var(--primary-light);
+    background-color: var(--secondary-light);
 }
 
 .userInfo {
