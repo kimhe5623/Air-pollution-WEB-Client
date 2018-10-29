@@ -1,6 +1,6 @@
 {
     "/serverapi/*": {
-      "target": "http://dev.qualcomminst.com:4000",
+      "target": "http://dev.qualcomminst.com:8080",
       "secure": false,
       "logLevel": "debug",
       "changeOrigin": true

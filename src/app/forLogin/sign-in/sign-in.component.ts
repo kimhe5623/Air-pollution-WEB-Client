@@ -41,8 +41,8 @@ export class SignInComponent implements OnInit {
     if (this.signinForm.invalid) console.log('Input again');
     else {
       var payload: any = {
-        userID: this.signinForm.value.email,
-        password: this.signinForm.value.password,
+        userId: this.signinForm.value.email,
+        userPw: this.signinForm.value.password,
       }
 
       /** HTTP REQUEST */

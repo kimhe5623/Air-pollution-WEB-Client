@@ -33,7 +33,7 @@ export class SignupVerificationCodeComponent implements OnInit {
 
   ngOnInit() {
     this.settedTime = TIMER.T551;
-    this.vfcFormControl = new FormControl('', [Validators.required, Validators.minLength(20), Validators.maxLength(20)])
+    this.vfcFormControl = new FormControl('', [Validators.required, Validators.minLength(16), Validators.maxLength(16)])
 
     for (var i = 0; i < this.verificationCode.length; i++) {
       this.vfc.push(this.verificationCode.charAt(i));
@@ -52,8 +52,8 @@ export class SignupVerificationCodeComponent implements OnInit {
   }
   onSubmit() {
     var payload: any = {
-      verificationCode: this.verificationCode,
-      authenticationCode: this.vfcFormControl.value,
+      vc: this.verificationCode,
+      ac: this.vfcFormControl.value,
     }
 
     /** HTTP REQUEST */

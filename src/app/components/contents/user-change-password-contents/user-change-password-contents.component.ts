@@ -46,10 +46,8 @@ export class UserChangePasswordContentsComponent implements OnInit {
 
       var payload = {
         nsc: this.storageService.get('userInfo').nsc,
-        tlv: {
-          currentPassword: this.currentPassword.value,
-          newPassword: this.newPassword.value,
-        }
+        curPw: this.currentPassword.value,
+        newPw: this.newPassword.value,
       }
 
       var success: boolean = this.umService.UPC(payload);

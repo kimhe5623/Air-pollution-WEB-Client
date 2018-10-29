@@ -88,22 +88,36 @@
               {{element.city}}
             </span>
             <span class="eachtitle" [ngStyle]="columnStyles[6]">
+              {{element.regDate | date: 'medium'}}
+            </span>
+            <span class="eachtitle" [ngStyle]="columnStyles[7]">
               {{element.userID}}
             </span>
           </mat-expansion-panel-header>
           <div class="row">
-            <div class="col">
-              <p><strong>Cellular MAC address: &nbsp;</strong>{{element.cellularMac}}</p>
+            <div class="col-3 contentWrapper">
+              <div class="row contentName">
+                <strong>Cellular MAC address</strong>
+              </div>
+              <div class="row content">
+                {{element.cellularMac}}
+              </div>
             </div>
-            <div class="col">
-              <p><strong>Registration date: &nbsp;</strong>{{element.regDate | date: 'medium'}}</p>
+            <div class="col-3 contentWrapper">
+              <div class="row contentName">
+                <strong>Mobility</strong>
+              </div>
+              <div class="row content">
+                {{element.mobility}}
+              </div>
             </div>
-            <div class="col">
-              <p><strong>Current status: &nbsp;</strong>{{element.status}}</p>
-              <!--<i class="fa fa-circle" [ngClass]="{'active': element.activation == 2, 'inactive': element.activation == 1}" aria-hidden="true"></i>-->
-            </div>
-            <div class="col">
-              <p><strong>Mobility: &nbsp;</strong>{{element.mobility}}</p>
+            <div class="col-6 contentWrapper">
+              <div class="row contentName">
+                <strong>Current status</strong>
+              </div>
+              <div class="row content">
+                {{element.status}}
+              </div>
             </div>
           </div>
         </mat-expansion-panel>

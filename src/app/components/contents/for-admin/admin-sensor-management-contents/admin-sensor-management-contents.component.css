@@ -128,6 +128,16 @@ mat-panel-title {
     text-align: left;
 }
 
+.contentWrapper {
+    padding-left:3rem;
+}
+.contentName {
+    font-size:1.1rem; 
+    padding-bottom:1rem
+}
+.content{
+    font-size:1.3rem
+}
 
 
 /**====================Search======================**/

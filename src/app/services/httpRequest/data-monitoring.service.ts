@@ -43,7 +43,7 @@ export class DataMonitoringService {
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
         cb(rspMsg);
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.RAV_RSP, reqMsg.header.endpointId)) {
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.RAV_RSP, reqMsg.header.endpointId)) {
           cb(null); return;
         }
 
@@ -80,7 +80,7 @@ export class DataMonitoringService {
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
         cb(rspMsg);
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.RHV_RSP, reqMsg.header.endpointId)) {
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.RHV_RSP, reqMsg.header.endpointId)) {
           cb(null); return;
         }
 
@@ -117,7 +117,7 @@ export class DataMonitoringService {
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
         cb(rspMsg);
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.HAV_RSP, reqMsg.header.endpointId)) {
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.HAV_RSP, reqMsg.header.endpointId)) {
           cb(null); return;
         }
 
@@ -161,7 +161,7 @@ export class DataMonitoringService {
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
         cb(rspMsg);
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.SHR_RSP, reqMsg.header.endpointId)) {
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SHR_RSP, reqMsg.header.endpointId)) {
           cb(null); return;
         }
 
@@ -197,7 +197,7 @@ export class DataMonitoringService {
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
         cb(rspMsg);
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.HHV_RSP, reqMsg.header.endpointId)) {
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.HHV_RSP, reqMsg.header.endpointId)) {
           cb(null); return;
         }
 

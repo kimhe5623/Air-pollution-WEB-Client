@@ -46,10 +46,10 @@ export class ForgotPasswordComponent implements OnInit {
     if (this.forgotpwForm.invalid) console.log('Input again');
 
     var payload: any = {
-      birth: this.dataService.formattingDate(this.forgotpwForm.value['birthdate']),
-      userID: this.forgotpwForm.value['email'],
-      firstname: this.forgotpwForm.value['firstname'],
-      lastname: this.forgotpwForm.value['lastname'],
+      bdt: this.forgotpwForm.value['birthdate'].getTime().toString(),
+      userId: this.forgotpwForm.value['email'],
+      userFn: this.forgotpwForm.value['firstname'],
+      userLn: this.forgotpwForm.value['lastname'],
     }
 
     /** HTTP REQUEST */

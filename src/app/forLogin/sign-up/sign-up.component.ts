@@ -55,12 +55,12 @@ export class SignUpComponent implements OnInit {
     if (this.signupForm.invalid) console.log('Input again');
 
     var payload: any = {
-      birth: this.dataService.formattingDate(this.signupForm.value['birthdate']),
+      bdt: this.signupForm.value['birthdate'].getTime().toString(),
       gender: this.signupForm.value['gender'],
-      userID: this.signupForm.value['email'],
-      password: this.signupForm.value['password'],
-      firstname: this.signupForm.value['firstname'],
-      lastname: this.signupForm.value['lastname'],
+      userId: this.signupForm.value['email'],
+      userPw: this.signupForm.value['password'],
+      userFn: this.signupForm.value['firstname'],
+      userLn: this.signupForm.value['lastname'],
     }
 
     /** HTTP REQUEST */

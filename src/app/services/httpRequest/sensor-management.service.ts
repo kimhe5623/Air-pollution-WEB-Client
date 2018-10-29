@@ -23,9 +23,11 @@ export class SensorManagementService {
   ASR(payload: any): boolean {
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.ASR_REQ, this.storageService.get('userInfo').usn);
 
+    console.log('ASR-REQ => ', reqMsg);
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.ASR_RSP, reqMsg.header.endpointId)) return false;
+        console.log('ASR-RSP => ', rspMsg);
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.ASR_RSP, reqMsg.header.endpointId)) return false;
 
         else {
           switch (rspMsg.payload.resultCode) {
@@ -57,9 +59,11 @@ export class SensorManagementService {
   ASD(payload: any): boolean {
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.ASD_REQ, this.storageService.get('userInfo').usn);
 
+    console.log('ASD-REQ => ', reqMsg);
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.ASD_RSP, reqMsg.header.endpointId)) return false;
+        console.log('ASD-RSP => ', rspMsg);
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.ASD_RSP, reqMsg.header.endpointId)) return false;
 
         else {
           switch (rspMsg.payload.resultCode) {
@@ -106,7 +110,7 @@ export class SensorManagementService {
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
 
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.ASV_RSP, reqMsg.header.endpointId)){
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.ASV_RSP, reqMsg.header.endpointId)){
           cb(null); return;
         } 
 
@@ -145,7 +149,7 @@ export class SensorManagementService {
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
         
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.SRG_RSP, reqMsg.header.endpointId)) return false;
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SRG_RSP, reqMsg.header.endpointId)) return false;
 
         else {
           switch (rspMsg.payload.resultCode) {
@@ -173,7 +177,7 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.SAS_RSP, reqMsg.header.endpointId)) return false;
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SAS_RSP, reqMsg.header.endpointId)) return false;
 
         else {
           switch (rspMsg.payload.resultCode) {
@@ -210,7 +214,7 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.SDD_RSP, reqMsg.header.endpointId)) return false;
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SDD_RSP, reqMsg.header.endpointId)) return false;
 
         else {
           switch (rspMsg.payload.resultCode) {
@@ -249,7 +253,7 @@ export class SensorManagementService {
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
 
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.SLV_RSP, reqMsg.header.endpointId)) {
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SLV_RSP, reqMsg.header.endpointId)) {
           cb(null); return;
         }
 

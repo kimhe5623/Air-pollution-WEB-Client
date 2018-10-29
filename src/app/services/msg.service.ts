@@ -26,15 +26,19 @@ export class MsgService {
   }
 
   /** Header check */
-  isValidHeader(header: any, msgType: number, EP: string): boolean {
-    if (header.endpointId != EP) {
+  isValidHeader(rspMsg: any, msgType: number, EP: string): boolean {
+    if (rspMsg.header.endpointId != EP) {
       console.log("Invalid endpointId");
       return false;
     }
-    else if (header.msgType != msgType) {
+    else if (rspMsg.header.msgType != msgType) {
       console.log("Invalid msgType");
       return false;
     }
+    /*else if (rspMsg.header.msgLen != ~-encodeURI(JSON.stringify(rspMsg.payload)).split(/%..|./).length) {
+      console.log("Damaged message");
+      return false;
+    }*/
     else return true;
   }
 }

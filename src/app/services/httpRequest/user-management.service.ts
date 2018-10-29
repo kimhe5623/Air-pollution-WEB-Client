@@ -22,15 +22,17 @@ export class UserManagementService {
   /** SGU */
   SGU(payload: any): boolean {
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SGU_REQ, null);
+    console.log("HTTP:SGU-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.SGU_RSP, reqMsg.header.endpointId)) return false;
+        console.log("HTTP:SGU-RSP => ", rspMsg);
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SGU_RSP, reqMsg.header.endpointId)) return false;
 
         else {
           switch (rspMsg.payload.resultCode) {
             case (0): // success
-              this.router.navigate([`/signup-code`, rspMsg.header.endpointId, reqMsg.payload.userID, rspMsg.payload.verificationCode], { skipLocationChange: true });
+              this.router.navigate([`/signup-code`, rspMsg.header.endpointId, reqMsg.payload.userId, rspMsg.payload.vc], { skipLocationChange: true });
               break;
 
             case (1): // reject-other
@@ -53,10 +55,12 @@ export class UserManagementService {
   /** UVC */
   UVC(payload: any, EP: string): boolean {
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.UVC_REQ, EP);
+    console.log("HTTP:UVC-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.UVC_RSP, reqMsg.header.endpointId)) return false;
+        console.log("HTTP:UVC-RSP => ", rspMsg);
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.UVC_RSP, reqMsg.header.endpointId)) return false;
 
         else {
           switch (rspMsg.payload.resultCode) {
@@ -92,10 +96,12 @@ export class UserManagementService {
   /** SGI */
   SGI(payload: any): boolean {
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SGI_REQ, null);
+    console.log("HTTP:SGI-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.SGI_RSP, reqMsg.header.endpointId)) return false;
+        console.log("HTTP:SGI-RSP => ", rspMsg);
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SGI_RSP, reqMsg.header.endpointId)) return false;
 
         else {
 
@@ -137,10 +143,12 @@ export class UserManagementService {
   /** SGO */
   SGO(payload: any): boolean {
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SGO_NOT, this.storageService.get('userInfo').usn);
+    console.log("HTTP:SGO-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.UDR_RSP, reqMsg.header.endpointId)) return false;
+        console.log("HTTP:SGO-RSP => ", rspMsg);
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.UDR_RSP, reqMsg.header.endpointId)) return false;
 
         else {
           switch (rspMsg.payload.resultCode) {
@@ -173,7 +181,7 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.UPC_RSP, reqMsg.header.endpointId)) return false;
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.UPC_RSP, reqMsg.header.endpointId)) return false;
 
         else {
           switch (rspMsg.payload.resultCode) {
@@ -209,7 +217,7 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.FPU_RSP, reqMsg.header.endpointId)) return false;
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.FPU_RSP, reqMsg.header.endpointId)) return false;
 
         else {
           switch (rspMsg.payload.resultCode) {
@@ -245,7 +253,7 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.UDR_RSP, reqMsg.header.endpointId)) return false;
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.UDR_RSP, reqMsg.header.endpointId)) return false;
 
         else {
           switch (rspMsg.payload.resultCode) {
@@ -283,7 +291,7 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        if (!this.msgService.isValidHeader(rspMsg.header, MSGTYPE.AUV_RSP, reqMsg.header.endpointId)) return false;
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.AUV_RSP, reqMsg.header.endpointId)) return false;
 
         else {
           switch (rspMsg.payload.resultCode) {
@@ -294,18 +302,23 @@ export class UserManagementService {
             case (1): // reject-other
               alert("Unknown warning");
               cb(null);
+              break;
+
             case (2): // reject-unallocated user sequence number
               alert("Unallocated user sequence number");
               cb(null);
+              break;
 
             case (3): // reject-incorrect number of signed-in completions
               alert("Incorrect number of signed-in completions");
               cb(null);
+              break;
 
             case (4): // reject-unauthorized user sequence number
               alert("Not an administrator. Login again");
               this.SGO({nsc: this.storageService.get('userInfo').nsc})
               cb(null);
+              break;
           }
         }
       });

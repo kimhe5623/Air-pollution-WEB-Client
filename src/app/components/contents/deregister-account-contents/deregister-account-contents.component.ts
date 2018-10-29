@@ -52,9 +52,7 @@ export class DeregisterAccountContentsComponent implements OnInit {
 
         var payload = {
           nsc: this.storageService.get('userInfo').nsc,
-          tlv: {
-            password: this.currentPassword.value
-          }
+          userpw: this.currentPassword.value
         }
   
         var success: boolean = this.umService.UDR(payload);

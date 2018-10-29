@@ -1,0 +1,11 @@
+<div id="chartdiv3"></div>
+<div style="text-align: center; margin-bottom: 50px">
+    <mat-checkbox class="example-margin checkbox" [(ngModel)]="checkbox.all" (ngModelChange)="checkboxChanged('all')">Select All</mat-checkbox>
+    <mat-checkbox class="example-margin checkbox" [(ngModel)]="checkbox.temp" (ngModelChange)="checkboxChanged('temp')"><i class="fas fa-square temp"></i> Temperature</mat-checkbox>
+    <mat-checkbox class="example-margin checkbox" [(ngModel)]="checkbox.co" (ngModelChange)="checkboxChanged('co')"><i class="fas fa-minus co"></i> CO</mat-checkbox>
+    <mat-checkbox class="example-margin checkbox" [(ngModel)]="checkbox.o3" (ngModelChange)="checkboxChanged('o3')"><i class="fas fa-minus o3"></i> O<sub>3</sub></mat-checkbox>
+    <mat-checkbox class="example-margin checkbox" [(ngModel)]="checkbox.no2" (ngModelChange)="checkboxChanged('no2')"><i class="fas fa-minus no2"></i> NO<sub>2</sub></mat-checkbox>
+    <mat-checkbox class="example-margin checkbox" [(ngModel)]="checkbox.so2" (ngModelChange)="checkboxChanged('so2')"><i class="fas fa-minus so2"></i> SO<sub>2</sub></mat-checkbox>
+    <mat-checkbox class="example-margin checkbox" [(ngModel)]="checkbox.pm25" (ngModelChange)="checkboxChanged('pm25')"><i class="fas fa-minus pm25"></i> PM2.5</mat-checkbox>
+    <mat-checkbox class="example-margin checkbox" [(ngModel)]="checkbox.pm10" (ngModelChange)="checkboxChanged('pm10')"><i class="fas fa-minus pm10"></i> PM10</mat-checkbox>    
+</div>

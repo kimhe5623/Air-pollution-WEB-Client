@@ -40,7 +40,7 @@ export class AdminUserManagementContentsComponent implements OnInit {
   ngOnInit() {
 
     var payload = {
-      nsc: this.storageService.get('userInfo').nsc
+      nsc: this.storageService.get('userInfo').nsc,
     }
     this.reqData(payload);
 
@@ -56,25 +56,31 @@ export class AdminUserManagementContentsComponent implements OnInit {
 
         this.existUser = result.payload.length != 0 ? true : false;
 
-        for (var i = 0; i < result.payload.tlv.length; i++) {
+        for (var i = 0; i < result.payload.userInfoListEncodings.length; i++) {
           this.USER_LIST.push({
             no: i + 1,
-            userID: result.payload.tlv[i].userID,
-            firstname: result.payload.tlv[i].firstname,
-            lastname: result.payload.tlv[i].lastname,
-            membershipLevel: result.payload.tlv[i].membership_level,
-            membershipExpDate: result.payload.tlv[i].membership_exp_date,
-            registrationState: result.payload.tlv[i].reg_flag,
-            signinState: result.payload.tlv[i].signin_state_flag
+            userID: result.payload.userInfoListEncodings[i].userId,
+            firstname: result.payload.userInfoListEncodings[i].fn,
+            lastname: result.payload.userInfoListEncodings[i].ln,
+            membershipLevel: result.payload.userInfoListEncodings[i].ml,
+            membershipExpDate: result.payload.userInfoListEncodings[i].mxdt,
+            registrationState: result.payload.userInfoListEncodings[i].regf,
+            signinState: result.payload.userInfoListEncodings[i].wsignf && result.payload.userInfoListEncodings[i].asignf ? 3 :
+              result.payload.userInfoListEncodings[i].wsignf ? 2 :
+                result.payload.userInfoListEncodings[i].asignf ? 1 : 0
           });
         }
       }
       else alert('Failed');
 
-      const USER_LIST_READONLY = this.USER_LIST;
+      if (this.dataSource != null) {
+        for (var i = 0; i < this.dataSource.data.length; i++) {
+          this.dataSource.data.pop();
+        }
+      }
 
-      console.log(USER_LIST_READONLY);
-      this.dataSource = new MatTableDataSource<PeriodicElement>(USER_LIST_READONLY);
+      this.dataSource = new MatTableDataSource<PeriodicElement>(this.USER_LIST);
+      console.log(this.dataSource);
       this.dataSource.paginator = this.paginator;
 
     });
@@ -88,10 +94,16 @@ export class AdminUserManagementContentsComponent implements OnInit {
   addSearchOption() {
     this.search_options_json[this.searchForm.value.option] = this.searchForm.value.input;
     this.jsonToArray(this.search_options_json);
-  
+
     var payload: any = {
       nsc: this.storageService.get('userInfo').nsc,
-      options: this.search_options_json
+      regf: this.search_options_json['registrationState'],
+      signf: this.search_options_json['signinState'],
+      ml: this.search_options_json['membershipLevel'],
+      mxdt: this.search_options_json['membershipExpDate'],
+      userId: this.search_options_json['userID'],
+      userFn: this.search_options_json['firstname'],
+      userLn: this.search_options_json['lastname']
     }
     console.log(payload);
     this.reqData(payload);
@@ -106,7 +118,13 @@ export class AdminUserManagementContentsComponent implements OnInit {
 
     var payload: any = {
       nsc: this.storageService.get('userInfo').nsc,
-      options: this.search_options_json
+      regf: this.search_options_json['registrationState'],
+      signf: this.search_options_json['signinState'],
+      ml: this.search_options_json['membershipLevel'],
+      mxdt: this.search_options_json['membershipExpDate'],
+      userId: this.search_options_json['userID'],
+      userFn: this.search_options_json['firstname'],
+      userLn: this.search_options_json['lastname']
     }
 
     console.log(payload);

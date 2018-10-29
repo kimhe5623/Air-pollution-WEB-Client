@@ -111,6 +111,8 @@ import { AdminAirSensorHistoryComponent } from './main/administrator/contents/ad
 import { AmchartTestComponent } from './components/amchart-test/amchart-test.component';
 import { TestComponent } from './main/test/test.component';
 import { AmchartTest2Component } from './components/amchart-test2/amchart-test2.component';
+import { AmchartTest3Component } from './components/amchart-test3/amchart-test3.component';
+import { RealtimeAirChartComponent } from './components/chart/realtime-air-chart/realtime-air-chart.component';
 
 @NgModule({
   declarations: [
@@ -168,6 +170,8 @@ import { AmchartTest2Component } from './components/amchart-test2/amchart-test2.
     AmchartTestComponent,
     TestComponent,
     AmchartTest2Component,
+    AmchartTest3Component,
+    RealtimeAirChartComponent,
   ],
   imports: [
     /** Angular Modules */

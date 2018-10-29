@@ -6,6 +6,7 @@ import { SensorDeregistrationDialog } from 'src/app/dialogs/sensor-deregistratio
 import { StorageService } from 'src/app/services/storage.service';
 import { SensorManagementService } from 'src/app/services/httpRequest/sensor-management.service';
 import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { DataManagementService } from 'src/app/services/data-management.service';
 
 @Component({
   selector: 'app-admin-sensor-management-contents',
@@ -17,15 +18,16 @@ export class AdminSensorManagementContentsComponent implements OnInit {
   cellular_mac: FormControl;
   searchForm: FormGroup;
 
-  displayedColumns: string[] = ['No.', 'MAC address', 'Activation', 'Nation', 'State', 'City', 'UserID'];
+  displayedColumns: string[] = ['No.', 'MAC address', 'Activation', 'Nation', 'State', 'City', 'Registration date', 'UserID'];
   columnStyles: any = [
     { 'width': '3rem' }, // No
-    { 'width': '13rem' }, // Mac address
+    { 'width': '12rem' }, // Mac address
     { 'width': '8rem' }, // Activation
     { 'width': '4rem' }, // Nation
     { 'width': '4rem' },  // State
-    { 'width': '4rem' },  // City
-    { 'width': '13rem' }, // UserID
+    { 'width': '8rem' },  // City
+    { 'width': '15rem' },  // Registration date
+    { 'width': '10rem' }, // UserID
   ];
 
   SENSOR_LIST: PeriodicElement[] = [];
@@ -49,6 +51,7 @@ export class AdminSensorManagementContentsComponent implements OnInit {
     public dialog: MatDialog,
     private storageService: StorageService,
     private smService: SensorManagementService,
+    private dataService: DataManagementService,
     private fb: FormBuilder) {
     this.wifi_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]);
     this.cellular_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]);
@@ -66,6 +69,12 @@ export class AdminSensorManagementContentsComponent implements OnInit {
     /** HTTP REQUEST */
     var payload: any = {
       nsc: this.storageService.get('userInfo').nsc,
+      wmac: "",
+      actf: 0,
+      mobf: 0,
+      nat: "Q30",
+      state: "Q99",
+      city: "Q16552"
     }
 
     this.reqData(payload);
@@ -75,9 +84,36 @@ export class AdminSensorManagementContentsComponent implements OnInit {
   reqData(payload: any){
     this.smService.ASV(payload, (result) => {
 
+      console.log('ASV-RSP => ', result);
       if (result != null) {
-        this.existSensor = result.payload.length != 0 ? true : false;
-        this.SENSOR_LIST = result.payload.sensorList;
+        //console.log('result is not null');
+        this.existSensor = result.payload.selectedSensorInformationList.length != 0 ? true : false;
+        //console.log('Sensor exist? => ', this.existSensor);
+
+        if(this.SENSOR_LIST.length != 0){
+          console.log('pop! =>', this.SENSOR_LIST.length);
+          for(var i=0; i<this.SENSOR_LIST.length; i++){
+            this.SENSOR_LIST.pop();
+          }
+          console.log('After poping data => ', this.SENSOR_LIST);
+        }
+
+        for(var i=0; i<result.payload.selectedSensorInformationList.length; i++){
+          this.SENSOR_LIST.push({
+            mac: result.payload.selectedSensorInformationList[i]['wmac'],
+            activation: Number(result.payload.selectedSensorInformationList[i]['actf']),
+            nation: 122,
+            state: 'CA',
+            city: 'San diego',
+            cellularMac: result.payload.selectedSensorInformationList[i]['cmac'],
+            regDate: new Date(Number(result.payload.selectedSensorInformationList[i]['rdt'])),
+            status: Number(result.payload.selectedSensorInformationList[i]['stat']),
+            mobility: Number(result.payload.selectedSensorInformationList[i]['mobf']),
+            userID: result.payload.selectedSensorInformationList[i]['regusn']
+          });
+        }
+        console.log('parsed sensor data => ', this.SENSOR_LIST);
+
       }
       else alert('Failed');
 
@@ -91,7 +127,12 @@ export class AdminSensorManagementContentsComponent implements OnInit {
 
     var payload: any = {
       nsc: this.storageService.get('userInfo').nsc,
-      options: this.search_options_json
+      wmac: this.search_options_json['mac'],
+      actf: this.search_options_json['activation'],
+      mobf: this.search_options_json['mobility'],
+      nat: this.search_options_json['nation'],
+      state: this.search_options_json['state'],
+      city: this.search_options_json['city']
     }
 
     console.log(payload);
@@ -104,7 +145,12 @@ export class AdminSensorManagementContentsComponent implements OnInit {
 
     var payload: any = {
       nsc: this.storageService.get('userInfo').nsc,
-      options: this.search_options_json
+      wmac: this.search_options_json['mac'],
+      actf: this.search_options_json['activation'],
+      mobf: this.search_options_json['mobility'],
+      nat: this.search_options_json['nation'],
+      state: this.search_options_json['state'],
+      city: this.search_options_json['city']
     }
 
     console.log(payload);
@@ -123,8 +169,9 @@ export class AdminSensorManagementContentsComponent implements OnInit {
   /** Sensor Registration */
   onSubmit() {
     var payload = {
-      mac: this.wifi_mac.value,
-      cellularMac: this.cellular_mac.value,
+      nsc: this.storageService.get('userInfo').nsc,
+      wmac: this.wifi_mac.value,
+      cmac: this.cellular_mac.value,
     }
     var success: boolean = this.smService.ASR(payload);
     if (!success) {
@@ -168,6 +215,7 @@ export class AdminSensorManagementContentsComponent implements OnInit {
 
   selected() {
     this.selectedSensor = this.selection.selected;
+    console.log('Selected! => ', this.selectedSensor);
   }
   //------------------------------------
 
@@ -181,8 +229,8 @@ export class AdminSensorManagementContentsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && !result.isCanceled) {
         var payload = {
-          mac: result.sensorSerial,
-          mobility: result.mobility
+          wmac: result.sensorSerial,
+          mobf: result.mobility
         }
 
         var success = this.smService.SAS(payload);
@@ -203,10 +251,14 @@ export class AdminSensorManagementContentsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && !result.isCanceled) {
 
+
         for (var i = 0; i < result.num_of_selected_sensor; i++) {
           var payload = {
-            mac: this.selectedSensor[i].mac,
-            reasonCode: result.reasonCode
+            nsc: this.storageService.get('userInfo').nsc,
+            wmac: this.selectedSensor[i].mac,
+            userId: 'hyon5623@gmail.com',
+            //userId: this.selectedSensor[i].userID,
+            drgcd: result.reasonCode,
           }
 
           var success: boolean = true;
@@ -231,7 +283,7 @@ export interface PeriodicElement {
   city: string;
   cellularMac: string;
   regDate: Date;
-  status: string;
+  status: number;
   mobility: number;
   userID: string;
 }

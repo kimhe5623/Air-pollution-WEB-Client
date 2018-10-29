@@ -4,12 +4,11 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import { timer } from 'rxjs/observable/timer';
 
 @Component({
-  selector: 'app-amchart-test2',
-  templateUrl: './amchart-test2.component.html',
-  styleUrls: ['./amchart-test2.component.css']
+  selector: 'app-realtime-air-chart',
+  templateUrl: './realtime-air-chart.component.html',
+  styleUrls: ['./realtime-air-chart.component.css']
 })
-
-export class AmchartTest2Component implements OnInit {
+export class RealtimeAirChartComponent implements OnInit {
 
   checkbox: any = {
     all: true,
