@@ -56,6 +56,7 @@ export class AdminUserManagementContentsComponent implements OnInit {
 
         this.existUser = result.payload.length != 0 ? true : false;
 
+        this.USER_LIST = [];
         for (var i = 0; i < result.payload.userInfoListEncodings.length; i++) {
           this.USER_LIST.push({
             no: i + 1,
@@ -73,12 +74,7 @@ export class AdminUserManagementContentsComponent implements OnInit {
       }
       else alert('Failed');
 
-      if (this.dataSource != null) {
-        for (var i = 0; i < this.dataSource.data.length; i++) {
-          this.dataSource.data.pop();
-        }
-      }
-
+      console.log("USER LIST => ", this.USER_LIST);
       this.dataSource = new MatTableDataSource<PeriodicElement>(this.USER_LIST);
       console.log(this.dataSource);
       this.dataSource.paginator = this.paginator;
@@ -97,15 +93,14 @@ export class AdminUserManagementContentsComponent implements OnInit {
 
     var payload: any = {
       nsc: this.storageService.get('userInfo').nsc,
-      regf: this.search_options_json['registrationState'],
-      signf: this.search_options_json['signinState'],
-      ml: this.search_options_json['membershipLevel'],
-      mxdt: this.search_options_json['membershipExpDate'],
-      userId: this.search_options_json['userID'],
-      userFn: this.search_options_json['firstname'],
-      userLn: this.search_options_json['lastname']
+      regf: this.search_options_json['registrationState'] == null ? "" : this.search_options_json['registrationState'],
+      signf: this.search_options_json['signinState'] == null ? "" : this.search_options_json['signinState'],
+      ml: this.search_options_json['membershipLevel'] == null ? "" : this.search_options_json['membershipLevel'],
+      mxdt: this.search_options_json['membershipExpDate'] == null ? "" : this.search_options_json['membershipExpDate'],
+      userId: this.search_options_json['userID'] == null ? "" : this.search_options_json['userID'],
+      userFn: this.search_options_json['firstname'] == null ? "" : this.search_options_json['firstname'],
+      userLn: this.search_options_json['lastname'] == null ? "" : this.search_options_json['lastname']
     }
-    console.log(payload);
     this.reqData(payload);
   }
 
@@ -118,16 +113,14 @@ export class AdminUserManagementContentsComponent implements OnInit {
 
     var payload: any = {
       nsc: this.storageService.get('userInfo').nsc,
-      regf: this.search_options_json['registrationState'],
-      signf: this.search_options_json['signinState'],
-      ml: this.search_options_json['membershipLevel'],
-      mxdt: this.search_options_json['membershipExpDate'],
-      userId: this.search_options_json['userID'],
-      userFn: this.search_options_json['firstname'],
-      userLn: this.search_options_json['lastname']
+      regf: this.search_options_json['registrationState'] == null ? "" : this.search_options_json['registrationState'],
+      signf: this.search_options_json['signinState'] == null ? "" : this.search_options_json['signinState'],
+      ml: this.search_options_json['membershipLevel'] == null ? "" : this.search_options_json['membershipLevel'],
+      mxdt: this.search_options_json['membershipExpDate'] == null ? "" : this.search_options_json['membershipExpDate'],
+      userId: this.search_options_json['userID'] == null ? "" : this.search_options_json['userID'],
+      userFn: this.search_options_json['firstname'] == null ? "" : this.search_options_json['firstname'],
+      userLn: this.search_options_json['lastname'] == null ? "" : this.search_options_json['lastname']
     }
-
-    console.log(payload);
     this.reqData(payload);
   }
 

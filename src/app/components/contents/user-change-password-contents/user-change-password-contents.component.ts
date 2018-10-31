@@ -25,6 +25,9 @@ export class UserChangePasswordContentsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.initData();
+  }
+  initData(){
     this.hide = true;
     this.errorhide = true;
     this.currentPassword.setValue(null);
@@ -50,12 +53,12 @@ export class UserChangePasswordContentsComponent implements OnInit {
         newPw: this.newPassword.value,
       }
 
-      var success: boolean = this.umService.UPC(payload);
-
-      if (!success) {
-        alert('Failed!');
-      }
-      else this.ngOnInit();
+      this.umService.UPC(payload, (success)=>{
+        if (!success) {
+          alert('Failed!');
+        }
+        else this.initData();
+      });
     }
   }
 

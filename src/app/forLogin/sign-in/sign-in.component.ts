@@ -46,10 +46,11 @@ export class SignInComponent implements OnInit {
       }
 
       /** HTTP REQUEST */
-      var success: boolean = this.umService.SGI(payload);
-      if (!success) {
-        alert('Failed');
-      }
+      this.umService.SGI(payload, (success)=>{
+        if (!success) {
+          alert('Failed');
+        }
+      });
     }
   }
 }

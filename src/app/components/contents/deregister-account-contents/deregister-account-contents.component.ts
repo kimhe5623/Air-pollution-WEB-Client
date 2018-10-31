@@ -55,11 +55,11 @@ export class DeregisterAccountContentsComponent implements OnInit {
           userpw: this.currentPassword.value
         }
   
-        var success: boolean = this.umService.UDR(payload);
-  
-        if (!success) {
-          alert('Failed!');
-        }
+        this.umService.UDR(payload, (success)=>{
+          if (!success) {
+            alert('Failed!');
+          }
+        });
       }
     });
   }

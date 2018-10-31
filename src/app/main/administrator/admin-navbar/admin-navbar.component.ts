@@ -125,9 +125,9 @@ export class AdminNavbarComponent implements OnInit {
         var payload: any = {
           nsc: this.storageService.get('nsc')
         };
-        this.umService.SGO(payload);
-        this.router.navigate(['/']);
-
+        this.umService.SGO(payload, ()=>{
+          this.router.navigate(['/']);
+        });
         break;
     }
   }

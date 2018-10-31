@@ -13,7 +13,6 @@ export class DataMonitoringService {
 
   constructor(
     private http: HttpClient,
-    private router: Router,
     private storageService: StorageService,
     private msgService: MsgService,
     private umService: UserManagementService) { }
@@ -59,14 +58,13 @@ export class DataMonitoringService {
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload);
-              cb(null); break;
+              this.umService.SGO(SGO_payload, () => {
+                cb(null);
+              });
+              break;
 
             case (3): // reject-incorrect number of signed-in completions
               alert('Already signed in another computer.');
-              cb(null); break;
-
-            default:
               cb(null); break;
           }
         }
@@ -96,14 +94,13 @@ export class DataMonitoringService {
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload);
-              cb(null); break;
+              this.umService.SGO(SGO_payload, () => {
+                cb(null);
+              });
+              break;
 
             case (3): // reject-incorrect number of signed-in completions
               alert('Already signed in another computer.');
-              cb(null); break;
-
-            default:
               cb(null); break;
           }
         }
@@ -125,6 +122,7 @@ export class DataMonitoringService {
           switch (rspMsg.payload.resultCode) {
             case (0):  // success
               cb(rspMsg); break;
+
             case (1): // reject-other
               alert('Unknown error');
               cb(null); break;
@@ -132,15 +130,19 @@ export class DataMonitoringService {
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload);
-              cb(null); break;
+              this.umService.SGO(SGO_payload, () => {
+                cb(null);
+              });
+              break;
 
             case (3): // reject-requested by an unauthorized user sequence number
               alert('Unauthorized user sequence number.');
-              cb(null); break;
+              cb(null);
+              break;
 
             case (4): // reject-not exist a sensor under the spatial-temporal search condition included in the SDP: HAV-REQ message
-              cb(null); break;
+              cb(null);
+              break;
           }
         }
       });
@@ -162,29 +164,36 @@ export class DataMonitoringService {
       .subscribe((rspMsg: any) => {
         cb(rspMsg);
         if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SHR_RSP, reqMsg.header.endpointId)) {
-          cb(null); return;
+          cb(null);
         }
 
         else {
           switch (rspMsg.payload.resultCode) {
             case (0):  // success
-              cb(rspMsg); break;
+              cb(rspMsg);
+              break;
+
             case (1): // reject-other
               alert('Unknown error');
-              cb(null); break;
+              cb(null);
+              break;
 
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload);
-              cb(null); break;
+              this.umService.SGO(SGO_payload, () => {
+                cb(null);
+              });
+              break;
 
             case (3): // reject-incorrect number of signed in completions
               alert('Already');
-              cb(null); break;
+              cb(null);
+              break;
 
             case (4): // reject-unauthorized user sequece number
-              cb(null); break;
+              cb(null);
+              break;
           }
         }
       });
@@ -204,23 +213,30 @@ export class DataMonitoringService {
         else {
           switch (rspMsg.payload.resultCode) {
             case (0):  // success
-              cb(rspMsg); break;
+              cb(rspMsg);
+              break;
+
             case (1): // reject-other
               alert('Unknown error');
-              cb(null); break;
+              cb(null);
+              break;
 
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload);
-              cb(null); break;
+              this.umService.SGO(SGO_payload, () => {
+                cb(null);
+              });
+              break;
 
             case (3): // reject-incorrect number of signed in completions
               alert('Already');
-              cb(null); break;
+              cb(null);
+              break;
 
             case (4): // reject-unauthorized user sequece number
-              cb(null); break;
+              cb(null);
+              break;
           }
         }
       });

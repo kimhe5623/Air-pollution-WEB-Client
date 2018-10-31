@@ -53,12 +53,11 @@ export class ForgotPasswordComponent implements OnInit {
     }
 
     /** HTTP REQUEST */
-    var success: boolean = this.umService.FPU(payload);
-
-    if (!success) {;
-      alert('Header error');
-    }
-
+    this.umService.FPU(payload ,(success)=>{
+      if (!success) {
+        alert('Failed');
+      }
+    });
   }
 
 

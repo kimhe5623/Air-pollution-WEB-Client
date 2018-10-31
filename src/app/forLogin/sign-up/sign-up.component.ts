@@ -64,12 +64,11 @@ export class SignUpComponent implements OnInit {
     }
 
     /** HTTP REQUEST */
-    var success: boolean = this.umService.SGU(payload);
-
-    if (!success) {;
-      alert('Header error');
-    }
-
+    this.umService.SGU(payload, (success)=>{
+      if (!success) {
+        alert('Failed');
+      }
+    });
   }
 
 

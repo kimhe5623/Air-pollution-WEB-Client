@@ -57,11 +57,11 @@ export class SignupVerificationCodeComponent implements OnInit {
     }
 
     /** HTTP REQUEST */
-    var success: boolean = this.umService.UVC(payload, this.tci);
-
-    if (!success) {
-      alert('failed!');
-      this.router.navigate(['/signup']);
-    }
+    this.umService.UVC(payload, this.tci, (success)=>{
+      if (!success) {
+        alert('failed!');
+        this.router.navigate(['/signup']);
+      }
+    });
   }
 }

@@ -35,9 +35,7 @@
             {{element.mac}}
           </span>
           <span class="eachtitle" [ngStyle]="columnStyles[2]">
-            <i class="fa fa-circle" [ngClass]="{'active': element.activation == 2, 'inactive': element.activation == 1}"
-              aria-hidden="true"></i>&nbsp;
-            {{ element.activation == 2 ? 'Operating' : '' }}
+            {{getSensorActivation(element.activation)}}
           </span>
           <span class="eachtitle" [ngStyle]="columnStyles[3]">
             {{element.nation}}

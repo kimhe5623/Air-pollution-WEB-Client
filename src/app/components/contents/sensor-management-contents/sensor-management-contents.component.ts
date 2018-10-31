@@ -23,7 +23,7 @@ export class SensorManagementContentsComponent implements OnInit {
     { 'width': '15rem' },  // Reg date
   ];
   SENSOR_LIST: PeriodicElement[] = [];
-  selection = new SelectionModel<PeriodicElement>(true, []);
+  selection : SelectionModel<PeriodicElement>;
   index: number = 0;
   existSensor: boolean;
   selectedSensor: any = [];
@@ -43,22 +43,56 @@ export class SensorManagementContentsComponent implements OnInit {
 
 
   ngOnInit() {
+    this.initData();
+  }
+
+  initData() {
     /** HTTP REQUEST */
     var payload: any = {
       nsc: this.storageService.get('userInfo').nsc
     }
 
+    this.selection = new SelectionModel<PeriodicElement>(true, []);
+    this.SENSOR_LIST = [];
     this.smService.SLV(payload, (result) => {
 
       if (result != null) {
 
-        this.existSensor = result.payload.existCode == 0 ? true : false;
+        this.existSensor = result.payload.selectedSensorInformationList.length != 0 ? true : false;
 
-        if (this.existSensor) // exist one or more sensors
-          this.SENSOR_LIST = result.payload.sensorList;
+        if (this.existSensor) { // exist one or more sensors
+          for (var i = 0; i < result.payload.selectedSensorInformationList.length; i++) {
+            this.SENSOR_LIST.push({
+              mac: result.payload.selectedSensorInformationList[i][0],
+              cellularMac: result.payload.selectedSensorInformationList[i][1],
+              regDate: new Date(Number(result.payload.selectedSensorInformationList[i][2])),
+              activation: Number(result.payload.selectedSensorInformationList[i][3]),
+              status: Number(result.payload.selectedSensorInformationList[i][4]),
+              mobility: Number(result.payload.selectedSensorInformationList[i][5]),
+              nation: result.payload.selectedSensorInformationList[i][6],
+              state: result.payload.selectedSensorInformationList[i][7],
+              city: result.payload.selectedSensorInformationList[i][8],
+            });
+          }
+          console.log("SENSOR LIST => ", this.SENSOR_LIST);
+        }
       }
       else alert('Failed');
     });
+  }
+
+  /** Get Sensor Activation */
+  getSensorActivation(activation: number): string {
+    switch (activation) {
+      case (0):
+        return "Registered";
+      case (1):
+        return "Associated";
+      case (2):
+        return "Operating";
+      case (3):
+        return "Deregistered";
+    }
   }
 
   //------(Selection functions)---------
@@ -91,15 +125,17 @@ export class SensorManagementContentsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && !result.isCanceled) {
         var payload = {
-          mac: result.sensorSerial,
-          mobility: result.mobility
+          nsc: this.storageService.get('userInfo').nsc,
+          wmac: result.sensorSerial,
+          mobf: result.mobility
         }
 
-        var success = this.smService.SAS(payload);
-        if (!success) {
-          alert('Failed!');
-        }
-        else this.ngOnInit();
+        this.smService.SAS(payload, (success) => {
+          if (!success) {
+            alert('Failed!');
+          }
+          else this.initData();
+        });
       }
     });
   }
@@ -115,18 +151,18 @@ export class SensorManagementContentsComponent implements OnInit {
 
         for (var i = 0; i < result.num_of_selected_sensor; i++) {
           var payload = {
+            nsc: this.storageService.get('userInfo').nsc,
             mac: this.selectedSensor[i].mac,
             reasonCode: result.reasonCode
           }
 
-          var success: boolean = true;
-          success = success || this.smService.SDD(payload);
+          this.smService.SDD(payload, (success) => {
+            if(i == result.num_of_selected_sensor){
+              console.log("Init data!");
+              this.initData();
+            }
+          });
         }
-
-        if (!success) alert('Failed!');
-        else alert('Successfully diassociated');
-
-        this.ngOnInit();
       }
     });
   }
@@ -141,6 +177,6 @@ export interface PeriodicElement {
   city: string;
   cellularMac: string;
   regDate: Date;
-  status: string;
+  status: number;
   mobility: number;
 }
