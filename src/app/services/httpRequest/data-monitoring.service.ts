@@ -92,7 +92,7 @@ export class DataMonitoringService {
               cb(null); break;
 
             case (2):  // reject-unallocated user sequence number
-              alert('Unallocated user sequence number.');
+              alert('Unallocated user sequence number');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, () => {
                 cb(null);
@@ -100,7 +100,7 @@ export class DataMonitoringService {
               break;
 
             case (3): // reject-incorrect number of signed-in completions
-              alert('Already signed in another computer.');
+              alert('Already signed in another computer');
               cb(null); break;
           }
         }
@@ -187,7 +187,7 @@ export class DataMonitoringService {
               break;
 
             case (3): // reject-incorrect number of signed in completions
-              alert('Already');
+              alert('Already signed in another computer');
               cb(null);
               break;
 
@@ -230,7 +230,7 @@ export class DataMonitoringService {
               break;
 
             case (3): // reject-incorrect number of signed in completions
-              alert('Already');
+              alert('Already signed in another computer');
               cb(null);
               break;
 
@@ -243,4 +243,46 @@ export class DataMonitoringService {
   }
 
   /** KAS */
+  KAS(payload: any, cb) {
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.KAS_REQ, this.storageService.get('userInfo').usn);
+
+    this.http.post(`/serverapi`, reqMsg)
+      .subscribe((rspMsg: any) => {
+        cb(rspMsg);
+        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.KAS_RSP, reqMsg.header.endpointId)) {
+          cb(null); return;
+        }
+
+        else {
+          var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
+
+          switch (rspMsg.payload.resultCode) {
+            case (0):  // success
+              cb(rspMsg);
+              break;
+
+            case (1): // reject-other
+              alert('Unknown error');
+              this.umService.SGO(SGO_payload, () => {
+                cb(null);
+              });
+              break;
+
+            case (2):  // reject-unallocated user sequence number
+              alert('Unallocated user sequence number.');
+              this.umService.SGO(SGO_payload, () => {
+                cb(null);
+              });
+              break;
+
+            case (3): // reject-incorrect number of signed in completions
+              alert('Already signed in another computer');
+              this.umService.SGO(SGO_payload, () => {
+                cb(null);
+              });
+              break;
+          }
+        }
+      });
+  }
 }

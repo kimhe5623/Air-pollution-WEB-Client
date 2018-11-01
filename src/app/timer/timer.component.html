@@ -1,8 +1,0 @@
-<span [ngClass]="style" *ngIf="visible && distance >= 0">{{ hours == 0 && min == 0 ?
-        sec + "s "
-    
-      : hours == 0 ?
-        min + "m " + sec + "s "
-    
-      : hours + "h " + min + "m " + sec + "s "}}</span>
-<span [ngClass]="style" *ngIf="visible && distance < 0">0s</span>

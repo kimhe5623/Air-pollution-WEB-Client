@@ -82,7 +82,6 @@ import { SensorDeletionDialog } from './dialogs/sensor-deletion-dialog/sensor-de
 import { SensorAssociationDialog } from './dialogs/sensor-association-dialog/sensor-association-dialog';
 import { SensorDeregistrationDialog } from './dialogs/sensor-deregistration-dialog/sensor-deregistration-dialog';
 import { UserDeregistrationConfirmDialog } from './dialogs/user-deregistration-confirm-dialog/user-deregistration-confirm-dialog';
-import { TimerComponent } from './timer/timer.component';
 import { Header } from 'src/app/header';
 import { AdminMainComponent } from './main/administrator/contents/admin-main/admin-main.component';
 import { TemperatureComponent } from './components/temperature/temperature.component';
@@ -113,6 +112,8 @@ import { TestComponent } from './main/test/test.component';
 import { AmchartTest2Component } from './components/amchart-test2/amchart-test2.component';
 import { AmchartTest3Component } from './components/amchart-test3/amchart-test3.component';
 import { RealtimeAirChartComponent } from './components/chart/realtime-air-chart/realtime-air-chart.component';
+import { KasDialog } from './dialogs/kas-dialog/kas-dialog';
+import { KasService } from './services/kas.service';
 
 @NgModule({
   declarations: [
@@ -142,7 +143,7 @@ import { RealtimeAirChartComponent } from './components/chart/realtime-air-chart
     SensorDeletionDialog,
     SensorDeregistrationDialog,
     UserDeregistrationConfirmDialog,
-    TimerComponent,
+    KasDialog,
     AdminMainComponent,
     TemperatureComponent,
     AirDataComponent,
@@ -245,10 +246,11 @@ import { RealtimeAirChartComponent } from './components/chart/realtime-air-chart
     SensorAssociationDialog,
     SensorDeletionDialog,
     SensorDeregistrationDialog,
-    UserDeregistrationConfirmDialog
+    UserDeregistrationConfirmDialog,
+    KasDialog,
   ],
   schemas: [NO_ERRORS_SCHEMA],
-  providers: [],
+  providers: [KasService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

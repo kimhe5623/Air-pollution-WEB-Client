@@ -272,6 +272,7 @@ export class SensorManagementService {
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
         console.log("HTTP:SDD-RSP => ", rspMsg);
+        console.log("ResultCode: ", rspMsg.payload.resultCode);
         if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SDD_RSP, reqMsg.header.endpointId)) {
           cb(false); return;
         }

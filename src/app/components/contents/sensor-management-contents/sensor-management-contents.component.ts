@@ -153,7 +153,7 @@ export class SensorManagementContentsComponent implements OnInit {
           var payload = {
             nsc: this.storageService.get('userInfo').nsc,
             mac: this.selectedSensor[i].mac,
-            reasonCode: result.reasonCode
+            drgcd: result.reasonCode.toString()
           }
 
           this.smService.SDD(payload, (success) => {
