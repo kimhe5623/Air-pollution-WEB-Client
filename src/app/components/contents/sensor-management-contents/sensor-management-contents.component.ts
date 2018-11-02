@@ -5,6 +5,7 @@ import { SensorAssociationDialog } from 'src/app/dialogs/sensor-association-dial
 import { SensorDeletionDialog } from 'src/app/dialogs/sensor-deletion-dialog/sensor-deletion-dialog';
 import { StorageService } from 'src/app/services/storage.service';
 import { SensorManagementService } from 'src/app/services/httpRequest/sensor-management.service';
+import { DataManagementService } from 'src/app/services/data-management.service';
 
 @Component({
   selector: 'app-sensor-management-contents',
@@ -39,7 +40,8 @@ export class SensorManagementContentsComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private storageService: StorageService,
-    private smService: SensorManagementService, ) { }
+    private smService: SensorManagementService,
+    private dataService: DataManagementService ) { }
 
 
   ngOnInit() {
@@ -63,11 +65,11 @@ export class SensorManagementContentsComponent implements OnInit {
         if (this.existSensor) { // exist one or more sensors
           for (var i = 0; i < result.payload.selectedSensorInformationList.length; i++) {
             this.SENSOR_LIST.push({
-              mac: result.payload.selectedSensorInformationList[i][0],
-              cellularMac: result.payload.selectedSensorInformationList[i][1],
+              mac: this.dataService.rspToMacAddress(result.payload.selectedSensorInformationList[i][0]),
+              cellularMac: this.dataService.rspToMacAddress(result.payload.selectedSensorInformationList[i][1]),
               regDate: new Date(Number(result.payload.selectedSensorInformationList[i][2])),
               activation: Number(result.payload.selectedSensorInformationList[i][3]),
-              status: Number(result.payload.selectedSensorInformationList[i][4]),
+              status: this.dataService.sensorStatusParsing(Number(result.payload.selectedSensorInformationList[i][4])),
               mobility: Number(result.payload.selectedSensorInformationList[i][5]),
               nation: result.payload.selectedSensorInformationList[i][6],
               state: result.payload.selectedSensorInformationList[i][7],
@@ -126,7 +128,7 @@ export class SensorManagementContentsComponent implements OnInit {
       if (result != null && !result.isCanceled) {
         var payload = {
           nsc: this.storageService.get('userInfo').nsc,
-          wmac: result.sensorSerial,
+          wmac: this.dataService.macAddressToReq(result.sensorSerial),
           mobf: result.mobility
         }
 
@@ -152,7 +154,7 @@ export class SensorManagementContentsComponent implements OnInit {
         for (var i = 0; i < result.num_of_selected_sensor; i++) {
           var payload = {
             nsc: this.storageService.get('userInfo').nsc,
-            mac: this.selectedSensor[i].mac,
+            wmac: this.dataService.macAddressToReq(this.selectedSensor[i].mac),
             drgcd: result.reasonCode.toString()
           }
 
@@ -177,6 +179,6 @@ export interface PeriodicElement {
   city: string;
   cellularMac: string;
   regDate: Date;
-  status: number;
+  status: any;
   mobility: number;
 }

@@ -51,14 +51,50 @@
           </span>
         </mat-expansion-panel-header>
         <div class="row">
-          <div class="col">
-            <p><strong>Cellular MAC address: &nbsp;</strong>{{element.cellularMac}}</p>
+          <div class="col-lg-6 col-xl-3 contentWrapper">
+            <div class="row contentName">
+              <strong>Cellular MAC address</strong>
+            </div>
+            <div class="row content">
+              {{element.cellularMac}}
+            </div>
           </div>
-          <div class="col">
-            <p><strong>Current status: &nbsp;</strong>{{element.status}}</p>
+          <div class="col-lg-6 col-xl-2 contentWrapper">
+            <div class="row contentName">
+              <strong>Mobility</strong>
+            </div>
+            <div class="row content">
+              {{element.mobility == 0 ? 'Stationary' : 'Portable'}}
+            </div>
           </div>
-          <div class="col">
-            <p><strong>Mobility: &nbsp;</strong>{{element.mobility}}</p>
+          <div class="col-lg-12 col-xl-7 contentWrapper">
+            <div class="row contentName">
+              <strong>Current status</strong>
+            </div>
+            <div class="row content">
+              <table class="tableStyle">
+                <tr>
+                  <th>Temp</th>
+                  <th>CO</th>
+                  <th>O<sub>3</sub></th>
+                  <th>NO<sub>2</sub></th>
+                  <th>SO<sub>2</sub></th>
+                  <th>PM2.5</th>
+                  <th>PM10</th>
+                  <th>GPS</th>
+                </tr>
+                <tr>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.temp == 1, inactive: element.status.temp == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.no2 == 1, inactive: element.status.no2 == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.so2 == 1, inactive: element.status.so2 == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.pm25 == 1, inactive: element.status.pm25 == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.pm10 == 1, inactive: element.status.pm10 == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.gps == 1, inactive: element.status.gps == 0}" aria-hidden="true"></i></th>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
       </mat-expansion-panel>

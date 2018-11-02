@@ -80,3 +80,24 @@ mat-panel-title {
   width: 5rem;
   text-align: left;
 }
+
+.contentWrapper {
+    padding-left:3rem;
+}
+.contentName {
+    font-size:1.1rem; 
+    padding-bottom:1rem
+}
+.content{
+    font-size:1.3rem
+}
+
+.tableStyle{
+    width: 500px;
+}
+tr, th{
+    padding: 5px;
+    border: solid 0.5px #cecece;
+    font-size: 1.1rem;
+    text-align: center;
+}

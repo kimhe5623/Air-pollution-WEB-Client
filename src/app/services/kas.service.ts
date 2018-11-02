@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material';
 import { KasDialog } from 'src/app/dialogs/kas-dialog/kas-dialog';
 import { StorageService } from './storage.service';
 import { DataMonitoringService } from './httpRequest/data-monitoring.service';
+import { timer } from 'rxjs/observable/timer';
+import { TIMER } from 'src/app/header';
 
 
 @Injectable({
@@ -19,8 +21,20 @@ export class KasService {
   /**
    * Start Timer
    */
-  startTimer(){
-
+  startTimer() {
+    /*
+          timer takes a second argument, how often to emit subsequent values
+          in this case we will emit first value after 1 second and subsequent
+          values every 2 seconds after
+        */
+    const source = timer(1, 1000);
+    //output: 1,2,3,4,5......
+    const subscribe = source.subscribe(val => {
+      if(val % 10) console.log("KAS service => ", val, ' sec');
+      if(val == TIMER.T551) {
+        this.openKasDialog();
+      }
+    });
   }
   //------(Dialog functions)--------
   openKasDialog(): void {

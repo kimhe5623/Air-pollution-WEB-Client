@@ -12,16 +12,46 @@ export class DataManagementService {
     private dmService: DataMonitoringService
   ) { }
 
+    /**
+   * Change the input string format to the mac address format like 'AA:BB:CC:DD:EE:FF'
+   * @param rsp ex> 'AABBCCDDEEFF'
+   */
+  rspToMacAddress(rsp: string): string {
+    var mac: string = "";
+    for (var i = 0; i < rsp.length / 2; i++) {
+      mac += rsp.substr(i * 2, 2);
+
+      if (i != rsp.length / 2 - 1)
+        mac += ':';
+    }
+    return mac;
+  }
+
+  /**
+   * Change the input string format to the reqMsg's format like 'AABBCCDDEEFF'
+   * @param mac ex> 'AA:BB:CC:DD:EE:FF'
+   */
+  macAddressToReq(mac: string): string {
+    var req: string = "";
+    var splitedMac: Array<string> = mac.split(':');
+
+    for (var i = 0; i < splitedMac.length; i++) {
+      req += splitedMac[i];
+    }
+
+    return req;
+  }
+
   sensorStatusParsing(status: number): any {
     return {
-      temp: status % 2, // bit1
-      CO: (status / 2) % 2, // bit2
-      O3: (status / Math.pow(2, 2)) % 2, // bit3
-      NO2: (status / Math.pow(2, 3)) % 2,  // bit4
-      SO2: (status / Math.pow(2, 4)) % 2,  // bit5
-      PM25: (status / Math.pow(2, 5)) % 2, // bit6
-      PM10: (status / Math.pow(2, 6)) % 2, // bit7
-      GPS: (status / Math.pow(2, 7)) % 2,  // bit8
+      temp: Math.floor((status / Math.pow(2, 0))) % 2, // bit1
+      co: Math.floor((status / Math.pow(2, 1))) % 2, // bit2
+      o3: Math.floor((status / Math.pow(2, 2))) % 2, // bit3
+      no2: Math.floor((status / Math.pow(2, 3))) % 2,  // bit4
+      so2: Math.floor((status / Math.pow(2, 4))) % 2,  // bit5
+      pm25: Math.floor((status / Math.pow(2, 5))) % 2, // bit6
+      pm10: Math.floor((status / Math.pow(2, 6))) % 2, // bit7
+      gps: Math.floor((status / Math.pow(2, 7))) % 2,  // bit8
     };
   }
 

@@ -1,127 +1,148 @@
 <div class="wrapper">
-    <h1 class="title">Administrator - <strong>Sensor management</strong></h1>
-    <mat-card class="card">
-      <form class="example-form form" (ngSubmit)="onSubmit()">
-        <mat-form-field class="example-full-width inputStyle">
-          <input matInput placeholder="Wifi MAC Address" [formControl]="wifi_mac">
-        </mat-form-field>
-        <mat-form-field class="example-full-width inputStyle">
-          <input matInput placeholder="Cellular MAC Address" [formControl]="cellular_mac">
-        </mat-form-field>
-        <button type="submit" class="btn waves-light secondary-variant buttonStyle" [disabled]="wifi_mac.invalid || cellular_mac.invalid"
-          mdbWavesEffect>Register</button>
-      </form>
-    </mat-card>
-    <div class="row rowStyle">
-      <div class="col-lg-12" style="text-align:center">
-        <span class="badge badgeStyle" *ngFor="let option of search_options_array let idx=index">
-          <strong>{{option.key}}</strong>&nbsp;&nbsp;{{option.value}}
-          <i class="close fa fa-times closeButton" (click)="deleteSearchOption(option.key)"></i>
-        </span>
-      </div>
-      <div class="col-lg-12 col-xl-9">
-        <!-- Search form -->
-        <form [formGroup]="searchForm" (ngSubmit)="addSearchOption()">
-          <mat-form-field class="searchSelect" [floatLabel]="searchForm.value.floatLabel">
-            <mat-select placeholder="Option" formControlName="option">
-              <mat-option>--</mat-option>
-              <mat-option value="wifi_mac">Wifi MAC</mat-option>
-              <mat-option value="activation">Activation</mat-option>
-              <mat-option value="mobility">Mobility</mat-option>
-              <mat-option value="nation">Nation</mat-option>
-              <mat-option value="state">State</mat-option>
-              <mat-option value="city">City</mat-option>
-              <mat-option value="userID">User ID</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field class="searchInput" [floatLabel]="searchForm.value.floatLabel">
-            <input matInput placeholder="Search" formControlName="input">
-          </mat-form-field>
-          <button type="submit" class="btn waves-light secondary-variant searchButton"><i class="fas fa-search"></i></button>
-        </form>
-      </div>
-      <div class="col-lg-12 col-xl-3 buttonsGroup">
-        <button mdbBtn type="button" class="waves-light addition roundBtn" (click)="openAssociationDialog()"
-          mdbWavesEffect>+</button>
-        <button mdbBtn type="button" class="waves-light deletion roundBtn" (click)="openDeletionDialog()" mdbWavesEffect>-</button>
-      </div>
+  <h1 class="title">Administrator - <strong>Sensor management</strong></h1>
+  <mat-card class="card">
+    <form class="example-form form" (ngSubmit)="onSubmit()">
+      <mat-form-field class="example-full-width inputStyle">
+        <input matInput placeholder="Wifi MAC Address" [formControl]="wifi_mac">
+      </mat-form-field>
+      <mat-form-field class="example-full-width inputStyle">
+        <input matInput placeholder="Cellular MAC Address" [formControl]="cellular_mac">
+      </mat-form-field>
+      <button type="submit" class="btn waves-light secondary-variant buttonStyle" [disabled]="wifi_mac.invalid || cellular_mac.invalid"
+        mdbWavesEffect>Register</button>
+    </form>
+  </mat-card>
+  <div class="row rowStyle">
+    <div class="col-lg-12" style="text-align:center">
+      <span class="badge badgeStyle" *ngFor="let option of search_options_array let idx=index">
+        <strong>{{option.key}}</strong>&nbsp;&nbsp;{{option.value}}
+        <i class="close fa fa-times closeButton" (click)="deleteSearchOption(option.key)"></i>
+      </span>
     </div>
-    <div class="mat-elevation-z8">
-      <mat-accordion>
-        <div class="tableheader">
-          <span class="eachtitle checkboxWidth">
-            <mat-checkbox (change)="$event ? masterToggle() : null; selected()" [checked]="selection.hasValue() && isAllSelected()"
-              [indeterminate]="selection.hasValue() && !isAllSelected()">
-            </mat-checkbox>
-          </span>
-          <span *ngFor="let column of displayedColumns; let idx=index;" class="eachtitle" [ngStyle]="columnStyles[idx]">
-            <strong>{{column}}</strong>
-          </span>
-        </div>
-  
-        <mat-expansion-panel *ngFor="let element of SENSOR_LIST; let idx=index;">
-          <mat-expansion-panel-header *ngIf="!existSensor">
-            No sensor
-          </mat-expansion-panel-header>
-          <mat-expansion-panel-header>
-            <span class="eachtitle checkboxWidth">
-              <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(element) : null; selected()"
-                [checked]="selection.isSelected(element)">
-              </mat-checkbox>
-            </span>
-            <span class="eachtitle" [ngStyle]="columnStyles[0]">
-              {{idx+1}}
-            </span>
-            <span class="eachtitle" [ngStyle]="columnStyles[1]">
-              {{element.mac}}
-            </span>
-            <span class="eachtitle" [ngStyle]="columnStyles[2]">
-              {{getSensorActivation(element.activation)}}
-            </span>
-            <span class="eachtitle" [ngStyle]="columnStyles[3]">
-              {{element.nation}}
-            </span>
-            <span class="eachtitle" [ngStyle]="columnStyles[4]">
-              {{element.state}}
-            </span>
-            <span class="eachtitle" [ngStyle]="columnStyles[5]">
-              {{element.city}}
-            </span>
-            <span class="eachtitle" [ngStyle]="columnStyles[6]">
-              {{element.regDate | date: 'medium'}}
-            </span>
-            <span class="eachtitle" [ngStyle]="columnStyles[7]">
-              {{element.userID}}
-            </span>
-          </mat-expansion-panel-header>
-          <div class="row">
-            <div class="col-3 contentWrapper">
-              <div class="row contentName">
-                <strong>Cellular MAC address</strong>
-              </div>
-              <div class="row content">
-                {{element.cellularMac}}
-              </div>
-            </div>
-            <div class="col-3 contentWrapper">
-              <div class="row contentName">
-                <strong>Mobility</strong>
-              </div>
-              <div class="row content">
-                {{element.mobility}}
-              </div>
-            </div>
-            <div class="col-6 contentWrapper">
-              <div class="row contentName">
-                <strong>Current status</strong>
-              </div>
-              <div class="row content">
-                {{element.status}}
-              </div>
-            </div>
-          </div>
-        </mat-expansion-panel>
-      </mat-accordion>
-  
+    <div class="col-lg-12 col-xl-9">
+      <!-- Search form -->
+      <form [formGroup]="searchForm" (ngSubmit)="addSearchOption()">
+        <mat-form-field class="searchSelect" [floatLabel]="searchForm.value.floatLabel">
+          <mat-select placeholder="Option" formControlName="option">
+            <mat-option>--</mat-option>
+            <mat-option value="wifi_mac">Wifi MAC</mat-option>
+            <mat-option value="activation">Activation</mat-option>
+            <mat-option value="mobility">Mobility</mat-option>
+            <mat-option value="nation">Nation</mat-option>
+            <mat-option value="state">State</mat-option>
+            <mat-option value="city">City</mat-option>
+            <mat-option value="userID">User ID</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="searchInput" [floatLabel]="searchForm.value.floatLabel">
+          <input matInput placeholder="Search" formControlName="input">
+        </mat-form-field>
+        <button type="submit" class="btn waves-light secondary-variant searchButton"><i class="fas fa-search"></i></button>
+      </form>
+    </div>
+    <div class="col-lg-12 col-xl-3 buttonsGroup">
+      <button mdbBtn type="button" class="waves-light addition roundBtn" (click)="openAssociationDialog()"
+        mdbWavesEffect>+</button>
+      <button mdbBtn type="button" class="waves-light deletion roundBtn" (click)="openDeletionDialog()" mdbWavesEffect>-</button>
     </div>
   </div>
+  <div class="mat-elevation-z8">
+    <mat-accordion>
+      <div class="tableheader">
+        <span class="eachtitle checkboxWidth">
+          <mat-checkbox (change)="$event ? masterToggle() : null; selected()" [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </span>
+        <span *ngFor="let column of displayedColumns; let idx=index;" class="eachtitle" [ngStyle]="columnStyles[idx]">
+          <strong>{{column}}</strong>
+        </span>
+      </div>
+
+      <mat-expansion-panel *ngFor="let element of SENSOR_LIST; let idx=index;">
+        <mat-expansion-panel-header *ngIf="!existSensor">
+          No sensor
+        </mat-expansion-panel-header>
+        <mat-expansion-panel-header>
+          <span class="eachtitle checkboxWidth">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(element) : null; selected()"
+              [checked]="selection.isSelected(element)">
+            </mat-checkbox>
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[0]">
+            {{idx+1}}
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[1]">
+            {{element.mac}}
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[2]">
+            {{getSensorActivation(element.activation)}}
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[3]">
+            {{element.nation}}
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[4]">
+            {{element.state}}
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[5]">
+            {{element.city}}
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[6]">
+            {{element.regDate | date: 'medium'}}
+          </span>
+          <span class="eachtitle" [ngStyle]="columnStyles[7]">
+            {{element.userID}}
+          </span>
+        </mat-expansion-panel-header>
+        <div class="row">
+          <div class="col-lg-6 col-xl-3 contentWrapper">
+            <div class="row contentName">
+              <strong>Cellular MAC address</strong>
+            </div>
+            <div class="row content">
+              {{element.cellularMac}}
+            </div>
+          </div>
+          <div class="col-lg-6 col-xl-2 contentWrapper">
+            <div class="row contentName">
+              <strong>Mobility</strong>
+            </div>
+            <div class="row content">
+              {{element.mobility == 0 ? 'Stationary' : 'Portable'}}
+            </div>
+          </div>
+          <div class="col-lg-12 col-xl-7 contentWrapper">
+            <div class="row contentName">
+              <strong>Current status</strong>
+            </div>
+            <div class="row content">
+              <table class="tableStyle">
+                <tr>
+                  <th>Temp</th>
+                  <th>CO</th>
+                  <th>O<sub>3</sub></th>
+                  <th>NO<sub>2</sub></th>
+                  <th>SO<sub>2</sub></th>
+                  <th>PM2.5</th>
+                  <th>PM10</th>
+                  <th>GPS</th>
+                </tr>
+                <tr>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.temp == 1, inactive: element.status.temp == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.no2 == 1, inactive: element.status.no2 == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.so2 == 1, inactive: element.status.so2 == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.pm25 == 1, inactive: element.status.pm25 == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.pm10 == 1, inactive: element.status.pm10 == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.gps == 1, inactive: element.status.gps == 0}" aria-hidden="true"></i></th>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+  </div>
+</div>

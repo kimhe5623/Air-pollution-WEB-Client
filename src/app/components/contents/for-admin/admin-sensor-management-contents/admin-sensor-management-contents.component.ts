@@ -6,6 +6,7 @@ import { SensorDeregistrationDialog } from 'src/app/dialogs/sensor-deregistratio
 import { StorageService } from 'src/app/services/storage.service';
 import { SensorManagementService } from 'src/app/services/httpRequest/sensor-management.service';
 import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { DataManagementService } from 'src/app/services/data-management.service';
 
 @Component({
   selector: 'app-admin-sensor-management-contents',
@@ -50,6 +51,7 @@ export class AdminSensorManagementContentsComponent implements OnInit {
     public dialog: MatDialog,
     private storageService: StorageService,
     private smService: SensorManagementService,
+    private dataService: DataManagementService,
     private fb: FormBuilder) {
     this.wifi_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]);
     this.cellular_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]);
@@ -110,14 +112,14 @@ export class AdminSensorManagementContentsComponent implements OnInit {
 
     for (var i = 0; i < result.payload.selectedSensorInformationList.length; i++) {
       this.SENSOR_LIST.push({
-        mac: result.payload.selectedSensorInformationList[i]['wmac'],
+        mac: this.dataService.rspToMacAddress(result.payload.selectedSensorInformationList[i]['wmac']),
         activation: Number(result.payload.selectedSensorInformationList[i]['actf']),
         nation: 122,
         state: 'CA',
         city: 'San diego',
-        cellularMac: result.payload.selectedSensorInformationList[i]['cmac'],
+        cellularMac: this.dataService.rspToMacAddress(result.payload.selectedSensorInformationList[i]['cmac']),
         regDate: new Date(Number(result.payload.selectedSensorInformationList[i]['rdt'])),
-        status: Number(result.payload.selectedSensorInformationList[i]['stat']),
+        status: this.dataService.sensorStatusParsing(Number(result.payload.selectedSensorInformationList[i]['stat'])),
         mobility: Number(result.payload.selectedSensorInformationList[i]['mobf']),
         userID: result.payload.selectedSensorInformationList[i]['regusn']
       });
@@ -132,7 +134,7 @@ export class AdminSensorManagementContentsComponent implements OnInit {
 
     var payload: any = {
       nsc: this.storageService.get('userInfo').nsc,
-      wmac: this.search_options_json['mac'] == null ? "" : this.search_options_json['mac'],
+      wmac: this.search_options_json['mac'] == null ? "" : this.dataService.macAddressToReq(this.search_options_json['mac']),
       actf: this.search_options_json['activation'] == null ? "" : Number(this.search_options_json['activation']),
       mobf: this.search_options_json['mobility'] == null ? 0 : Number(this.search_options_json['mobility']),
       // nat: this.search_options_json['nation'],
@@ -177,8 +179,8 @@ export class AdminSensorManagementContentsComponent implements OnInit {
   onSubmit() {
     var payload = {
       nsc: this.storageService.get('userInfo').nsc,
-      wmac: this.wifi_mac.value,
-      cmac: this.cellular_mac.value,
+      wmac: this.dataService.macAddressToReq(this.wifi_mac.value),
+      cmac: this.dataService.macAddressToReq(this.cellular_mac.value),
     }
     this.smService.ASR(payload, (success) => {
       if (!success) {
@@ -239,7 +241,7 @@ export class AdminSensorManagementContentsComponent implements OnInit {
       if (result != null && !result.isCanceled) {
         var payload = {
           nsc: this.storageService.get('userInfo').nsc,
-          wmac: result.sensorSerial,
+          wmac: this.dataService.macAddressToReq(result.sensorSerial),
           mobf: result.mobility
         }
 
@@ -268,7 +270,7 @@ export class AdminSensorManagementContentsComponent implements OnInit {
         for (var i = 0; i < result.num_of_selected_sensor; i++) {
           var payload = {
             nsc: this.storageService.get('userInfo').nsc,
-            wmac: this.selectedSensor[i].mac,
+            wmac: this.dataService.macAddressToReq(this.selectedSensor[i].mac),
             //userId: this.selectedSensor[i].userID,
             userId: 'hyon5623@gmail.com',
             drgcd: result.reasonCode,
@@ -296,7 +298,7 @@ export interface PeriodicElement {
   city: string;
   cellularMac: string;
   regDate: Date;
-  status: number;
+  status: any;
   mobility: number;
   userID: string;
 }

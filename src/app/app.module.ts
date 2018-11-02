@@ -114,6 +114,7 @@ import { AmchartTest3Component } from './components/amchart-test3/amchart-test3.
 import { RealtimeAirChartComponent } from './components/chart/realtime-air-chart/realtime-air-chart.component';
 import { KasDialog } from './dialogs/kas-dialog/kas-dialog';
 import { KasService } from './services/kas.service';
+import { TimerComponent } from './components/timer/timer.component';
 
 @NgModule({
   declarations: [
@@ -173,6 +174,7 @@ import { KasService } from './services/kas.service';
     AmchartTest2Component,
     AmchartTest3Component,
     RealtimeAirChartComponent,
+    TimerComponent,
   ],
   imports: [
     /** Angular Modules */

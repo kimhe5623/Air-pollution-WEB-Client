@@ -3,6 +3,7 @@ import { } from 'googlemaps';
 import { DataManagementService } from '../../services/data-management.service';
 import { DataMonitoringService } from '../../services/httpRequest/data-monitoring.service';
 import { timer } from 'rxjs/observable/timer';
+import { StorageService } from 'src/app/services/storage.service';
 declare var google;
 
 @Component({
@@ -46,6 +47,7 @@ export class AirMapsComponent implements OnInit {
   constructor(
     private dataService: DataManagementService,
     private dmService: DataMonitoringService,
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {
@@ -101,12 +103,26 @@ export class AirMapsComponent implements OnInit {
       //Data sets
       var payload = {
         nsc: 0x00,
-        tlv: {
-          zoomLevel: 4,
-          nationCode: this.currentAddress.results[0].address_components[7].short_name,
-          stateCode: this.currentAddress.results[0].address_components[6].short_name,
-          cityCode: this.currentAddress.results[0].address_components[4].short_name
+        provinceListEncodings: {
+          lat: this.currentLocation.latitude,
+          lng: this.currentLocation.longitude,
+          commonNatTierTuple: {
+            nat: "Q30",
+            commonStateTierTuple: [
+              {
+                state: "Q99",
+                commonCityTierTuple: ["Q16552", "Q65"]
+              }
+            ]
+          }
+        },
+        keywordSearchListEncodings: {
+
         }
+      }
+
+      if(this.storageService.get('userInfo') != null){
+        payload.nsc = this.storageService.get('userInfo').nsc
       }
 
       this.dmService.RAV(payload, (result) => {

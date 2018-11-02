@@ -38,9 +38,11 @@ export class DataMonitoringService {
     else usn = 0x000000;
 
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.RAV_REQ, usn);
+    console.log("HTTP:RAV-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
+        console.log("HTTP:RAV-RSP => ", rspMsg);
         cb(rspMsg);
         if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.RAV_RSP, reqMsg.header.endpointId)) {
           cb(null); return;
