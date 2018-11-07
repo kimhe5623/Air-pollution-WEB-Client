@@ -12,7 +12,81 @@ export class DataManagementService {
     private dmService: DataMonitoringService
   ) { }
 
-    /**
+  /**
+   * HTTP response data parsing: Realtime air data
+   * @param rsp 
+   */
+  rspRealtimeAirDataParsing(rsp: any): any {
+
+    var result: any = [];
+    for (var i = 0; i < rsp.length; i++) {
+      var splitedData = rsp[i].split(',');
+      console.log('Splited! =>', splitedData);
+
+      result.push({
+        mac: splitedData[0],
+        timestamp: new Date(Number(splitedData[1])),
+        latitude: Number(splitedData[2]),
+        longitude: Number(splitedData[3]),
+        temperature: Number(splitedData[4]),
+        CO: Number(splitedData[5]),
+        O3: Number(splitedData[6]),
+        NO2: Number(splitedData[7]),
+        SO2: Number(splitedData[8]),
+        PM25: Number(splitedData[9]),
+        PM10: Number(splitedData[10]),
+        AQI_CO: Number(splitedData[11]),
+        AQI_O3: Number(splitedData[12]),
+        AQI_NO2: Number(splitedData[13]),
+        AQI_SO2: Number(splitedData[14]),
+        AQI_PM25: Number(splitedData[15]),
+        AQI_PM10: Number(splitedData[16]),
+      });
+    }
+    return result;
+  }
+
+  /**
+   * HTTP response data parsing: Realtime air data
+   * @param rsp 
+   */
+  rspHistoricalAirDataParsing(rsp: any): any {
+
+    var result: any = [];
+
+      for (var i = 0; i <rsp.length; i++) {
+        for (var j = 0; j < rsp.commonDataTierTuple.length; j++) {
+
+          var splitedData = rsp[i].split(',');
+          console.log('Splited! =>', rsp[i].commonDataTierTuple[j]);
+
+          result.push({
+            mac: rsp[i].wmac,
+            latitude: rsp[i].lat,
+            longitude: rsp[i].lng,
+            timestamp: splitedData[0],
+            temperature: splitedData[1],
+            CO: splitedData[2],
+            O3: splitedData[3],
+            NO2: splitedData[4],
+            SO2: splitedData[5],
+            PM25: splitedData[6],
+            PM10: splitedData[7],
+            AQI_CO: splitedData[8],
+            AQI_O3: splitedData[9],
+            AQI_NO2: splitedData[10],
+            AQI_SO2: splitedData[11],
+            AQI_PM25: splitedData[12],
+            AQI_PM10: splitedData[13],
+          })
+        }
+      }
+
+    return result;
+  }
+
+
+  /**
    * Change the input string format to the mac address format like 'AA:BB:CC:DD:EE:FF'
    * @param rsp ex> 'AABBCCDDEEFF'
    */

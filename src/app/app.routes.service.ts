@@ -31,7 +31,7 @@ import { TestComponent } from './main/test/test.component';
 export const routes: Routes = [
   {
     path: 'test',
-    component: TestComponent
+    component: TestComponent,
   },
   {
     path: 'signin',

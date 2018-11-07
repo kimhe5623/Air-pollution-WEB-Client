@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UnitsType } from 'src/app/components/temperature/temperature.component';
 import { DataMonitoringService } from 'src/app/services/httpRequest/data-monitoring.service';
 import { DataManagementService } from 'src/app/services/data-management.service';
 import { SessionStorageService } from 'ngx-store';
-import { timer } from 'rxjs/observable/timer';
+import { interval } from 'rxjs/observable/interval';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-user-main-contents',
   templateUrl: './user-main-contents.component.html',
   styleUrls: ['./user-main-contents.component.css']
 })
-export class UserMainContentsComponent implements OnInit {
+export class UserMainContentsComponent implements OnInit, OnDestroy {
+
+  public airmapDisplay: boolean = true;
 
   /**
    * Chart
@@ -121,10 +124,17 @@ export class UserMainContentsComponent implements OnInit {
   currentAirdata: any = {};
   currentAirdata_stringfied: string = '';
   currentHeartdata: any = {
-    heartrate: 0
+    ts: 0,
+    lat: 0,
+    lng: 0,
+    hr: 0,
+    rr: 0,
+    resultCode: 0
   };
   num_of_data: number;
 
+  private subscribe: Subscription;
+  private isSubscription: boolean;
 
   constructor(
     private dmService: DataMonitoringService,
@@ -133,16 +143,25 @@ export class UserMainContentsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.isSubscription = true;
     this.currentUnit = 'C';
     this.setCurrentHeartdata();
     this.setNearestSensordata();
 
     // every 5 seconds
-    const source = timer(1, 5000);
-    //output: 1,2,3,4,5......
-    const subscribe = source.subscribe(val => {
-      this.setCurrentHeartdata();
+    const source = interval(5000);
+    // output: 1,2,3,4,5......
+    this.subscribe = source.subscribe(() => {
+      if(this.isSubscription){
+        this.setCurrentHeartdata();
+      }
     });
+  }
+
+  ngOnDestroy() {
+    console.log("user-main was destroyed");
+    this.isSubscription = false;
+    this.subscribe.unsubscribe();
   }
 
   // public chartClicked(e: any): void { }

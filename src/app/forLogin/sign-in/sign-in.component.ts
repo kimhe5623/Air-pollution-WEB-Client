@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { UserManagementService } from '../../services/httpRequest/user-management.service';
 
@@ -7,7 +7,7 @@ import { UserManagementService } from '../../services/httpRequest/user-managemen
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.css']
 })
-export class SignInComponent implements OnInit {
+export class SignInComponent implements OnInit, OnDestroy {
 
   hide: boolean = true;
   errorhide: boolean = true;
@@ -24,6 +24,11 @@ export class SignInComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('sign-in.component ngOnInit()');
+  }
+
+  ngOnDestroy(){
+    console.log('sign-in.component ngOnDestroy()');
   }
 
   getPasswordErrorMessage() {

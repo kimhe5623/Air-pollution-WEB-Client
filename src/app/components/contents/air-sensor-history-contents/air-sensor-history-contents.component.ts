@@ -225,7 +225,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     this.dmService.HAV(payload, (result) => {
 
       if (result != null) {
-        var tlvData = result.payload.tlv;
+        var tlvData = this.dataService.rspHistoricalAirDataParsing(result.payload.historicalAirQualityDataListEncodings);
         var tspBasedData = {};
 
         console.log(tlvData);

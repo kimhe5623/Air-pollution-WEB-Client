@@ -15,7 +15,7 @@ export class SensorAssociationDialog {
     this.data.isCanceled = true;
     this.data.mobility = 0;
     this.data.sensorSerial = '';
-    this.associationForm = new FormControl('', [Validators.required, Validators.pattern('^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$')]);
+    this.associationForm = new FormControl('', [Validators.required, Validators.pattern('^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$')]);
   }
 
   choose(data){

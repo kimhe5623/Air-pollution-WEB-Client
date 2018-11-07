@@ -55,6 +55,23 @@
     color: var(--on-error);
 }
 
+/**/
+
+.signin {
+    background: rgb(238,154,229);
+    background: linear-gradient(90deg, rgba(238,154,229,1) 0%, rgba(89,97,249,1) 100%);
+}
+
+.signup {
+    background: rgb(0,195,196);
+    background: linear-gradient(90deg, rgba(0,195,196,1) 0%, rgba(77,83,201,1) 100%);
+}
+
+.forgotpw {
+    background: rgb(67, 203, 255);
+    background: linear-gradient(90deg, rgba(67, 203, 255, 1) 0%, rgba(151, 8, 204, 1) 100%);
+}
+
 /* Link */
 
 .link-primary:link,
@@ -84,23 +101,26 @@
     color: #c25988;
 }
 
-.addition{
+.addition {
     color: var(--on-addition);
     background-color: var(--addition);
 }
-.deletion{
+
+.deletion {
     color: var(--on-deletion);
     background-color: var(--deletion);
 }
-.cancel{
+
+.cancel {
     color: #ffffff;
     background-color: var(--cancel);
 }
 
-.active{
+.active {
     color: var(--active);
 }
-.inactive{
+
+.inactive {
     color: var(--inactive);
 }
 
@@ -144,11 +164,10 @@
     --grey: #949393ab;
     --any: #bec4f8;
     /*-------------------------*/
-    --aqi-good-gradient: radial-gradient(circle, #33e08148, #33e08148, #33e08140, #33e08100, #33e08100,  #33e08100);
-    --aqi-moderate-gradient: radial-gradient(circle, #ebe84148, #ebe84148, #ebe84140, #ebe84100, #ebe84100,  #ebe84100);
-    --aqi-unhealthy-for-sensitive-groups-gradient: radial-gradient(circle, #f1904048, #f1904048, #f1904040, #f1904000, #f1904000,  #f1904000);
-    --aqi-unhealthy-gradient: radial-gradient(circle, #ec454548, #ec454548, #ec454540, #ec454500, #ec454500,  #ec454500);
-    --aqi-very-unhealthy-gradient: radial-gradient(circle, #b046e048, #b046e048, #b046e040, #b046e000, #b046e000,  #b046e000);
-    --aqi-hazardous-gradient: radial-gradient(circle, #6b132e48, #6b132e48, #6b132e40, #6b132e00, #6b132e00,  #6b132e00);
-    
+    --aqi-good-gradient: radial-gradient(circle, #33e08148, #33e08148, #33e08140, #33e08100, #33e08100, #33e08100);
+    --aqi-moderate-gradient: radial-gradient(circle, #ebe84148, #ebe84148, #ebe84140, #ebe84100, #ebe84100, #ebe84100);
+    --aqi-unhealthy-for-sensitive-groups-gradient: radial-gradient(circle, #f1904048, #f1904048, #f1904040, #f1904000, #f1904000, #f1904000);
+    --aqi-unhealthy-gradient: radial-gradient(circle, #ec454548, #ec454548, #ec454540, #ec454500, #ec454500, #ec454500);
+    --aqi-very-unhealthy-gradient: radial-gradient(circle, #b046e048, #b046e048, #b046e040, #b046e000, #b046e000, #b046e000);
+    --aqi-hazardous-gradient: radial-gradient(circle, #6b132e48, #6b132e48, #6b132e40, #6b132e00, #6b132e00, #6b132e00);
 }

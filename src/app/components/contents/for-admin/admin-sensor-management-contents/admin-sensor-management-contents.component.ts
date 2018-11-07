@@ -53,8 +53,8 @@ export class AdminSensorManagementContentsComponent implements OnInit {
     private smService: SensorManagementService,
     private dataService: DataManagementService,
     private fb: FormBuilder) {
-    this.wifi_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]);
-    this.cellular_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]);
+    this.wifi_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$")]);
+    this.cellular_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$")]);
 
     this.searchForm = this.fb.group({
       hideRequired: true,

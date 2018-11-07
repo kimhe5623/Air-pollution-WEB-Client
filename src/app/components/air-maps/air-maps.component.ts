@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { } from 'googlemaps';
 import { DataManagementService } from '../../services/data-management.service';
 import { DataMonitoringService } from '../../services/httpRequest/data-monitoring.service';
-import { timer } from 'rxjs/observable/timer';
+import { interval } from 'rxjs/observable/interval';
 import { StorageService } from 'src/app/services/storage.service';
+import { Subscription } from 'rxjs';
 declare var google;
 
 @Component({
@@ -12,7 +13,7 @@ declare var google;
   styleUrls: ['./air-maps.component.css']
 })
 
-export class AirMapsComponent implements OnInit {
+export class AirMapsComponent implements OnInit, OnDestroy {
 
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
@@ -44,6 +45,10 @@ export class AirMapsComponent implements OnInit {
   };
 
 
+  private subscribe: Subscription;
+  private isSubscription: boolean;
+
+
   constructor(
     private dataService: DataManagementService,
     private dmService: DataMonitoringService,
@@ -51,6 +56,9 @@ export class AirMapsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log("air-maps.component ngOnInit()");
+    this.isSubscription = true;
+
     this.reqData((result) => {
       this.data = result.data;
 
@@ -61,7 +69,7 @@ export class AirMapsComponent implements OnInit {
         center: new google.maps.LatLng(
           Number(this.data[result.firstKey].latitude),
           Number(this.data[result.firstKey].longitude)
-          ),
+        ),
         zoom: 4,
         draggableCursor: '',
         mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -81,13 +89,26 @@ export class AirMapsComponent implements OnInit {
        * Update markers
        */
       // every 5 seconds
-      const source = timer(1, 5000);
+      const source = interval(5000);
       //output: 1,2,3,4,5......
-      const subscribe = source.subscribe(val => {
-        this.updateMarkers();
+      this.subscribe = source.subscribe((val) => {
+        if (this.isSubscription) {
+          console.log('air-maps.component subscribe');
+          this.updateMarkers();
+        }
       });
 
     });
+  }
+
+  ngOnDestroy() {
+    console.log('air-maps.component ngOnDestroy()');
+    this.isSubscription = false;
+    
+    if (this.subscribe) {
+      console.log('air-maps.component unsubscribe')
+      this.subscribe.remove(this.subscribe);
+    }
   }
 
   // Function definition //
@@ -104,8 +125,9 @@ export class AirMapsComponent implements OnInit {
       var payload = {
         nsc: 0x00,
         provinceListEncodings: {
-          lat: this.currentLocation.latitude,
-          lng: this.currentLocation.longitude,
+          // lat: this.currentLocation.latitude,
+          // lng: this.currentLocation.longitude,
+          lat: 32.88247, lng: -117.23484,
           commonNatTierTuple: {
             nat: "Q30",
             commonStateTierTuple: [
@@ -121,14 +143,15 @@ export class AirMapsComponent implements OnInit {
         }
       }
 
-      if(this.storageService.get('userInfo') != null){
+      if (this.storageService.get('userInfo') != null) {
         payload.nsc = this.storageService.get('userInfo').nsc
       }
 
       this.dmService.RAV(payload, (result) => {
         if (result != null) {
 
-          var tlvData = result.payload.tlv;
+          var tlvData = this.dataService.rspRealtimeAirDataParsing(result.payload.realtimeAirQualityDataList);
+          console.log("RAV parsed tlvData =>", tlvData);
           var parsedData = { 'firstKey': '', 'data': {} };
 
           parsedData['firstKey'] = tlvData[0].mac;

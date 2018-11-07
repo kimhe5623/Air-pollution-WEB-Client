@@ -2,14 +2,13 @@
   <div class="col span_1_of_2">
     <nav class="navWrapper">
       <a class="logo on-surface" [routerLink]="['/']" routerLinkActive="router-link-active">
-        <img class="navImage" src="assets/icon.png"> &nbsp;
-        <strong>AiR</strong>ound
+        <strong>AiR</strong>ound&nbsp;U
       </a>
     </nav>
     <!-- Sign up Form -->
     <form fxLayout="column" class="example-container" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
       <h1>Create a New Account</h1>
-      <p>Start your <strong>AiR</strong>ound service</p>
+      <p>Start your <strong>AiR</strong>ound U service</p>
 
       <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
         <mat-form-field class="width48 margin-right2" fxFlex>
@@ -68,7 +67,7 @@
     </div>
 
   </div>
-  <div class="col span_1_of_2 rightSide secondary">
-    <img class="rightSide-img" src="assets/hot-air-balloon.png">
+  <div class="col span_1_of_2 rightSide signup">
+    <img class="rightSide-img" src="assets/signup.svg">
   </div>
 </div>

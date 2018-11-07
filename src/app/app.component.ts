@@ -11,9 +11,10 @@ export class AppComponent {
   constructor(
     private router: Router
   ) {
-    this.router.events.subscribe((val) => {
-      console.log("Route was changed!! => ", val);
-    });
+    // this.router.events.subscribe((val) => {
+    //   console.log("Route was changed!! => ", val);
+    // });
   }
 
+  
 }

@@ -86,7 +86,7 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <app-air-maps></app-air-maps>
+          <app-air-maps *ngIf="isSubscription"></app-air-maps>
         </mat-card-content>
       </mat-card>
     </div>
