@@ -105,15 +105,18 @@ export class HeartHistoryContentsComponent implements OnInit {
     console.log('startDate: ', this.startDate.value, ' endDate: ', this.endDate.value);
     var payload = {
       nsc: this.storageService.get('userInfo').nsc,
-      startDate: this.startDate.value,
-      endDate: new Date(new Date(this.endDate.value).setHours(23, 59, 59, 59))
+      sTs: Math.floor(new Date(this.startDate.value).getTime()/1000),
+      eTs: Math.floor(new Date(new Date(this.endDate.value).setHours(23, 59, 59, 59)).getTime()/1000),
+      nat: "Q30",
+      state:"Q99",
+      city:"Q16552"
     };
 
     if (tlv != null) payload['tlv'] = tlv
 
     this.dmService.HHV(payload, (rspMsg) => {
 
-      this.heartHistoryData = rspMsg.payload.tlv
+      this.heartHistoryData = this.dataService.rspHistoricalHeartDataParsing(rspMsg.payload.historicalHeartQualityDataListEncodings);
       this.numOfData = this.heartHistoryData.length;
       console.log(this.numOfData);
 

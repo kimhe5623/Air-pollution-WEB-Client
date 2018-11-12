@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { UserManagementService } from '../../services/httpRequest/user-management.service';
+import { KasService } from 'src/app/services/kas.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -16,7 +17,8 @@ export class SignInComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private umService: UserManagementService) {
+    private umService: UserManagementService,
+    private kasService: KasService) {
     this.signinForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern("^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$")]],
       password: ['', Validators.required]
@@ -54,6 +56,9 @@ export class SignInComponent implements OnInit, OnDestroy {
       this.umService.SGI(payload, (success)=>{
         if (!success) {
           alert('Failed');
+        }
+        else {
+          this.kasService.startTimer();
         }
       });
     }

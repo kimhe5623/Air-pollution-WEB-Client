@@ -14,7 +14,7 @@ export class KasDialog {
       }
 
     btnClick(){
-        this.data.isCanceled = true;
+        this.data.isCanceled = false;
     }
 }
 

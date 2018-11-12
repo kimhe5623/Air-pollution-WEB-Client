@@ -15,7 +15,8 @@ export class DataMonitoringService {
     private http: HttpClient,
     private storageService: StorageService,
     private msgService: MsgService,
-    private umService: UserManagementService) { }
+    private umService: UserManagementService,
+    private router: Router) { }
 
   /**
    * Latlng to address
@@ -33,16 +34,16 @@ export class DataMonitoringService {
   RAV(payload: any, cb) {
     var usn;
     if (this.storageService.get('userInfo') != null) {
-      usn = this.storageService.get('userInfo').usn
+      usn = Number(this.storageService.get('userInfo').usn)
     }
     else usn = 0x000000;
 
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.RAV_REQ, usn);
-    console.log("HTTP:RAV-REQ => ", reqMsg);
+    //console.log("HTTP:RAV-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        console.log("HTTP:RAV-RSP => ", rspMsg);
+        //console.log("HTTP:RAV-RSP => ", rspMsg);
         cb(rspMsg);
         if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.RAV_RSP, reqMsg.header.endpointId)) {
           cb(null); return;
@@ -61,6 +62,7 @@ export class DataMonitoringService {
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, () => {
+                this.router.navigate(['/']);
                 cb(null);
               });
               break;
@@ -75,10 +77,12 @@ export class DataMonitoringService {
 
   /** RHV */
   RHV(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.RHV_REQ, this.storageService.get('userInfo').usn);
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.RHV_REQ, Number(this.storageService.get('userInfo').usn));
+    console.log('RHV-REQ => ', reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
+        console.log('RHV-RSP => ', rspMsg);
         cb(rspMsg);
         if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.RHV_RSP, reqMsg.header.endpointId)) {
           cb(null); return;
@@ -97,6 +101,7 @@ export class DataMonitoringService {
               alert('Unallocated user sequence number');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, () => {
+                this.router.navigate(['/']);
                 cb(null);
               });
               break;
@@ -111,10 +116,13 @@ export class DataMonitoringService {
 
   /** HAV */
   HAV(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.HAV_REQ, this.storageService.get('userInfo').usn);
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.HAV_REQ, Number(this.storageService.get('userInfo').usn));
+    console.log("HAV-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
+        console.log("HAV-RSP => ", rspMsg);
+
         cb(rspMsg);
         if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.HAV_RSP, reqMsg.header.endpointId)) {
           cb(null); return;
@@ -133,6 +141,7 @@ export class DataMonitoringService {
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, () => {
+                this.router.navigate(['/']);
                 cb(null);
               });
               break;
@@ -151,19 +160,21 @@ export class DataMonitoringService {
   }
 
   /** SHR */
-  SHR(payload: any, isSignedin: boolean, cb) {
+  SHR(payload: any, cb) {
 
     var reqMsg: any;
 
-    if (isSignedin) {
-      reqMsg = this.msgService.packingMsg(payload, MSGTYPE.SHR_REQ, this.storageService.get('userInfo').usn);
+    if (this.storageService.get('userInfo') != null) {
+      reqMsg = this.msgService.packingMsg(payload, MSGTYPE.SHR_REQ, Number(this.storageService.get('userInfo').usn));
     }
     else {
-      reqMsg = this.msgService.packingMsg(payload, MSGTYPE.SHR_REQ, '000');
+      reqMsg = this.msgService.packingMsg(payload, MSGTYPE.SHR_REQ, 0);
     }
+    console.log('SHR-REQ => ', reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
+        console.log('SHR-RSP => ', rspMsg);
         cb(rspMsg);
         if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SHR_RSP, reqMsg.header.endpointId)) {
           cb(null);
@@ -184,6 +195,7 @@ export class DataMonitoringService {
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, () => {
+                this.router.navigate(['/']);
                 cb(null);
               });
               break;
@@ -204,9 +216,11 @@ export class DataMonitoringService {
   /** HHV */
   HHV(payload: any, cb) {
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.HHV_REQ, this.storageService.get('userInfo').usn);
+    console.log('HHV-REQ => ', reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
+        console.log('HHV-RSP => ', rspMsg);
         cb(rspMsg);
         if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.HHV_RSP, reqMsg.header.endpointId)) {
           cb(null); return;
@@ -227,6 +241,7 @@ export class DataMonitoringService {
               alert('Unallocated user sequence number.');
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, () => {
+                this.router.navigate(['/']);
                 cb(null);
               });
               break;
@@ -247,9 +262,11 @@ export class DataMonitoringService {
   /** KAS */
   KAS(payload: any, cb) {
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.KAS_REQ, this.storageService.get('userInfo').usn);
+    console.log('KAS-REQ => ', reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
+        console.log('KAS-RSP => ', rspMsg);
         cb(rspMsg);
         if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.KAS_RSP, reqMsg.header.endpointId)) {
           cb(null); return;
@@ -273,15 +290,14 @@ export class DataMonitoringService {
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
               this.umService.SGO(SGO_payload, () => {
+                this.router.navigate(['/']);
                 cb(null);
               });
               break;
 
             case (3): // reject-incorrect number of signed in completions
               alert('Already signed in another computer');
-              this.umService.SGO(SGO_payload, () => {
-                cb(null);
-              });
+              cb(null);
               break;
           }
         }

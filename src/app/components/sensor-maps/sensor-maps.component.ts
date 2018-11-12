@@ -63,20 +63,18 @@ export class SensorMapsComponent implements OnInit {
   reqData(cb) {
     var payload = {
       nsc: 0x00,
-      tlv: {
-        nationCode: '',
-        state: '',
-        city: ''
-      }
+      nat: "Q30",
+      state: "Q99",
+      city: "Q16552"
     }
     if (this.isSignedin) {
       payload.nsc = this.storageService.get('userInfo').nsc;
     }
 
-    this.dmService.SHR(payload, false, (result) => {
+    this.dmService.SHR(payload, (result) => {
       if (result != null) {
 
-        var tlvData = result.payload.tlv;
+        var tlvData = this.dataService.rspHistoricalSensorRecordDataParsing(result.payload.historyRecordList);
         var parsedData = { firstKey: '', data: {} };
 
         parsedData['firstKey'] = tlvData[0].mac;
@@ -120,22 +118,22 @@ export class SensorMapsComponent implements OnInit {
    */
   addInfoWindow(key) {
 
-      console.log('addListener =>', this.markers[key]['data']);
+    console.log('addListener =>', this.markers[key]['data']);
 
-      google.maps.event.clearListeners(this.markers[key], 'click');
-      
-      google.maps.event.addListener(this.markers[key], 'click', () => {
+    google.maps.event.clearListeners(this.markers[key], 'click');
 
-        this.getInfoWindowContents(this.markers[key]['data'], (contents) => {
-          this.infoWindow.close(); // Close previously opened infowindow
-          this.infoWindow.setContent(contents);
-          this.infoWindow.open(this.map, this.markers[key]);
-          this.clickedMarker = key;
+    google.maps.event.addListener(this.markers[key], 'click', () => {
 
-          console.log('clicked:', key);
+      this.getInfoWindowContents(this.markers[key]['data'], (contents) => {
+        this.infoWindow.close(); // Close previously opened infowindow
+        this.infoWindow.setContent(contents);
+        this.infoWindow.open(this.map, this.markers[key]);
+        this.clickedMarker = key;
 
-        });
+        console.log('clicked:', key);
+
       });
+    });
 
   }
 
@@ -159,9 +157,12 @@ export class SensorMapsComponent implements OnInit {
         th, td {
           padding: 7px;
         }
+        .center { 
+          text-align: center;
+        }
         </style>
         <h6 style="margin-bottom:5px; line-height: 30px">${locationName}</h6>
-        <p>Wifi MAC address: ${eachData.mac}</p>
+        <p>Wifi MAC address: ${this.dataService.rspToMacAddress(eachData.mac)}</p>
         <table>
           <tr>
             <th colspan="4">Measurement Start Date</th>
@@ -173,7 +174,7 @@ export class SensorMapsComponent implements OnInit {
           </tr>
           <tr>
             <th colspan="4">Sensor Activation</th>
-            <td colspan="4">${eachData.activation}</td>
+            <td colspan="4">${eachData.activation == 0 ? 'Registered' : eachData.activation == 1 ? 'Associated' : eachData.activation == 2 ? 'Operating' : eachData.activation == 3 ? 'Deregistered' : ''}</td>
           </tr>
           <tr>
           <th colspan="8" style="border-left: solid #fff; border-right: solid #fff;"></th>
@@ -192,14 +193,14 @@ export class SensorMapsComponent implements OnInit {
             <th>GPS</th>
           </tr>
           <tr>
-            <td>${true}</td>
-            <td>${false}</td>
-            <td>${true}</td>
-            <td>${true}</td>
-            <td>${true}</td>
-            <td>${false}</td>
-            <td>${true}</td>
-            <td>${true}</td>
+            <td class="center">${eachData.status.temp ? '<i class="fa fa-circle" style="color: #03daa4" aria-hidden="true"></i>' : '<i class="fa fa-circle" style="color: #8585858c" aria-hidden="true"></i>'}</td>
+            <td class="center">${eachData.status.co ? '<i class="fa fa-circle" style="color: #03daa4" aria-hidden="true"></i>' : '<i class="fa fa-circle" style="color: #8585858c" aria-hidden="true"></i>'}</td>
+            <td class="center">${eachData.status.o3 ? '<i class="fa fa-circle" style="color: #03daa4" aria-hidden="true"></i>' : '<i class="fa fa-circle" style="color: #8585858c" aria-hidden="true"></i>'}</td>
+            <td class="center">${eachData.status.no2 ? '<i class="fa fa-circle" style="color: #03daa4" aria-hidden="true"></i>' : '<i class="fa fa-circle" style="color: #8585858c" aria-hidden="true"></i>'}</td>
+            <td class="center">${eachData.status.so2 ? '<i class="fa fa-circle" style="color: #03daa4" aria-hidden="true"></i>' : '<i class="fa fa-circle" style="color: #8585858c" aria-hidden="true"></i>'}</td>
+            <td class="center">${eachData.status.pm25 ? '<i class="fa fa-circle" style="color: #03daa4" aria-hidden="true"></i>' : '<i class="fa fa-circle" style="color: #8585858c" aria-hidden="true"></i>'}</td>
+            <td class="center">${eachData.status.pm10 ? '<i class="fa fa-circle" style="color: #03daa4" aria-hidden="true"></i>' : '<i class="fa fa-circle" style="color: #8585858c" aria-hidden="true"></i>'}</td>
+            <td class="center">${eachData.status.gps ? '<i class="fa fa-circle" style="color: #03daa4" aria-hidden="true"></i>' : '<i class="fa fa-circle" style="color: #8585858c" aria-hidden="true"></i>'}</td>
           </tr>
         </table> `;
       cb(contents);

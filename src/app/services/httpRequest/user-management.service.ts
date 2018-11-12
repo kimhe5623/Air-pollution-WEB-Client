@@ -54,7 +54,7 @@ export class UserManagementService {
   }
 
   /** UVC */
-  UVC(payload: any, EP: string, cb) {
+  UVC(payload: any, EP: number, cb) {
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.UVC_REQ, EP);
     console.log("HTTP:UVC-REQ => ", reqMsg);
 
@@ -146,7 +146,7 @@ export class UserManagementService {
 
   /** SGO */
   SGO(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SGO_NOT, this.storageService.get('userInfo').usn);
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SGO_NOT, Number(this.storageService.get('userInfo').usn));
     console.log("HTTP:SGO-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
@@ -183,7 +183,7 @@ export class UserManagementService {
 
   /** UPC */
   UPC(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.UPC_REQ, this.storageService.get('userInfo').usn);
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.UPC_REQ, Number(this.storageService.get('userInfo').usn));
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {

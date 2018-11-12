@@ -1,11 +1,11 @@
 <h1 mat-dialog-title>Deregister account</h1>
-<mat-dialog-content class="dialog">
+<div mat-dialog-content class="dialog">
     <strong>Are you sure to deregister your account?</strong>
-</mat-dialog-content>
-<mat-dialog-actions style="padding-left: 12.5rem">
+</div>
+<div mat-dialog-actions style="padding-left: 12.5rem">
     <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle cancel" (click)="btnClick(true)"
         mdbWavesEffect>Cancel</button>
     <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
     <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle primary-variant" (click)="btnClick(false)"
         mdbWavesEffect>Deregister</button>
-</mat-dialog-actions>
+</div>

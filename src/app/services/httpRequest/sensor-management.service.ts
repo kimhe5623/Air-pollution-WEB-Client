@@ -21,7 +21,7 @@ export class SensorManagementService {
 
   /** ASR */
   ASR(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.ASR_REQ, this.storageService.get('userInfo').usn);
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.ASR_REQ, Number(this.storageService.get('userInfo').usn));
     console.log('ASR-REQ => ', reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
@@ -46,7 +46,7 @@ export class SensorManagementService {
 
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
-              var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
+              var SGO_payload = { nsc: Number(this.storageService.get('userInfo').nsc) };
               this.umService.SGO(SGO_payload, () => {
                 cb(false);
               });
@@ -54,7 +54,7 @@ export class SensorManagementService {
 
             case (3): // reject-unauthorized user sequence number
               alert('Unauthorized user sequence number.');
-              var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
+              var SGO_payload = { nsc: Number(this.storageService.get('userInfo').nsc) };
               this.umService.SGO(SGO_payload, () => {
                 cb(false);
               });
@@ -66,7 +66,7 @@ export class SensorManagementService {
 
   /** ASD */
   ASD(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.ASD_REQ, this.storageService.get('userInfo').usn);
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.ASD_REQ, Number(this.storageService.get('userInfo').usn));
 
     console.log('ASD-REQ => ', reqMsg);
     this.http.post(`/serverapi`, reqMsg)
@@ -130,7 +130,7 @@ export class SensorManagementService {
 
   /** ASV */
   ASV(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.ASV_REQ, this.storageService.get('userInfo').usn);
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.ASV_REQ, Number(this.storageService.get('userInfo').usn));
     console.log(reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
@@ -174,7 +174,7 @@ export class SensorManagementService {
 
   /** SRG */
   SRG(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SRG_REQ, this.storageService.get('userInfo').usn);
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SRG_REQ, Number(this.storageService.get('userInfo').usn));
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
@@ -214,7 +214,7 @@ export class SensorManagementService {
 
   /** SAS */
   SAS(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SAS_REQ, this.storageService.get('userInfo').usn);
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SAS_REQ, Number(this.storageService.get('userInfo').usn));
     console.log("SAS-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
@@ -266,7 +266,7 @@ export class SensorManagementService {
 
   /** SDD */
   SDD(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SDD_REQ, this.storageService.get('userInfo').usn);
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SDD_REQ, Number(this.storageService.get('userInfo').usn));
     console.log("HTTP:SDD-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
@@ -314,7 +314,7 @@ export class SensorManagementService {
 
   /** SLV */
   SLV(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SLV_REQ, this.storageService.get('userInfo').usn);
+    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SLV_REQ, Number(this.storageService.get('userInfo').usn));
     console.log("HTTP:SLV-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
@@ -333,7 +333,6 @@ export class SensorManagementService {
 
             case (1): // reject-other
               alert('Unknown error');
-              this.router.navigate(['/dashboard']);
               cb(null);
               break;
 

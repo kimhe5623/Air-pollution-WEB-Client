@@ -68,6 +68,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   timeLists: any = [];
   selectedTime: string = "";
   selectedMac: string = "";
+  selectedAirdata: any = {};
   firstKeys: any = {};
 
   /**
@@ -190,6 +191,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   /**----*/
   isSearched: boolean = false;
 
+
   constructor(
     private dataService: DataManagementService,
     private dmService: DataMonitoringService,
@@ -211,20 +213,19 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   reqData(cb) {
     var payload = {
       nsc: this.storageService.get('userInfo').nsc,
-      ownershipCode: 0,
-      startDate: this.startDate.value,
-      endDate: new Date(new Date(this.endDate.value).setHours(23, 59, 59, 59)),
+      ownershipCode: "1",
+      sTs: Math.floor(new Date(this.startDate.value).getTime()/1000),
+      eTs: Math.floor(new Date(new Date(this.endDate.value).setHours(23, 59, 59, 59)).getTime()/1000),
       // Number of HAV Fragments Required for Retransmission, (if it is 0, =>) List of Unsuccessful HAV Fragment Sequence Numbers
-      tlv: {
-        nationCode: 1231,
-        state: 123123,
-        city: 122
-      }
+      nat: "Q30",
+      state: "Q99",
+      city: "Q16552",
     }
 
     this.dmService.HAV(payload, (result) => {
-
-      if (result != null) {
+      if(result == null) cb(null);
+      
+      else if (result.payload.historicalAirQualityDataListEncodings.length != 0) {
         var tlvData = this.dataService.rspHistoricalAirDataParsing(result.payload.historicalAirQualityDataListEncodings);
         var tspBasedData = {};
 
@@ -276,19 +277,23 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     this.isSearched = true;
 
     this.reqData((result) => {
-      this.airData = result;
-
-      console.log('parsed Data: ', this.airData);
-      console.log('timeLists: ', this.timeLists);
-      console.log('firstKeys: ', this.firstKeys);
-
-      this.previousTimeSliderValue = 0;
-
-      this.selectedTime = this.dataService.formattingDate(new Date(Number(this.timeLists[this.timeSliderValue])));
-      this.selectedMac = this.firstKeys[this.timeLists[this.timeSliderValue]];
-      console.log('selectedTime => ', this.selectedTime, ' selectedMac => ', this.selectedMac);
-
       if (result != null) {
+
+        this.airData = result;
+
+        console.log('parsed Data: ', this.airData);
+        console.log('timeLists: ', this.timeLists);
+        console.log('firstKeys: ', this.firstKeys);
+
+        this.previousTimeSliderValue = 0;
+
+        this.selectedTime = this.dataService.formattingDate(new Date(Number(this.timeLists[this.timeSliderValue])));
+        this.selectedMac = this.dataService.rspToMacAddress(this.firstKeys[this.timeLists[this.timeSliderValue]]);
+        this.selectedAirdata = this.airData[this.timeLists[this.timeSliderValue]][this.firstKeys[this.timeLists[this.timeSliderValue]]];
+        console.log('selectedTime => ', this.selectedTime, ' selectedMac => ', this.selectedMac);
+        console.log('selectedAirdata => ', this.selectedAirdata);
+
+
         this.mapInit();
 
         // Chart data
@@ -304,6 +309,10 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
         console.log('airChartDataAll => ', this.airChartDataAll);
         console.log('chartLables => ', this.chartLabels);
+      }
+      else {
+        console.log('No selected data');
+        this.selectedTime = "No selected data";
       }
     });
   }
@@ -330,6 +339,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     console.log(this.timeSliderValue);
 
     this.selectedTime = this.dataService.formattingDate(new Date(Number(this.timeLists[this.timeSliderValue])));
+    this.selectedAirdata = this.airData[this.timeLists[this.timeSliderValue]][this.firstKeys[this.timeLists[this.timeSliderValue]]];
     console.log('selectedTime => ', this.selectedTime);
 
     this.keyCheck(() => {
@@ -343,7 +353,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
         this.addEachMarker(this.newKeys[i]);
       }
 
-      // In case of removed Kyes,
+      // In case of removed Keys,
       for (var i = 0; i < this.removedKeys.length; i++) {
         this.removeMarkerOnMap(this.removedKeys[i]);
       }
@@ -564,8 +574,9 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
         //console.log('click:', this.clickedMarker);
 
-        // Update the selected Mac value
+        // Update the selected Mac value & selected Air data
         this.selectedMac = key;
+        this.selectedAirdata = this.airData[this.timeLists[this.timeSliderValue]][this.firstKeys[this.timeLists[this.timeSliderValue]]];
 
         // Update the Chart data
         this.airChartDataAll = this.dataService.getChartData(this.airDataForCharts[key]);
@@ -671,8 +682,10 @@ export class AirSensorHistoryContentsComponent implements OnInit {
    * @param eachData: each data
    */
   aqiAvg(eachData: any): number {
-    var sum: number = eachData.AQI_CO + eachData.AQI_NO2 + eachData.AQI_O3
-      + eachData.AQI_SO2 + eachData.AQI_PM10 + eachData.AQI_PM25;
+    if (eachData != null) {
+      var sum: number = eachData.AQI_CO + eachData.AQI_NO2 + eachData.AQI_O3
+        + eachData.AQI_SO2 + eachData.AQI_PM10 + eachData.AQI_PM25;
+    }
 
     return Math.floor(sum / 6);
   }

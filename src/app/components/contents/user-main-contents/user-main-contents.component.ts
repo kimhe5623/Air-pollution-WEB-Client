@@ -3,8 +3,6 @@ import { UnitsType } from 'src/app/components/temperature/temperature.component'
 import { DataMonitoringService } from 'src/app/services/httpRequest/data-monitoring.service';
 import { DataManagementService } from 'src/app/services/data-management.service';
 import { SessionStorageService } from 'ngx-store';
-import { interval } from 'rxjs/observable/interval';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-user-main-contents',
@@ -119,7 +117,8 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
   /**
    * AQI, Heart data
    */
-  nearestSensorAddress: string = '';
+  nearestSensorAddress: string = 'No sensor address';
+  nearestSensorMac: string = 'No sensor mac address ';
   nearestSensordata: any = {};
   currentAirdata: any = {};
   currentAirdata_stringfied: string = '';
@@ -133,8 +132,8 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
   };
   num_of_data: number;
 
-  private subscribe: Subscription;
-  private isSubscription: boolean;
+  private interval: any;
+  private inInterval: boolean;
 
   constructor(
     private dmService: DataMonitoringService,
@@ -143,25 +142,25 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.isSubscription = true;
+
+    this.inInterval = true;
     this.currentUnit = 'C';
     this.setCurrentHeartdata();
     this.setNearestSensordata();
 
     // every 5 seconds
-    const source = interval(5000);
-    // output: 1,2,3,4,5......
-    this.subscribe = source.subscribe(() => {
-      if(this.isSubscription){
+
+    this.interval = setInterval(() => {
+      if(this.inInterval){
         this.setCurrentHeartdata();
       }
-    });
+    }, 5000);
   }
 
   ngOnDestroy() {
     console.log("user-main was destroyed");
-    this.isSubscription = false;
-    this.subscribe.unsubscribe();
+    clearInterval(this.interval);
+    this.inInterval = false;
   }
 
   // public chartClicked(e: any): void { }
@@ -187,6 +186,7 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
     this.dataService.getNearestSensorData((data) => {
 
       if (data != null) {
+        this.nearestSensorMac = this.dataService.rspToMacAddress(data[0].mac);
         console.log('setNearestSensordata: ', data);
         this.dmService.latlngToAddress(data[0]['latitude'], data[0]['longitude'], (address)=>{
           console.log('nearestSensorAddress: ', address);

@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>Associate new sensor</h1>
-<mat-dialog-content class="dialog">
+<div mat-dialog-content class="dialog">
     <form class="example-form">
         <mat-form-field class="example-full-width inputStyle">
             <input matInput placeholder="Enter sensor MAC address" [formControl]="associationForm">
@@ -9,10 +9,10 @@
         <mat-radio-button [value]="0" style="margin-right:2rem" checked>Stationary</mat-radio-button>
         <mat-radio-button [value]="1">Portable</mat-radio-button>
     </mat-radio-group>
-</mat-dialog-content>
-<mat-dialog-actions style="padding-left: 7rem">
+</div>
+<div mat-dialog-actions style="padding-left: 7rem">
     <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle cancel" (click)="btnClick(true)" mdbWavesEffect>Cancel</button>
     <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
     <button mdbBtn [mat-dialog-close]="data" [disabled]="associationForm.invalid" class="waves-light btnStyle primary-variant"
         (click)="btnClick(false)" mdbWavesEffect>Associate</button>
-</mat-dialog-actions>
+</div>

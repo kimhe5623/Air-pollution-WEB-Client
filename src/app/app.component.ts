@@ -1,20 +1,21 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { KasService } from './services/kas.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'app';
   constructor(
-    private router: Router
-  ) {
-    // this.router.events.subscribe((val) => {
-    //   console.log("Route was changed!! => ", val);
-    // });
-  }
+    public kasService: KasService
+  ) {}
 
+  ngOnInit() {
+    console.log('kasService init()');
+    this.kasService.init();
+    
+  }
   
 }

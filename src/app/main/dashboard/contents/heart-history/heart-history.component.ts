@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { StorageService } from 'src/app/services/storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-heart-history',
@@ -6,6 +8,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./heart-history.component.css']
 })
 export class HeartHistoryComponent implements OnInit {
-  ngOnInit(){}
-  constructor(){}
+  constructor(
+    private storageService: StorageService,
+    private router: Router){}
+
+  ngOnInit(){
+    if(this.storageService.get('userInfo') == null){
+      this.router.navigate(['/page-not-found']);
+    }
+  }
 }

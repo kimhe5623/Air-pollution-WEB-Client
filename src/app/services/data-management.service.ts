@@ -9,7 +9,7 @@ export class DataManagementService {
 
   constructor(
     private sessionStorageService: SessionStorageService,
-    private dmService: DataMonitoringService
+    private dmService: DataMonitoringService,
   ) { }
 
   /**
@@ -18,14 +18,16 @@ export class DataManagementService {
    */
   rspRealtimeAirDataParsing(rsp: any): any {
 
+    //console.log("Entered realtime air rsp data => ", rsp);
     var result: any = [];
+
     for (var i = 0; i < rsp.length; i++) {
       var splitedData = rsp[i].split(',');
-      console.log('Splited! =>', splitedData);
+      //console.log('Splited! =>', splitedData);
 
       result.push({
         mac: splitedData[0],
-        timestamp: new Date(Number(splitedData[1])),
+        timestamp: new Date(Number(splitedData[1]) * 1000),
         latitude: Number(splitedData[2]),
         longitude: Number(splitedData[3]),
         temperature: Number(splitedData[4]),
@@ -43,48 +45,105 @@ export class DataManagementService {
         AQI_PM10: Number(splitedData[16]),
       });
     }
+
+    //console.log("Returned realtime parsed data => ", result)
     return result;
   }
 
   /**
-   * HTTP response data parsing: Realtime air data
+   * HTTP response data parsing: Historical air data
    * @param rsp 
    */
   rspHistoricalAirDataParsing(rsp: any): any {
 
+    console.log("Entered historical air rsp data => ", rsp);
     var result: any = [];
 
-      for (var i = 0; i <rsp.length; i++) {
-        for (var j = 0; j < rsp.commonDataTierTuple.length; j++) {
+    for (var i = 0; i < rsp.length; i++) {
 
-          var splitedData = rsp[i].split(',');
-          console.log('Splited! =>', rsp[i].commonDataTierTuple[j]);
+      for(var j = 0; j < rsp[i].commonDataTierTuple.length; j++){
 
-          result.push({
-            mac: rsp[i].wmac,
-            latitude: rsp[i].lat,
-            longitude: rsp[i].lng,
-            timestamp: splitedData[0],
-            temperature: splitedData[1],
-            CO: splitedData[2],
-            O3: splitedData[3],
-            NO2: splitedData[4],
-            SO2: splitedData[5],
-            PM25: splitedData[6],
-            PM10: splitedData[7],
-            AQI_CO: splitedData[8],
-            AQI_O3: splitedData[9],
-            AQI_NO2: splitedData[10],
-            AQI_SO2: splitedData[11],
-            AQI_PM25: splitedData[12],
-            AQI_PM10: splitedData[13],
-          })
-        }
+        var splitedData = rsp[i].commonDataTierTuple[j].split(',');
+        //console.log('Splited! =>', splitedData);
+  
+        result.push({
+          mac: rsp[i].wmac,
+          timestamp: new Date(Number(splitedData[0]) * 1000),
+          latitude: Number(rsp[i].lat),
+          longitude: Number(rsp[i].lng),
+          temperature: Number(splitedData[1]),
+          CO: Number(splitedData[2]),
+          O3: Number(splitedData[3]),
+          NO2: Number(splitedData[4]),
+          SO2: Number(splitedData[5]),
+          PM25: Number(splitedData[6]),
+          PM10: Number(splitedData[7]),
+          AQI_CO: Number(splitedData[8]),
+          AQI_O3: Number(splitedData[9]),
+          AQI_NO2: Number(splitedData[10]),
+          AQI_SO2: Number(splitedData[11]),
+          AQI_PM25: Number(splitedData[12]),
+          AQI_PM10: Number(splitedData[13]),
+        });
       }
+    }
 
+
+    console.log("Returned historical parsed data => ", result);
     return result;
   }
 
+  /**
+   * HTTP response data parsing: Historical heart data
+   * @param rsp 
+   */
+  rspHistoricalHeartDataParsing(rsp: any): any {
+
+    console.log("Entered historical heart rsp data => ", rsp);
+    var result: any = [];
+
+    for (var i = 0; i < rsp.length; i++) {
+      var splitedData = rsp[i].split(',');
+      //console.log('Splited! =>', splitedData);
+
+      result.push({
+        timestamp: new Date(Number(splitedData[0]) * 1000),
+        latitude: Number(splitedData[1]),
+        longitude: Number(splitedData[2]),
+        heartrate: Number(splitedData[3]),
+      });
+    }
+
+    console.log("Returned historical heart parsed data => ", result);
+    return result;
+  }
+
+  /**
+   * HTTP response data parsing: Sensor historical record view
+   * @param rsp 
+   */
+  rspHistoricalSensorRecordDataParsing(rsp: any): any {
+
+    console.log("Entered historical sensor record rsp data => ", rsp);
+    var result: any = [];
+
+    for (var i = 0; i < rsp.length; i++) {
+      //console.log('Splited! =>', splitedData);
+
+      result.push({
+        mac: rsp[i][0],
+        latitude: Number(rsp[i][1]),
+        longitude: Number(rsp[i][2]),
+        measurementStartDate: new Date(Number(rsp[i][3])*1000),
+        measurementEndDate: new Date(Number(rsp[i][4])*1000),
+        activation: Number(rsp[i][5]),
+        status: this.sensorStatusParsing(Number(rsp[i][6])),
+      });
+    }
+
+    console.log("Returned historical sensor record parsed data => ", result);
+    return result;
+  }
 
   /**
    * Change the input string format to the mac address format like 'AA:BB:CC:DD:EE:FF'
@@ -316,24 +375,23 @@ export class DataManagementService {
       var currentTime: Date = new Date();
       var payload = {
         nsc: this.sessionStorageService.get('userInfo').nsc,
-        ownership: 1,
-        start_tsp: new Date(new Date(currentTime.getTime()).setDate(currentTime.getDate() - 2)),
-        end_tsp: currentTime,
-        num_of_retransmission: 0,
-        list_of_unsuccessful_serials: [],
-        tlv: {
-          nation: currentAddress.address.results[0].address_components[7].short_name,
-          state: currentAddress.address.results[0].address_components[6].short_name,
-          city: currentAddress.address.results[0].address_components[4].short_name
-        }
+        ownershipCode: "1",
+        sTs: Math.floor(new Date(new Date(currentTime.getTime()).setDate(currentTime.getDate() - 2)).getTime() / 1000),
+        eTs: Math.floor(currentTime.getTime() / 1000),
+        // nat: currentAddress.address.results[0].address_components[7].short_name,
+        // state: currentAddress.address.results[0].address_components[6].short_name,
+        // city: currentAddress.address.results[0].address_components[4].short_name
+        nat: "Q30",
+        state: "Q99",
+        city: "Q16552",
       }
 
       this.dmService.HAV(payload, (result) => {
 
         // callback
-        if (result != null) {
+        if (result != null && result.payload.historicalAirQualityDataListEncodings.length != 0) {
           /** Finding the nearest sensor */
-          var tlv: any = result.payload.tlv;
+          var tlv: any = this.rspHistoricalAirDataParsing(result.payload.historicalAirQualityDataListEncodings);
           var distances: any = this.getDistances(currentAddress.currentLatlng, tlv);
           var selectedMac: string = tlv[this.min(distances).idx]['mac'];
           var nearestSensorData: any = [];

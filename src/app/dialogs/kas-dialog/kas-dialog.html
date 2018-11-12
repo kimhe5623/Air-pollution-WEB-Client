@@ -1,8 +1,8 @@
 <h1 mat-dialog-title>Keep alive</h1>
-<mat-dialog-content class="dialog">
+<div mat-dialog-content class="dialog">
     Do you want to stay on?
-</mat-dialog-content>
-<mat-dialog-actions style="padding-left: 7rem;">
-    <button mdbBtn [mat-dialog-close]="data" [disabled]="associationForm.invalid" class="waves-light btnStyle primary-variant"
+</div>
+<div mat-dialog-actions style="padding-left: 7rem;">
+    <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle primary-variant"
         (click)="btnClick()" mdbWavesEffect>Yes</button>
-</mat-dialog-actions>
+</div>

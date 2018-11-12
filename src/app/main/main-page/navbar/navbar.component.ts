@@ -49,18 +49,28 @@ export class NavbarComponent implements OnInit {
         this.storageService.set('menuNum', 1);
         this.router.navigate(['/solutions']);
         break;
+
       case (2): // => technology
         this.storageService.set('menuNum', 2);
         this.router.navigate(['/technology']);
         break;
+
       case (3): // => introduction
         this.storageService.set('menuNum', 3);
         this.router.navigate(['/introduction']);
         break;
+
       case (4): // => sign in
         this.storageService.set('menuNum', 0);
-        this.router.navigate(['/signin']);
+
+        if(this.storageService.get('userInfo') != null){
+          this.router.navigate(['/dashboard']);
+        }
+        else {
+          this.router.navigate(['/signin']);
+        }
         break;
+        
       case (5): // => administrator
         this.storageService.set('menuNum', 0);
         this.router.navigate(['/signin']);

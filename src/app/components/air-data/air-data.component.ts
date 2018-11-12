@@ -26,11 +26,12 @@ export class AirDataComponent implements OnInit, DoCheck {
     unhealthy2: ['Unhealthy', 'var(--aqi-unhealthy)'],
     unhealthy3: ['Very unhealthy', 'var(--aqi-very-unhealthy)'],
     hazardous: ['Hazardous', 'var(--aqi-hazardous)'],
+    undefined: ['Undefined', 'var(--aqi-undefined)'],
   };
 
   air_type: any = {
     CO: ['CO', 'ppm'],
-    O3: ['O3', 'µg/m3'],
+    O3: ['O3', 'ppm'],
     NO2: ['NO2', 'ppb'],
     SO2: ['SO2', 'ppb'],
     PM25: ['PM2.5', 'µg/m3'],
@@ -108,20 +109,24 @@ export class AirDataComponent implements OnInit, DoCheck {
     const changes = this.differ.diff(this.data);
 
     if (changes) {
+      //console.log('NgDoCheck this.data => ', this.data);
       for (var key in this.air_type) {
         this.aqi_data[key] = this.data['AQI_' + key];
         this.air_data[key] = this.data[key];
       }
+      //console.log('NgDoCheck this.aqi_data => ', this.aqi_data);
+      //console.log('NgDoCheck this.air_data => ', this.air_data);
 
       this.shown_aqi = this.dataService.minDev('CO', this.aqi_data);
       this.hover(this.shown_aqi['key']);
       this.dominent = this.shown_aqi.key;
+
     }
   }
 
   ngOnInit() {
-    console.log(">>air-data component");
-    console.log('Entered data:', this.data);
+    //console.log(">>air-data component");
+    //console.log('Entered data:', this.data);
 
     // Style setting
     this.aqi_style['width'] = `${this.radius}px`;
@@ -160,13 +165,14 @@ export class AirDataComponent implements OnInit, DoCheck {
     // Data setting
     this.shown_aqi = { key: airtype, value: this.aqi_data[airtype] };
     this.current_description = this.description[this.getCurrentDescription(this.shown_aqi['value'])];
+    //console.log('hover!', airtype, ' this.aqi_data => ',this.aqi_data , ' this.shown_aqi => ', this.shown_aqi);
 
     // Style setting
     for (var key in this.each_air_data_style) {
       this.each_air_data_style[key] = this.JSON_copy(this.airdata_style);
     }
 
-    console.log('hover: ', this.shown_aqi);
+    //console.log('hover: ', this.shown_aqi);
 
     this.aqi_style['border'] = "solid 12px "+ this.current_description[1];
     this.each_air_data_style[airtype]['border'] = "solid 5px " +
@@ -187,5 +193,6 @@ export class AirDataComponent implements OnInit, DoCheck {
     else if (aqi >= 151 && aqi <= 200) return 'unhealthy2';
     else if (aqi >= 201 && aqi <= 300) return 'unhealthy3';
     else if (aqi >= 301 && aqi <= 500) return 'hazardous';
+    else return 'undefined';
   }
 }

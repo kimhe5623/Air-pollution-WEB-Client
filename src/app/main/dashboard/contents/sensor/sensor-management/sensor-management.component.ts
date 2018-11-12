@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { StorageService } from 'src/app/services/storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sensor-management',
@@ -6,6 +8,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sensor-management.component.css']
 })
 export class SensorManagementComponent implements OnInit {
-  ngOnInit(){}
-  constructor(){}
+
+  constructor(
+    private storageService: StorageService,
+    private router: Router){}
+
+  ngOnInit(){
+    if(this.storageService.get('userInfo') == null){
+      this.router.navigate(['/page-not-found']);
+    }
+  }
 }

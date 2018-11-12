@@ -161,6 +161,7 @@
     --aqi-unhealthy: #ec4545ab;
     --aqi-very-unhealthy: #b046e0ab;
     --aqi-hazardous: #6b132eab;
+    --aqi-undefined: #4e4e4e;
     --grey: #949393ab;
     --any: #bec4f8;
     /*-------------------------*/

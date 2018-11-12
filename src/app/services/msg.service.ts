@@ -8,10 +8,10 @@ export class MsgService {
   constructor() { }
 
   /** MsgPacking (if EP is tci, EP == null) */
-  packingMsg(payload: any, msgType: number, EP: string): any {
+  packingMsg(payload: any, msgType: number, EP: number): any {
 
     if (EP == null) {
-      EP = Math.random().toString(36).replace(/[^a-zA-Z0-9]+/g, '').substr(0, 3);
+      EP = Number(Math.random().toString(36).replace(/[^0-9]+/g, '').substr(0, 3));
     }
 
     var packedMsg: any = {

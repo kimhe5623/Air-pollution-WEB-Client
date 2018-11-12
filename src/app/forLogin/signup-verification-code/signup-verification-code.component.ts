@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TIMER } from 'src/app/header';
@@ -9,14 +9,16 @@ import { UserManagementService } from 'src/app/services/httpRequest/user-managem
   templateUrl: './signup-verification-code.component.html',
   styleUrls: ['./signup-verification-code.component.css']
 })
-export class SignupVerificationCodeComponent implements OnInit {
+export class SignupVerificationCodeComponent implements OnInit, OnDestroy {
   email: string;
   verificationCode: string;
-  tci: string;
+  tci: number;
   vfc: any = [];
   timerStyle: any = { 'badge': true, 'badge-default': true, 'font10': true, 'margin-top10': true };
   settedTime: number;
   sub: any;
+
+  timerDisplay: boolean;
 
   vfcFormControl: FormControl;
   constructor(
@@ -25,19 +27,25 @@ export class SignupVerificationCodeComponent implements OnInit {
     private umService: UserManagementService,
   ) {
     this.route.params.subscribe(params => {
-      this.tci = params['tci'];
+      this.tci = Number(params['tci']);
       this.email = params['email'];
       this.verificationCode = params['vfc'];
     })
   }
 
   ngOnInit() {
+    this.timerDisplay = true;
+
     this.settedTime = TIMER.T551;
     this.vfcFormControl = new FormControl('', [Validators.required, Validators.minLength(16), Validators.maxLength(16)])
 
     for (var i = 0; i < this.verificationCode.length; i++) {
       this.vfc.push(this.verificationCode.charAt(i));
     }
+  }
+
+  ngOnDestroy(){
+    this.timerDisplay = false;
   }
 
   getCodeErrorMessage() {

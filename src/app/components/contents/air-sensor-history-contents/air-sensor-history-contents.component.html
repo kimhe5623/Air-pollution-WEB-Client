@@ -42,18 +42,25 @@
     </div>
     <!----------------------------------------->
     <div class="col-lg-12 col-xl-7" [ngClass]="{'hidden':!isSearched}">
-      <mat-card class="card">
-        <mat-card-title>
-          {{selectedMac}}
-        </mat-card-title>
-        <mat-card-content>
-          <canvas mdbChart [chartType]="chartType" [datasets]="airChartData" [labels]="chartLabels" [colors]="airChartColors"
-            [options]="chartOptions" [legend]="true" (chartClick)="chartClicked($event)">
-          </canvas>
-        </mat-card-content>
-      </mat-card>
+      <div class="row">
+        <mat-card class="card">
+          <mat-card-title>
+            {{selectedMac}}
+          </mat-card-title>
+          <mat-card-content>
+            <div class="row" style="margin-top:1.2rem; margin-bottom: 1.3rem">
+              <!-- airData Circles -->
+              <app-air-data [radius]="150" [sub_radius]="80" main_color='#FFFFFF' main_font_color='#000' hovered_color='var(--grey)'
+                hovered_font_color='#fff' dominent_color='' [data]='selectedAirdata'></app-air-data>
+            </div>
+            <div class="row">
+              <canvas mdbChart [chartType]="chartType" [datasets]="airChartData" [labels]="chartLabels" [colors]="airChartColors"
+                [options]="chartOptions" [legend]="true" (chartClick)="chartClicked($event)">
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
     </div>
   </div>
-
-
 </div>

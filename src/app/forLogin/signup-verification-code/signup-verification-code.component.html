@@ -6,7 +6,7 @@
       <span class="vfcBox" *ngFor="let v of vfc">{{v}}</span>
     </div>
     <div class="timerContainer">
-      <app-timer [style]="timerStyle" [visible]="true" [seconds]="settedTime" (timeout)="isTimeout($event)"></app-timer>
+      <app-timer *ngIf="timerDisplay" [style]="timerStyle" [visible]="true" [seconds]="settedTime" (timeout)="isTimeout($event)"></app-timer>
     </div>
     <form fxLayout="column" class="example-container" (ngSubmit)="onSubmit()">
       <div class="input-row">

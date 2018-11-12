@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { StorageService } from 'src/app/services/storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-change-password',
@@ -6,6 +8,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./user-change-password.component.css']
 })
 export class UserChangePasswordComponent implements OnInit {
-  ngOnInit(){}
-  constructor(){}
+
+  constructor(
+    private storageService: StorageService,
+    private router: Router){}
+
+  ngOnInit(){
+    if(this.storageService.get('userInfo') == null){
+      this.router.navigate(['/page-not-found']);
+    }
+  }
 }

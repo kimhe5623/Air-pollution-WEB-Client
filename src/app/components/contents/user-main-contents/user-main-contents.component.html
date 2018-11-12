@@ -8,7 +8,7 @@
             </div>
             <div class="col-6">
               <!-- Heart rate -->
-              <circle-progress [percent]="currentHeartdata.heartrate/2" [radius]="60" [outerStrokeWidth]="16"
+              <circle-progress [percent]="currentHeartdata.hr" [radius]="60" [outerStrokeWidth]="16"
                 [innerStrokeWidth]="8" outerStrokeColor='var(--heartRate)' innerStrokeColor='var(--heartRate-light)'
                 [animation]="true" [animationDuration]="300" [titleFontSize]="30" [showUnits]="false" subtitle='bpm'
                 [subtitleFontSize]="20"></circle-progress>
@@ -39,7 +39,7 @@
             <!-- Temperature Chart: Fahrenheit -->
             <div style="display: block" *ngIf="currentUnit == 'F'">
               <canvas mdbChart [chartType]="chartType" [datasets]="temp_fahr" [labels]="chartLabels" [colors]="chartColors"
-                [options]="chartOptions" [legend]="true" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)">
+                [options]="chartOptions" [legend]="true">
               </canvas>
             </div>
           </mat-card-content>
@@ -57,6 +57,7 @@
           </mat-card-title>
           <mat-card-subtitle>
             <h4>At &nbsp;" {{ nearestSensorAddress }} "</h4>
+            <h5><strong>MAC address&nbsp;&nbsp;{{ nearestSensorMac }}</strong></h5>
           </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
@@ -86,7 +87,7 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <app-air-maps *ngIf="isSubscription"></app-air-maps>
+          <app-air-maps *ngIf="inInterval"></app-air-maps>
         </mat-card-content>
       </mat-card>
     </div>
