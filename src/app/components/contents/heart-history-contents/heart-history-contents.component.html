@@ -28,9 +28,7 @@
       <mat-card class="card">
         <!-- Heart chart -->
         <div style="display: block; margin-top: 30px;">
-          <canvas mdbChart [chartType]="chartType" [datasets]="heart_data" [labels]="chartLabels" [colors]="heartChartColors"
-            [options]="chartOptions" [legend]="true" (chartClick)="chartClicked($event)">
-          </canvas>
+          <app-historical-heart-chart [data]="heartHistoryData" (chartClick)="chartClicked($event)"></app-historical-heart-chart>
         </div>
       </mat-card>
     </div>

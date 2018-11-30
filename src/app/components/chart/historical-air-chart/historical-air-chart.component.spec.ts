@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RealtimeAirChartComponent } from './realtime-air-chart.component';
+import { HistoricalAirChartComponent } from './historical-air-chart.component';
 
-describe('RealtimeAirChartComponent', () => {
-  let component: RealtimeAirChartComponent;
-  let fixture: ComponentFixture<RealtimeAirChartComponent>;
+describe('HistoricalAirChartComponent', () => {
+  let component: HistoricalAirChartComponent;
+  let fixture: ComponentFixture<HistoricalAirChartComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RealtimeAirChartComponent ]
+      declarations: [ HistoricalAirChartComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RealtimeAirChartComponent);
+    fixture = TestBed.createComponent(HistoricalAirChartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

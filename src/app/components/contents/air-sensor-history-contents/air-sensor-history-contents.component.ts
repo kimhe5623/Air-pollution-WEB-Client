@@ -66,6 +66,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   airData: any = {};
   airDataForCharts: any = {};
   timeLists: any = [];
+  selectedTsp: string = "";
   selectedTime: string = "";
   selectedMac: string = "";
   selectedAirdata: any = {};
@@ -77,115 +78,6 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   removedKeys: any = [];
   newKeys: any = [];
   existedKeys: any = [];
-
-  /**
-   * Chart
-   */
-  public chartType: string = 'line';
-
-  public airChartDataAll: Array<any> = [{ data: [], label: '' }];
-  public airChartData: Array<any> = [{ data: [], label: '' }];
-  public chartLabels: Array<any> = [];
-
-  public airChartColors: Array<any> = [
-    {
-      backgroundColor: '#aaaaaa00',
-      borderColor: '#c77676a0',
-      borderWidth: 2,
-      pointBackgroundColor: '#c77676a0',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#c77676a0'
-    },
-    {
-      backgroundColor: '#aaaaaa00',
-      borderColor: '#ad815ca0',
-      borderWidth: 2,
-      pointBackgroundColor: '#ad815ca0',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#ad815ca0'
-    },
-    {
-      backgroundColor: '#aaaaaa00',
-      borderColor: '#86b470a0',
-      borderWidth: 2,
-      pointBackgroundColor: '#86b470a0',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#86b470a0'
-    },
-    {
-      backgroundColor: '#aaaaaa00',
-      borderColor: '#676db6a0',
-      borderWidth: 2,
-      pointBackgroundColor: '#676db6a0',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#676db6a0'
-    },
-    {
-      backgroundColor: '#aaaaaa00',
-      borderColor: '#a471c2a0',
-      borderWidth: 2,
-      pointBackgroundColor: '#a471c2a0',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#a471c2a0'
-    },
-    {
-      backgroundColor: '#aaaaaa00',
-      borderColor: '#bd7ba9a0',
-      borderWidth: 2,
-      pointBackgroundColor: '#bd7ba9a0',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#bd7ba9a0'
-    },
-    {
-      backgroundColor: '#ffeb9033',
-      borderColor: '#ffe190a9',
-      borderWidth: 2,
-      pointBackgroundColor: '#ffe190a9',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#ffe190a9'
-    },
-  ];
-
-  public chartOptions: any = {
-    responsive: true,
-    trackColor: false,
-    scales: {
-      xAxes: [{
-        scaleLabel: {
-          display: true,
-          labelString: 'Timestamp'
-        }
-      }],
-      yAxes: [{
-        id: 'AQI',
-        type: 'linear',
-        position: 'left',
-        scalePositionLeft: true,
-        scaleLabel: {
-          display: true,
-          labelString: 'Air Quality Index',
-        }
-      },
-      {
-        id: 'temperature',
-        type: 'linear',
-        position: 'right',
-        scalePositionLeft: false,
-        scaleLabel: {
-          display: true,
-          labelString: 'Temperature',
-        }
-      },
-      ]
-    }
-  };
 
 
   /**----*/
@@ -212,7 +104,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
    */
   reqData(cb) {
     var payload = {
-      nsc: this.storageService.get('userInfo').nsc,
+      nsc: Number(this.storageService.get('userInfo').nsc),
       ownershipCode: "1",
       sTs: Math.floor(new Date(this.startDate.value).getTime()/1000),
       eTs: Math.floor(new Date(new Date(this.endDate.value).setHours(23, 59, 59, 59)).getTime()/1000),
@@ -229,7 +121,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
         var tlvData = this.dataService.rspHistoricalAirDataParsing(result.payload.historicalAirQualityDataListEncodings);
         var tspBasedData = {};
 
-        console.log(tlvData);
+        //console.log(tlvData);
 
         /** Data parsing for "this.airData" */
         for (var i = 0; i < tlvData.length; i++) {
@@ -257,6 +149,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
         }
 
         console.log('airDataForCharts => ', this.airDataForCharts);
+        console.log('selected Mac => ', this.selectedMac);
 
         this.timeLists.sort();
         this.timeSliderMax = this.timeLists.length - 1;
@@ -281,34 +174,23 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
         this.airData = result;
 
-        console.log('parsed Data: ', this.airData);
-        console.log('timeLists: ', this.timeLists);
-        console.log('firstKeys: ', this.firstKeys);
+        //console.log('parsed Data: ', this.airData);
+        //console.log('timeLists: ', this.timeLists);
+        //console.log('firstKeys: ', this.firstKeys);
 
         this.previousTimeSliderValue = 0;
 
-        this.selectedTime = this.dataService.formattingDate(new Date(Number(this.timeLists[this.timeSliderValue])));
-        this.selectedMac = this.dataService.rspToMacAddress(this.firstKeys[this.timeLists[this.timeSliderValue]]);
-        this.selectedAirdata = this.airData[this.timeLists[this.timeSliderValue]][this.firstKeys[this.timeLists[this.timeSliderValue]]];
-        console.log('selectedTime => ', this.selectedTime, ' selectedMac => ', this.selectedMac);
-        console.log('selectedAirdata => ', this.selectedAirdata);
+        this.selectedTsp = this.timeLists[this.timeSliderValue];
+        this.selectedTime = this.dataService.formattingDate(new Date(Number(this.selectedTsp)));
+
+        this.selectedMac = this.firstKeys[this.selectedTsp];
+        this.selectedAirdata = this.airData[this.selectedTsp][this.selectedMac];
+        //console.log('selectedTime => ', this.selectedTime, ' selectedMac => ', this.selectedMac);
+        //console.log('selectedAirdata => ', this.selectedAirdata);
 
 
         this.mapInit();
 
-        // Chart data
-        this.airChartDataAll = this.dataService.getChartData(this.airDataForCharts[this.firstKeys[this.timeLists[0]]]);
-        this.airChartSetting();
-
-
-        // Chart Label data
-        this.chartLabels = [];
-        for (var i = 0; i < this.airChartDataAll['timestamp']['data'].length; i++) {
-          this.chartLabels.push(this.dataService.formattingDate(this.airChartDataAll['timestamp']['data'][i]))
-        }
-
-        console.log('airChartDataAll => ', this.airChartDataAll);
-        console.log('chartLables => ', this.chartLabels);
       }
       else {
         console.log('No selected data');
@@ -318,29 +200,17 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   }
 
 
-  /**
-   * this.airChart setting fn
-   */
-  airChartSetting() {
-    this.airChartData = [];
-    this.airChartData.push({ yAxisID: 'AQI', data: this.airChartDataAll['AQI_CO']['data'], label: 'CO AQI' });
-    this.airChartData.push({ yAxisID: 'AQI', data: this.airChartDataAll['AQI_O3']['data'], label: 'O3 AQI' });
-    this.airChartData.push({ yAxisID: 'AQI', data: this.airChartDataAll['AQI_NO2']['data'], label: 'NO2 AQI' });
-    this.airChartData.push({ yAxisID: 'AQI', data: this.airChartDataAll['AQI_SO2']['data'], label: 'SO2 AQI' });
-    this.airChartData.push({ yAxisID: 'AQI', data: this.airChartDataAll['AQI_PM25']['data'], label: 'PM2.5 AQI' });
-    this.airChartData.push({ yAxisID: 'AQI', data: this.airChartDataAll['AQI_PM10']['data'], label: 'PM10 AQI' });
-    this.airChartData.push({ yAxisID: 'temperature', data: this.airChartDataAll['temperature']['data'], label: 'Temperature' });
-  }
 
   /**
    * When the time slider is changed,
    */
   timeSliderChanged() {
-    console.log(this.timeSliderValue);
+    //console.log(this.timeSliderValue);
 
-    this.selectedTime = this.dataService.formattingDate(new Date(Number(this.timeLists[this.timeSliderValue])));
-    this.selectedAirdata = this.airData[this.timeLists[this.timeSliderValue]][this.firstKeys[this.timeLists[this.timeSliderValue]]];
-    console.log('selectedTime => ', this.selectedTime);
+    this.selectedTsp = this.timeLists[this.timeSliderValue];
+    this.selectedTime = this.dataService.formattingDate(new Date(Number(this.selectedTsp)));
+    this.selectedAirdata = this.airData[this.selectedTsp][this.selectedMac];
+    //console.log('selectedTime => ', this.selectedTime);
 
     this.keyCheck(() => {
       // In case of existed Keys,
@@ -367,13 +237,12 @@ export class AirSensorHistoryContentsComponent implements OnInit {
    * When the chart is clicked
    */
   chartClicked(event) {
-    if (event.active.length > 0) {
 
-      console.log(event.active[0]._index);
+      console.log('chart click event function:air-sensor-history-contents.component => ', event);
 
-      this.timeSliderValue = event.active[0]._index;
+      this.timeSliderValue = event;
       this.timeSliderChanged();
-    }
+
   }
 
   /**
@@ -447,28 +316,27 @@ export class AirSensorHistoryContentsComponent implements OnInit {
    */
   addEachMarker(key) {
 
-    var currentSelectedTsp: string = this.timeLists[this.timeSliderValue];
 
     var marker = new google.maps.Marker({
       map: this.map,
-      position: { lat: this.airData[currentSelectedTsp][key].latitude, lng: this.airData[currentSelectedTsp][key].longitude },
+      position: { lat: this.airData[this.selectedTsp][key].latitude, lng: this.airData[this.selectedTsp][key].longitude },
 
       icon: {
         anchor: new google.maps.Point(40, 40),
         labelOrigin: new google.maps.Point(40, 40),
         origin: new google.maps.Point(0, 0),
         scaledSize: new google.maps.Size(80, 80),
-        url: this.getAqiIcon(this.aqiAvg(this.airData[currentSelectedTsp][key]))
+        url: this.getAqiIcon(this.aqiAvg(this.airData[this.selectedTsp][key]))
       },
 
       label: {
-        color: this.getAqiFontColor(this.aqiAvg(this.airData[currentSelectedTsp][key])),
+        color: this.getAqiFontColor(this.aqiAvg(this.airData[this.selectedTsp][key])),
         fontSize: '13px',
         fontWeight: '400',
-        text: this.aqiAvg(this.airData[currentSelectedTsp][key]).toString(),
+        text: this.aqiAvg(this.airData[this.selectedTsp][key]).toString(),
       },
 
-      data: this.airData[currentSelectedTsp][key]
+      data: this.airData[this.selectedTsp][key]
 
     });
 
@@ -481,10 +349,10 @@ export class AirSensorHistoryContentsComponent implements OnInit {
    * check keys
    */
   keyCheck(cb) {
-    var currentSelectedTsp = this.timeLists[this.timeSliderValue];
+
     var previousSelectedTsp = this.timeLists[this.previousTimeSliderValue];
 
-    this.data = this.airData[currentSelectedTsp];
+    this.data = this.airData[this.selectedTsp];
 
     this.removedKeys = [];
     this.newKeys = [];
@@ -493,15 +361,15 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     for (var key in this.markers) {
 
       // if existed key
-      if (this.airData[previousSelectedTsp][key] != null && this.airData[currentSelectedTsp][key] != null) {
+      if (this.airData[previousSelectedTsp][key] != null && this.airData[this.selectedTsp][key] != null) {
         this.existedKeys.push(key);
       }
       // if removed key
-      else if (this.airData[previousSelectedTsp][key] != null) {
+      else if (this.airData[this.selectedTsp][key] != null) {
         this.removedKeys.push(key);
       }
       // if new key
-      else if (this.airData[currentSelectedTsp][key] != null) {
+      else if (this.airData[this.selectedTsp][key] != null) {
         this.newKeys.push(key);
       }
     }
@@ -576,20 +444,10 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
         // Update the selected Mac value & selected Air data
         this.selectedMac = key;
-        this.selectedAirdata = this.airData[this.timeLists[this.timeSliderValue]][this.firstKeys[this.timeLists[this.timeSliderValue]]];
+        this.selectedAirdata = this.airData[this.selectedTsp][this.selectedMac];
 
-        // Update the Chart data
-        this.airChartDataAll = this.dataService.getChartData(this.airDataForCharts[key]);
-        this.airChartSetting();
-        console.log('updated airChartDataAll => ', this.airChartDataAll);
-
-        // Chart Label data
-        this.chartLabels = [];
-        for (var i = 0; i < this.airChartDataAll['timestamp']['data'].length; i++) {
-          this.chartLabels.push(this.dataService.formattingDate(this.airChartDataAll['timestamp']['data'][i]))
-        }
-        console.log('updated chartLabels => ', this.chartLabels);
-
+        console.log('Selected Mac => ', this.selectedMac);
+             
       });
     });
 
@@ -630,7 +488,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
         }
         </style>
         <h6 style="margin-bottom:5px; line-height: 30px">${locationName}</h6>
-        <p>Wifi MAC address: ${eachData.mac}</p>
+        <p>Wifi MAC address: ${this.dataService.rspToMacAddress(eachData.mac)}</p>
         <table>
             <tr>
                 <th>CO</th>

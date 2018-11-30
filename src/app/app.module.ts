@@ -111,10 +111,12 @@ import { AmchartTestComponent } from './components/amchart-test/amchart-test.com
 import { TestComponent } from './main/test/test.component';
 import { AmchartTest2Component } from './components/amchart-test2/amchart-test2.component';
 import { AmchartTest3Component } from './components/amchart-test3/amchart-test3.component';
-import { RealtimeAirChartComponent } from './components/chart/realtime-air-chart/realtime-air-chart.component';
 import { KasDialog } from './dialogs/kas-dialog/kas-dialog';
 import { KasService } from './services/kas.service';
 import { TimerComponent } from './components/timer/timer.component';
+import { HistoricalAirChartComponent } from './components/chart/historical-air-chart/historical-air-chart.component';
+import { HistoricalHeartChartComponent } from './components/chart/historical-heart-chart/historical-heart-chart.component';
+import { AmchartTest4Component } from './components/amchart-test4/amchart-test4.component';
 
 @NgModule({
   declarations: [
@@ -173,8 +175,10 @@ import { TimerComponent } from './components/timer/timer.component';
     TestComponent,
     AmchartTest2Component,
     AmchartTest3Component,
-    RealtimeAirChartComponent,
     TimerComponent,
+    HistoricalAirChartComponent,
+    HistoricalHeartChartComponent,
+    AmchartTest4Component,
   ],
   imports: [
     /** Angular Modules */

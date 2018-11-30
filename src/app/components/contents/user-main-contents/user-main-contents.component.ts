@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { UnitsType } from 'src/app/components/temperature/temperature.component';
 import { DataMonitoringService } from 'src/app/services/httpRequest/data-monitoring.service';
 import { DataManagementService } from 'src/app/services/data-management.service';
 import { SessionStorageService } from 'ngx-store';
+import { RouterConfigLoader } from '@angular/router/src/router_config_loader';
 
 @Component({
   selector: 'app-user-main-contents',
@@ -138,7 +140,8 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
   constructor(
     private dmService: DataMonitoringService,
     private dataService: DataManagementService,
-    private sessionStorageService: SessionStorageService
+    private sessionStorageService: SessionStorageService,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -163,8 +166,6 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
     this.inInterval = false;
   }
 
-  // public chartClicked(e: any): void { }
-  // public chartHovered(e: any): void { }
 
   /**
    * set current heart data
@@ -235,6 +236,34 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
 
   unitChange(unit: UnitsType) {
     this.currentUnit = unit;
+  }
+
+  markerChanged(e){
+    console.log('user-main-contents.component markerChanged => ', e);
+  }
+  buttonClickTest(e){
+    console.log('buttonClick event works!! buttonClickTest() =>', e);
+  }
+
+  clickDetails(w: string){
+    var isAdmin: boolean = this.sessionStorageService.get('userInfo').usn < 1001;
+    switch(w){
+      case('heartrate'):
+
+        if(isAdmin) {
+          this.router.navigate(['/administrator/heart-history']);
+        }
+        else this.router.navigate(['/dashboard/heart-history']);
+
+        break;
+
+      case('airquality'):
+        if(isAdmin){
+          this.router.navigate(['/administrator/air-history']);
+        }
+        else this.router.navigate(['/dashboard/air-history']);
+        break;
+    }
   }
 
 }

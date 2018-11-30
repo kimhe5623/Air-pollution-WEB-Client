@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from "@angular/core";
+import { Component, OnInit, NgZone, Output, EventEmitter } from "@angular/core";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
@@ -11,9 +11,15 @@ import am4themes_frozen from "@amcharts/amcharts4/themes/frozen";
 })
 export class AmchartTestComponent implements OnInit {
 
+  @Output() buttonClick = new EventEmitter<boolean>();
   private chart: am4charts.XYChart;
 
   constructor(private zone: NgZone) { }
+
+  click(){
+    console.log('amchart-test component click()!!');
+    this.buttonClick.emit(true);
+  }
 
   ngOnInit() { }
   ngAfterViewInit() {

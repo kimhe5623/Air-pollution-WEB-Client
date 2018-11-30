@@ -1,8 +1,10 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, NgZone } from '@angular/core';
 import { } from 'googlemaps';
 import { DataManagementService } from '../../services/data-management.service';
 import { DataMonitoringService } from '../../services/httpRequest/data-monitoring.service';
 import { StorageService } from 'src/app/services/storage.service';
+import * as am4core from "@amcharts/amcharts4/core";
+import * as am4charts from "@amcharts/amcharts4/charts";
 import { TIMER } from 'src/app/header';
 declare var google;
 
@@ -15,10 +17,12 @@ declare var google;
 export class AirMapsComponent implements OnInit, OnDestroy {
 
   @ViewChild('gmap') gmapElement: any;
+
   map: google.maps.Map;
   markers: any = {};
   clickedMarker: string = '';
 
+  realtimeAirChartData: any = [];
   currentLocation: any;
   currentAddress: any;
   data: any = [];
@@ -50,10 +54,28 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   private inInterval: boolean;
 
 
+  /** 
+   * Chart variables
+   */
+  checkbox: any = {
+    all: true,
+    temp: true,
+    co: true,
+    o3: true,
+    no2: true,
+    so2: true,
+    pm25: true,
+    pm10: true
+  }
+
+  private chart: any = {}
+
+
   constructor(
     private dataService: DataManagementService,
     private dmService: DataMonitoringService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private zone: NgZone
   ) { }
 
   ngOnInit() {
@@ -106,7 +128,11 @@ export class AirMapsComponent implements OnInit, OnDestroy {
        */
       this.markers = {};
       this.infoWindow = new google.maps.InfoWindow();
+
+      this.clickedMarker = result.firstKey;
       this.addNewMarkers(this.data);
+      this.addChartData();
+      console.log('clicked Marker: mapInit() => ', this.clickedMarker);
     }
     //console.log("mapInit() in air-maps.component, this.map => ", this.map);
   }
@@ -116,6 +142,9 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
     clearInterval(this.interval);
     this.inInterval = false;
+
+    // Chart
+    this.chartDestroy();
 
   }
 
@@ -156,12 +185,13 @@ export class AirMapsComponent implements OnInit, OnDestroy {
       }
 
       this.dmService.RAV(payload, (result) => {
-        //console.log('air-maps.component - RAV callback => ', result);
+        console.log('air-maps.component - RAV callback => ', result);
         if (result == null) cb(null);
         else if (result.payload.realtimeAirQualityDataList.length == 0) cb(null);
 
         else {
           var tlvData = this.dataService.rspRealtimeAirDataParsing(result.payload.realtimeAirQualityDataList);
+
           //console.log("RAV parsed tlvData =>", tlvData);
           var parsedData = { 'firstKey': '', 'data': {} };
 
@@ -169,6 +199,9 @@ export class AirMapsComponent implements OnInit, OnDestroy {
           for (var i = 0; i < tlvData.length; i++) {
             parsedData['data'][tlvData[i].mac] = tlvData[i];
           }
+
+          this.realtimeAirChartData = parsedData;
+
 
           //console.log('parsed Data: ', parsedData);
           cb(parsedData);
@@ -185,7 +218,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
    */
   addNewMarkers(data: any) {
 
-    this.data = [];
     //console.log('addNewMarkers', data);
     for (var key in data) {
 
@@ -216,41 +248,40 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
       this.addInfoWindow(key);
     }
-
   }
 
-    /**
-   * @param data: array data
-   * add each marker
-   */
+  /**
+ * @param data: array data
+ * add each marker
+ */
   addNewMarker(eachData: any) {
 
-      var marker = new google.maps.Marker({
-        map: this.map,
-        position: { lat: eachData.latitude, lng: eachData.longitude },
+    var marker = new google.maps.Marker({
+      map: this.map,
+      position: { lat: eachData.latitude, lng: eachData.longitude },
 
-        icon: {
-          anchor: new google.maps.Point(40, 40),
-          labelOrigin: new google.maps.Point(40, 40),
-          origin: new google.maps.Point(0, 0),
-          scaledSize: new google.maps.Size(80, 80),
-          url: this.getAqiIcon(this.aqiAvg(eachData))
-        },
+      icon: {
+        anchor: new google.maps.Point(40, 40),
+        labelOrigin: new google.maps.Point(40, 40),
+        origin: new google.maps.Point(0, 0),
+        scaledSize: new google.maps.Size(80, 80),
+        url: this.getAqiIcon(this.aqiAvg(eachData))
+      },
 
-        label: {
-          color: this.getAqiFontColor(this.aqiAvg(eachData)),
-          fontSize: '13px',
-          fontWeight: '400',
-          text: this.aqiAvg(eachData).toString(),
-        },
+      label: {
+        color: this.getAqiFontColor(this.aqiAvg(eachData)),
+        fontSize: '13px',
+        fontWeight: '400',
+        text: this.aqiAvg(eachData).toString(),
+      },
 
-        data: eachData
+      data: eachData
 
-      });
+    });
 
-      this.markers[eachData.mac] = marker;
+    this.markers[eachData.mac] = marker;
 
-      this.addInfoWindow(eachData.mac);
+    this.addInfoWindow(eachData.mac);
 
   }
 
@@ -267,9 +298,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         }
 
         this.data = result.data;
+        this.addChartData();
 
-        for(var key in this.data) {
-          if(this.markers[key] == null) { // When old marker
+        for (var key in this.data) {
+          if (this.markers[key] == null) { // When old marker
             this.removeMarkerOnMap(key);
           }
         }
@@ -337,14 +369,14 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
     google.maps.event.addListener(this.markers[key], 'click', () => {
 
+      this.clickedMarker = this.markers[key]['data']['mac'];
+      this.markerClicked(key);
+      console.log('air-maps.component click:', this.clickedMarker);
+
       this.getInfoWindowContents(this.markers[key]['data'], (contents) => {
         this.infoWindow.close(); // Close previously opened infowindow
         this.infoWindow.setContent(contents);
         this.infoWindow.open(this.map, this.markers[key]);
-        this.clickedMarker = this.markers[key]['data']['mac'];
-
-        //console.log('click:', this.clickedMarker);
-
       });
 
     });
@@ -484,5 +516,277 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     else {
       return this.aqi_label_color.undefined;
     }
+  }
+
+  /**
+   * When the marker is clicked,
+   */
+  markerClicked(key: string) {
+
+    this.clickedMarker = key;
+    console.log('Clicked marker: markerClicked() => ', this.clickedMarker);
+
+    this.chartDestroy();
+    this.chartInit();
+
+  }
+
+
+  /**
+   * Chart related functions
+   */
+  ngAfterViewInit() {
+    this.chartInit();
+  }
+
+  chartInit() {
+    this.zone.runOutsideAngular(() => {
+
+      this.chart.temp = am4core.create("chartdiv2_1", am4charts.XYChart),
+        this.chart.co = am4core.create("chartdiv2_2", am4charts.XYChart),
+        this.chart.o3 = am4core.create("chartdiv2_3", am4charts.XYChart),
+        this.chart.no2 = am4core.create("chartdiv2_4", am4charts.XYChart),
+        this.chart.so2 = am4core.create("chartdiv2_5", am4charts.XYChart),
+        this.chart.pm25 = am4core.create("chartdiv2_6", am4charts.XYChart),
+        this.chart.pm10 = am4core.create("chartdiv2_7", am4charts.XYChart)
+
+      for (var key in this.chart) {
+
+        this.chart[key].data = this.initChartData();
+        this.chart[key].paddingRight = 20;
+
+        // Create xAxes
+        var dateX = this.chart[key].xAxes.push(new am4charts.DateAxis());
+        dateX.dataFields.date = "timestamp";
+        //dateX.title.text = "Timestamp";
+        dateX.baseInterval = { timeUnit: 'second', count: 5 };
+        dateX.align = 'center';
+
+        // Create yAxis
+        var valueAxis = this.chart[key].yAxes.push(new am4charts.ValueAxis());
+        valueAxis.rangeChangeDuration = 0;
+
+        if (key != 'temp') {
+          // Create AQI range grid
+          var gridWidth = 0.4; var gridOpacity = 0.5
+          var range = valueAxis.axisRanges.create();
+          range.value = 0; // start of good
+          range.grid.stroke = am4core.color("#33e081");
+          range.grid.strokeWidth = gridWidth;
+          range.grid.strokeOpacity = gridOpacity;
+
+          range = valueAxis.axisRanges.create();
+          range.value = 51; // start of moderate
+          range.grid.stroke = am4core.color("#ebe841");
+
+          range = valueAxis.axisRanges.create();
+          range.value = 101; // start of unhealthy for sensitive groups
+          range.grid.stroke = am4core.color("#f19040");
+
+          range = valueAxis.axisRanges.create();
+          range.value = 151; // start of unhealthy
+          range.grid.stroke = am4core.color("#ec4545");
+
+          range = valueAxis.axisRanges.create();
+          range.value = 201; // start of very unhealthy
+          range.grid.stroke = am4core.color("#b046e0");
+
+          range = valueAxis.axisRanges.create();
+          range.value = 301; // start of hazardous
+          range.grid.stroke = am4core.color("#6b132e");
+        }
+
+        switch (key) {
+
+          case ('temp'): // Temperature
+            valueAxis.title.text = "Temperature"
+
+            var series = this.chart[key].series.push(new am4charts.ColumnSeries());
+            series.dataFields.valueY = "temperature";
+            series.dataFields.dateX = "timestamp";
+            series.name = "Temperature";
+            series.tooltipText = "{name}: [bold]{valueY}[/]";
+            series.yAxis = valueAxis;
+            series.interpolationDuration = 0;
+            series.fill = new am4core.Color({ r: 255, g: 230, b: 136, a: 1 });
+            series.stroke = new am4core.Color({ r: 255, g: 230, b: 136, a: 1 });
+
+            //console.log('series_Temp => ', series);
+            break;
+
+          case ('co'): // AQI - CO
+            valueAxis.title.text = "AQI - CO"
+            var series = this.chart[key].series.push(new am4charts.LineSeries());
+            series.dataFields.valueY = "AQI_CO";
+            series.dataFields.dateX = "timestamp";
+            series.name = "CO";
+            series.strokeWidth = 3;
+            series.tooltipText = "{name}: [bold]{valueY}[/]";
+            series.yAxis = valueAxis;
+            series.interpolationDuration = 0;
+            break;
+
+          case ('o3'): // AQI - O3
+            valueAxis.title.text = "AQI - O3"
+
+            var series = this.chart[key].series.push(new am4charts.LineSeries());
+            series.dataFields.valueY = "AQI_O3";
+            series.dataFields.dateX = "timestamp";
+            series.name = "O[sub]3[/]";
+            series.strokeWidth = 3;
+            series.tooltipText = "{name}: [bold]{valueY}[/]";
+            series.yAxis = valueAxis;
+            series.interpolationDuration = 0;
+            break;
+
+          case ('no2'):  // AQI - NO2
+            valueAxis.title.text = "AQI - NO2"
+
+            var series = this.chart[key].series.push(new am4charts.LineSeries());
+            series.dataFields.valueY = "AQI_NO2";
+            series.dataFields.dateX = "timestamp";
+            series.name = "NO[sub]2[/]";
+            series.strokeWidth = 3;
+            series.tooltipText = "{name}: [bold]{valueY}[/]";
+            series.yAxis = valueAxis;
+            series.interpolationDuration = 0;
+            break;
+
+          case ('so2'):  // AQI - SO2
+            valueAxis.title.text = "AQI - SO2"
+
+            var series = this.chart[key].series.push(new am4charts.LineSeries());
+            series.dataFields.valueY = "AQI_SO2";
+            series.dataFields.dateX = "timestamp";
+            series.name = "SO[sub]2[/]";
+            series.strokeWidth = 3;
+            series.tooltipText = "{name}: [bold]{valueY}[/]";
+            series.yAxis = valueAxis;
+            series.interpolationDuration = 0;
+            break;
+
+          case ('pm25'): // AQI - PM2.5
+            valueAxis.title.text = "AQI - PM2.5"
+
+            var series = this.chart[key].series.push(new am4charts.LineSeries());
+            series.dataFields.valueY = "AQI_PM25";
+            series.dataFields.dateX = "timestamp";
+            series.name = "PM2.5";
+            series.strokeWidth = 3;
+            series.tooltipText = "{name}: [bold]{valueY}[/]";
+            series.yAxis = valueAxis;
+            series.interpolationDuration = 0;
+            break;
+
+          case ('pm10'): // AQI - PM10
+            valueAxis.title.text = "AQI - PM10"
+            var series = this.chart[key].series.push(new am4charts.LineSeries());
+            series.dataFields.valueY = "AQI_PM10";
+            series.dataFields.dateX = "timestamp";
+            series.name = "PM10";
+            series.strokeWidth = 3;
+            series.tooltipText = "{name}: [bold]{valueY}[/]";
+            series.yAxis = valueAxis;
+            series.interpolationDuration = 0;
+            break;
+        }
+
+        if (key != 'temp') {
+          // Create yAxis Range. Only if the Key is related to AQI
+          var range_good = valueAxis.createSeriesRange(series);
+          range_good.value = 0;
+          range_good.endValue = 50;
+          range_good.contents.stroke = am4core.color("#33e081");
+
+          var range_moderate = valueAxis.createSeriesRange(series);
+          range_moderate.value = 51;
+          range_moderate.endValue = 100;
+          range_moderate.contents.stroke = am4core.color("#ebe841");
+
+          var range_unhealthy_1 = valueAxis.createSeriesRange(series);
+          range_unhealthy_1.value = 101;
+          range_unhealthy_1.endValue = 150;
+          range_unhealthy_1.contents.stroke = am4core.color("#f19040");
+
+          var range_unhealthy_2 = valueAxis.createSeriesRange(series);
+          range_unhealthy_2.value = 151;
+          range_unhealthy_2.endValue = 200;
+          range_unhealthy_2.contents.stroke = am4core.color("#ec4545");
+
+          var range_unhealthy_3 = valueAxis.createSeriesRange(series);
+          range_unhealthy_3.value = 201;
+          range_unhealthy_3.endValue = 300;
+          range_unhealthy_3.contents.stroke = am4core.color("#b046e0");
+
+          var range_hazardous = valueAxis.createSeriesRange(series);
+          range_hazardous.value = 301;
+          range_hazardous.endValue = 500;
+          range_hazardous.contents.stroke = am4core.color("#6b132e");
+          range_hazardous.contents.fill = am4core.color("#ffffff");
+
+
+
+          //console.log(key, "series After range setting => ", series);
+
+        }
+
+
+        // Add cursor
+        this.chart[key].cursor = new am4charts.XYCursor();
+
+
+        this.chart[key].events.on("doublehit", (ev) => {
+          console.log(ev);
+        });
+      }
+
+
+    });
+  }
+
+  initChartData(): any {
+    var tsp: number = new Date().getTime();
+    var data: any = [];
+
+    for (var i = 1; i <= 19; i++) {
+      data.push({
+        AQI_CO: 0,
+        AQI_O3: 0,
+        AQI_NO2: 0,
+        AQI_SO2: 0,
+        AQI_PM25: 0,
+        AQI_PM10: 0,
+        temperature: 0,
+        timestamp: new Date(tsp - 1000 * (19 - i))
+      });
+    }
+
+    return data;
+  }
+
+  addChartData() {
+
+    for (var key in this.chart) {
+
+      if (this.chart[key].data.length > 20) {
+        this.chart[key].data.shift();
+      }
+
+      this.chart[key].data.push(this.data[this.clickedMarker]);
+
+      this.chart[key].validateData();
+
+      //console.log(key, ' => ', this.chart[key].data);
+    }
+  }
+
+  chartDestroy(){
+    this.zone.runOutsideAngular(() => {
+      for (var key in this.chart) {
+        if (this.chart[key]) {
+          this.chart[key].dispose();
+        }
+      }
+    });
   }
 }

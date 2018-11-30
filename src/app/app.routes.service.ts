@@ -78,7 +78,7 @@ export const routes: Routes = [
         component: PersonalSensorRegComponent
       },
       {
-        path: 'air-sensor-history',
+        path: 'air-history',
         component: AirSensorHistoryComponent
       },
       {
@@ -105,7 +105,7 @@ export const routes: Routes = [
         component: AdminPersonalSensorRegistrationComponent
       },
       {
-        path: 'air-sensor-history',
+        path: 'air-history',
         component: AdminAirSensorHistoryComponent
       },
       {

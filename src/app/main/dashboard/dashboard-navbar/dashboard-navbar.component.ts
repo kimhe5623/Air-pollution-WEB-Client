@@ -83,7 +83,7 @@ export class DashboardNavbarComponent implements OnInit {
 
       case (3): // => air sensor history
         this.storageService.set('menuNum', 3);
-        this.router.navigate(['dashboard/air-sensor-history']);
+        this.router.navigate(['dashboard/air-history']);
         break;
 
       case (4): // => heart history

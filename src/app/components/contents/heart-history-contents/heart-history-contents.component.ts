@@ -19,54 +19,7 @@ export class HeartHistoryContentsComponent implements OnInit {
 
   numOfData: number = 0;
   heartHistoryData: any = [];
-  heartHistoryChartData: any = {};
 
-  /**
-   * Chart
-   */
-  public chartType: string = 'line';
-
-  public heart_data: Array<any> = [{ data: [], label: '' }];
-  public chartLabels: Array<any> = [];
-  public heartChartColors: Array<any> = [
-    {
-      backgroundColor: '#aaaaaa00',
-      borderColor: '#c77676a0',
-      borderWidth: 2,
-      pointBackgroundColor: '#c77676a0',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#c77676a0'
-    },
-    {
-      backgroundColor: '#aaaaaa00',
-      borderColor: '#ad815ca0',
-      borderWidth: 2,
-      pointBackgroundColor: '#ad815ca0',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#ad815ca0'
-    },
-  ];
-
-  public chartOptions: any = {
-    responsive: true,
-    trackColor: false,
-    scales: {
-      xAxes: [{
-        scaleLabel: {
-          display: true,
-          labelString: 'Timestamp'
-        }
-      }],
-      yAxes: [{
-        scaleLabel: {
-          display: true,
-          labelString: 'Heart rate'
-        }
-      }]
-    }
-  };
 
   /**
    * Maps
@@ -82,7 +35,7 @@ export class HeartHistoryContentsComponent implements OnInit {
    * Map card
    */
   currentIndex: number = 0;
-  currentAddress: string = '';
+  currentAddress: string = 'No selected data';
   clickedTimestamp: string = '';
 
   constructor(
@@ -120,8 +73,6 @@ export class HeartHistoryContentsComponent implements OnInit {
       this.numOfData = this.heartHistoryData.length;
       console.log(this.numOfData);
 
-      this.heartHistoryChartData = this.dataService.getChartData(this.heartHistoryData);
-
       cb(null);
 
     });
@@ -133,26 +84,18 @@ export class HeartHistoryContentsComponent implements OnInit {
   searchHistory() {
     this.isSearched = true;
     this.reqData(null, () => {
-
-      if (this.numOfData > 0) {
-        console.log('heartHistoryChartData: ', this.heartHistoryChartData);
-        this.heart_data = [this.heartHistoryChartData['heartrate']];
-
-        this.chartLabels = [];
-        for (var i = 0; i < this.heartHistoryChartData['timestamp']['data'].length; i++) {
-          this.chartLabels.push(this.dataService.formattingDate(this.heartHistoryChartData['timestamp']['data'][i]));
-        }
+      
+      if(this.numOfData > 0){
+        this.setMapCardData(0);
+        this.mapInit();
       }
-
-      this.setMapCardData(0);
-      this.mapInit();
 
     });
   }
 
   setMapCardData(idx) {
     this.currentIndex = idx;
-    this.clickedLocation = { lat: this.heartHistoryChartData.latitude.data[this.currentIndex], lng: this.heartHistoryChartData.longitude.data[this.currentIndex] };
+    this.clickedLocation = { lat: this.heartHistoryData[this.currentIndex].latitude, lng: this.heartHistoryData[this.currentIndex].longitude };
 
     this.dmService.latlngToAddress(this.clickedLocation.lat, this.clickedLocation.lng, (address) => {
 
@@ -160,6 +103,7 @@ export class HeartHistoryContentsComponent implements OnInit {
       else this.currentAddress = 'No address data';
 
     });
+
     this.clickedTimestamp = this.dataService.formattingDate(this.heartHistoryData[this.currentIndex].timestamp);
   }
 
@@ -208,14 +152,13 @@ export class HeartHistoryContentsComponent implements OnInit {
    * @param event : the emitted event data
    */
   chartClicked(event) {
-    if (event.active.length > 0) {
 
-      console.log(event.active[0]._index);
-
-      this.setMapCardData(event.active[0]._index);
+    if (event > 0) {
+      this.setMapCardData(event);
       this.map.setCenter(this.clickedLocation);
       this.changeMarkerTo(this.currentIndex);
     }
+
   }
 
   /**

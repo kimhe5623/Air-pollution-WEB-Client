@@ -28,7 +28,7 @@
       <mat-card class="card">
         <div class="row">
           <div class="col" style="text-align: left">
-            <span style="font-size: 1.3rem;margin-right:auto">{{selectedTime}}</span>
+            <span style="font-size: 1.3rem;margin-right:auto">{{ selectedTime }}</span>
           </div>
           <div class="col" style="text-align: right">
             <mat-slider style="margin-left: auto" class="slider" [max]="timeSliderMax" [min]="timeSliderMin"
@@ -45,7 +45,7 @@
       <div class="row">
         <mat-card class="card">
           <mat-card-title>
-            {{selectedMac}}
+            {{ dataService.rspToMacAddress(selectedMac)}}
           </mat-card-title>
           <mat-card-content>
             <div class="row" style="margin-top:1.2rem; margin-bottom: 1.3rem">
@@ -54,9 +54,7 @@
                 hovered_font_color='#fff' dominent_color='' [data]='selectedAirdata'></app-air-data>
             </div>
             <div class="row">
-              <canvas mdbChart [chartType]="chartType" [datasets]="airChartData" [labels]="chartLabels" [colors]="airChartColors"
-                [options]="chartOptions" [legend]="true" (chartClick)="chartClicked($event)">
-              </canvas>
+              <app-historical-air-chart [data]="airDataForCharts[selectedMac]" (chartClick)="chartClicked($event)"></app-historical-air-chart>
             </div>
           </mat-card-content>
         </mat-card>

@@ -31,7 +31,7 @@ export class SensorMapsComponent implements OnInit {
     this.reqData((result) => {
       this.sensorData = result.data;
 
-      console.log('this.sensorData: ', this.sensorData);
+      //console.log('this.sensorData: ', this.sensorData);
       /**
        * Google maps initialization
        */
@@ -81,7 +81,7 @@ export class SensorMapsComponent implements OnInit {
         for (var i = 0; i < tlvData.length; i++) {
           parsedData['data'][tlvData[i].mac] = tlvData[i];
         }
-        console.log('parsedrData: ', parsedData);
+        //console.log('parsedrData: ', parsedData);
 
         cb(parsedData);
       }
@@ -118,7 +118,7 @@ export class SensorMapsComponent implements OnInit {
    */
   addInfoWindow(key) {
 
-    console.log('addListener =>', this.markers[key]['data']);
+    //console.log('addListener =>', this.markers[key]['data']);
 
     google.maps.event.clearListeners(this.markers[key], 'click');
 
@@ -130,7 +130,7 @@ export class SensorMapsComponent implements OnInit {
         this.infoWindow.open(this.map, this.markers[key]);
         this.clickedMarker = key;
 
-        console.log('clicked:', key);
+        //console.log('clicked:', key);
 
       });
     });

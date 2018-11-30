@@ -109,7 +109,7 @@ export class AirDataComponent implements OnInit, DoCheck {
     const changes = this.differ.diff(this.data);
 
     if (changes) {
-      //console.log('NgDoCheck this.data => ', this.data);
+      console.log('NgDoCheck this.data => ', this.data);
       for (var key in this.air_type) {
         this.aqi_data[key] = this.data['AQI_' + key];
         this.air_data[key] = this.data[key];
@@ -126,7 +126,7 @@ export class AirDataComponent implements OnInit, DoCheck {
 
   ngOnInit() {
     //console.log(">>air-data component");
-    //console.log('Entered data:', this.data);
+    console.log('Entered data:', this.data);
 
     // Style setting
     this.aqi_style['width'] = `${this.radius}px`;

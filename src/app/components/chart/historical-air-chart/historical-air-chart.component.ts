@@ -1,16 +1,17 @@
-import { Component, OnInit, NgZone, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, NgZone, Input, Output, EventEmitter, DoCheck, KeyValueDiffers } from "@angular/core";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 @Component({
-  selector: 'app-amchart-test3',
-  templateUrl: './amchart-test3.component.html',
-  styleUrls: ['./amchart-test3.component.css']
+  selector: 'app-historical-air-chart',
+  templateUrl: './historical-air-chart.component.html',
+  styleUrls: ['./historical-air-chart.component.css']
 })
-export class AmchartTest3Component implements OnInit {
+export class HistoricalAirChartComponent implements OnInit, DoCheck {
 
-  @Output() chartClick: EventEmitter<number> = new EventEmitter<number>()
+  @Input() data: any = [];
+  @Output() chartClick: EventEmitter<number> = new EventEmitter<number>();
 
   checkbox: any = {
     all: true,
@@ -21,12 +22,29 @@ export class AmchartTest3Component implements OnInit {
     so2: true,
     pm25: true,
     pm10: true
-  }
+  };
+
+  differ: any;
 
   private chart: am4charts.XYChart;
+  private dateX: am4charts.DateAxis;
 
-  constructor(private zone: NgZone) { }
+  constructor(
+    private zone: NgZone,
+    private differs: KeyValueDiffers
+  ) {
+    this.differ = this.differs.find([]).create();
+  }
 
+  ngDoCheck() {
+    const changes = this.differ.diff(this.data);
+
+    if (changes) {
+      console.log('Entered chart data => ', this.data);
+      this.chartDestroy();
+      this.chartInit();
+    }
+  }
 
   showValue(idx: number) {
     this.chart.series.values[idx].show();
@@ -49,13 +67,22 @@ export class AmchartTest3Component implements OnInit {
           for (var i = 0; i < this.chart.series.values.length; i++) this.showValue(i);
         }
         else {
-          for (var key in this.checkbox) this.checkbox[key] = false;
-          for (var i = 0; i < this.chart.series.values.length; i++) this.hideValue(i);
+          for (var key in this.checkbox) {
+            if (key == 'temp') continue;
+            this.checkbox[key] = false;
+          }
+          for (var i = 0; i < this.chart.series.values.length; i++) {
+            if (i == 0) continue;
+            this.hideValue(i);
+          }
         }
         break;
 
       case ('temp'):
-        if (this.checkbox.temp) this.showValue(0)
+        if (this.checkbox.temp) {
+          if (this.checkbox.co && this.checkbox.o3 && this.checkbox.no2 && this.checkbox.so2 && this.checkbox.pm25 && this.checkbox.pm10) this.checkbox.all = true;
+          this.showValue(0);
+        }
         else {
           this.checkbox.all = false;
           this.hideValue(0);
@@ -63,7 +90,10 @@ export class AmchartTest3Component implements OnInit {
         break;
 
       case ('co'):
-        if (this.checkbox.co) this.showValue(1);
+        if (this.checkbox.co) {
+          if (this.checkbox.temp && this.checkbox.o3 && this.checkbox.no2 && this.checkbox.so2 && this.checkbox.pm25 && this.checkbox.pm10) this.checkbox.all = true;
+          this.showValue(1);
+        }
         else {
           this.checkbox.all = false;
           this.hideValue(1);
@@ -71,7 +101,10 @@ export class AmchartTest3Component implements OnInit {
         break;
 
       case ('o3'):
-        if (this.checkbox.o3) this.showValue(2);
+        if (this.checkbox.o3) {
+          if (this.checkbox.temp && this.checkbox.co && this.checkbox.no2 && this.checkbox.so2 && this.checkbox.pm25 && this.checkbox.pm10) this.checkbox.all = true;
+          this.showValue(2);
+        }
         else {
           this.checkbox.all = false;
           this.hideValue(2);
@@ -79,7 +112,10 @@ export class AmchartTest3Component implements OnInit {
         break;
 
       case ('no2'):
-        if (this.checkbox.no2) this.showValue(3);
+        if (this.checkbox.no2) {
+          if (this.checkbox.temp && this.checkbox.co && this.checkbox.o3 && this.checkbox.so2 && this.checkbox.pm25 && this.checkbox.pm10) this.checkbox.all = true;
+          this.showValue(3);
+        }
         else {
           this.checkbox.all = false;
           this.hideValue(3);
@@ -87,7 +123,10 @@ export class AmchartTest3Component implements OnInit {
         break;
 
       case ('so2'):
-        if (this.checkbox.so2) this.showValue(4);
+        if (this.checkbox.so2) {
+          if (this.checkbox.temp && this.checkbox.co && this.checkbox.o3 && this.checkbox.no2 && this.checkbox.pm25 && this.checkbox.pm10) this.checkbox.all = true;
+          this.showValue(4);
+        }
         else {
           this.checkbox.all = false;
           this.hideValue(4);
@@ -95,7 +134,10 @@ export class AmchartTest3Component implements OnInit {
         break;
 
       case ('pm25'):
-        if (this.checkbox.pm25) this.showValue(5);
+        if (this.checkbox.pm25) {
+          if (this.checkbox.temp && this.checkbox.co && this.checkbox.o3 && this.checkbox.no2 && this.checkbox.so2 && this.checkbox.pm10) this.checkbox.all = true;
+          this.showValue(5);
+        }
         else {
           this.checkbox.all = false;
           this.hideValue(5);
@@ -103,7 +145,10 @@ export class AmchartTest3Component implements OnInit {
         break;
 
       case ('pm10'):
-        if (this.checkbox.pm10) this.showValue(6);
+        if (this.checkbox.pm10) {
+          if (this.checkbox.temp && this.checkbox.co && this.checkbox.o3 && this.checkbox.no2 && this.checkbox.so2 && this.checkbox.pm25) this.checkbox.all = true;
+          this.showValue(6);
+        }
         else {
           this.checkbox.all = false;
           this.hideValue(6);
@@ -116,9 +161,12 @@ export class AmchartTest3Component implements OnInit {
   ngOnInit() { }
 
   ngAfterViewInit() {
-
+    console.log('Entered chart data => ', this.data);
     this.chartInit();
+  }
 
+  ngOnDestroy() {
+    this.chartDestroy();
   }
 
   chartInit() {
@@ -127,9 +175,12 @@ export class AmchartTest3Component implements OnInit {
       am4core.useTheme(am4themes_animated);
 
       let chart = am4core.create("chartdiv3", am4charts.XYChart);
-      let chartData = this.generatingChartData();
-      chart.data = chartData;
+
+      chart.data = this.data;
+
       chart.paddingRight = 20;
+
+
 
       // Create axes
       var dateX = chart.xAxes.push(new am4charts.DateAxis());
@@ -137,6 +188,7 @@ export class AmchartTest3Component implements OnInit {
       dateX.title.text = "Timestamp";
       dateX.baseInterval = { timeUnit: 'second', count: 3 };
       dateX.align = 'center';
+      this.dateX = dateX;
 
       // AQI value axis
       var valueAxis_AQI = chart.yAxes.push(new am4charts.ValueAxis());
@@ -158,14 +210,14 @@ export class AmchartTest3Component implements OnInit {
       series_Temp.stroke = new am4core.Color({ r: 255, g: 230, b: 136, a: 1 });
       series_Temp.columns.template.events.on("hit", (ev) => {
         console.log('Temp => ', ev)
-        this.indexEmit(ev);
+        this.indexEmit(ev.target.dataItem.index);
       }, this);
 
-      console.log('series_Temp => ', series_Temp);
+      //console.log('series_Temp => ', series_Temp);
 
       // AQI - CO
       var series_CO = chart.series.push(new am4charts.LineSeries());
-      series_CO.dataFields.valueY = "CO";
+      series_CO.dataFields.valueY = "AQI_CO";
       series_CO.dataFields.dateX = "timestamp";
       series_CO.name = "CO";
       series_CO.strokeWidth = 3;
@@ -173,16 +225,15 @@ export class AmchartTest3Component implements OnInit {
       series_CO.yAxis = valueAxis_AQI;
       series_CO.fill = new am4core.Color({ r: 233, g: 146, b: 146, a: 1 });
       series_CO.stroke = new am4core.Color({ r: 233, g: 146, b: 146, a: 1 });
-      series_CO.segments.template.interactionsEnabled = true;
-      // series_CO.segments.template.events.on("hit", (ev) => {
-      //   console.log('CO => ', ev);
-      //   this.indexEmit(ev);
-      // }, this);
+      series_CO.segments.template.events.on("hit", (ev) => {
+        console.log('CO => ', ev)
+        this.indexEmit(ev.target.dataItem.component.tooltipDataItem.index);
+      }, this);
 
 
       // AQI - O3
       var series_O3 = chart.series.push(new am4charts.LineSeries());
-      series_O3.dataFields.valueY = "O3";
+      series_O3.dataFields.valueY = "AQI_O3";
       series_O3.dataFields.dateX = "timestamp";
       series_O3.name = "O[sub]3[/]";
       series_O3.strokeWidth = 3;
@@ -190,15 +241,14 @@ export class AmchartTest3Component implements OnInit {
       series_O3.yAxis = valueAxis_AQI;
       series_O3.fill = new am4core.Color({ r: 224, g: 146, b: 233, a: 1 });
       series_O3.stroke = new am4core.Color({ r: 224, g: 146, b: 233, a: 1 });
-      series_CO.segments.template.interactionsEnabled = true;
-      // series_O3.segments.template.events.on("hit", (ev) => {
-      //   console.log('O3 => ', ev);
-      //   this.indexEmit(ev);
-      // }, this);
+      series_O3.segments.template.events.on("hit", (ev) => {
+        console.log('O3 => ', ev)
+        this.indexEmit(ev.target.dataItem.component.tooltipDataItem.index);
+      }, this);
 
       // AQI - NO2
       var series_NO2 = chart.series.push(new am4charts.LineSeries());
-      series_NO2.dataFields.valueY = "NO2";
+      series_NO2.dataFields.valueY = "AQI_NO2";
       series_NO2.dataFields.dateX = "timestamp";
       series_NO2.name = "NO[sub]2[/]";
       series_NO2.strokeWidth = 3;
@@ -206,15 +256,14 @@ export class AmchartTest3Component implements OnInit {
       series_NO2.yAxis = valueAxis_AQI;
       series_NO2.fill = new am4core.Color({ r: 144, g: 162, b: 217, a: 1 });
       series_NO2.stroke = new am4core.Color({ r: 144, g: 162, b: 217, a: 1 });
-      series_NO2.segments.template.interactionsEnabled = true;
-      // series_NO2.segments.template.events.on("hit", (ev) => {
-      //   console.log('NO2 => ', ev);
-      //   this.indexEmit(ev);
-      // }, this);
+      series_NO2.segments.template.events.on("hit", (ev) => {
+        console.log('NO2 => ', ev)
+        this.indexEmit(ev.target.dataItem.component.tooltipDataItem.index);
+      }, this);
 
       // AQI - SO2
       var series_SO2 = chart.series.push(new am4charts.LineSeries());
-      series_SO2.dataFields.valueY = "SO2";
+      series_SO2.dataFields.valueY = "AQI_SO2";
       series_SO2.dataFields.dateX = "timestamp";
       series_SO2.name = "SO[sub]2[/]";
       series_SO2.strokeWidth = 3;
@@ -222,15 +271,14 @@ export class AmchartTest3Component implements OnInit {
       series_SO2.yAxis = valueAxis_AQI;
       series_SO2.fill = new am4core.Color({ r: 144, g: 203, b: 217, a: 1 });
       series_SO2.stroke = new am4core.Color({ r: 144, g: 203, b: 217, a: 1 });
-      series_SO2.segments.template.interactionsEnabled = true;
-      // series_SO2.segments.template.events.on("hit", (ev) => {
-      //   console.log('SO2 => ', ev);
-      //   this.indexEmit(ev);
-      // }, this);
+      series_SO2.segments.template.events.on("hit", (ev) => {
+        console.log('SO2 => ', ev)
+        this.indexEmit(ev.target.dataItem.component.tooltipDataItem.index);
+      }, this);
 
       // AQI - PM2.5
       var series_PM25 = chart.series.push(new am4charts.LineSeries());
-      series_PM25.dataFields.valueY = "PM25";
+      series_PM25.dataFields.valueY = "AQI_PM25";
       series_PM25.dataFields.dateX = "timestamp";
       series_PM25.name = "PM2.5";
       series_PM25.strokeWidth = 3;
@@ -238,15 +286,14 @@ export class AmchartTest3Component implements OnInit {
       series_PM25.yAxis = valueAxis_AQI;
       series_PM25.fill = new am4core.Color({ r: 159, g: 213, b: 178, a: 1 });
       series_PM25.stroke = new am4core.Color({ r: 159, g: 213, b: 178, a: 1 });
-      series_PM25.segments.template.interactionsEnabled = true;
-      // series_PM25.segments.template.events.on("hit", (ev) => {
-      //   console.log('PM25 => ', ev);
-      //   this.indexEmit(ev);
-      // }, this);
+      series_PM25.segments.template.events.on("hit", (ev) => {
+        console.log('PM2.5 => ', ev)
+        this.indexEmit(ev.target.dataItem.component.tooltipDataItem.index);
+      }, this);
 
       // AQI - PM10
       var series_PM10 = chart.series.push(new am4charts.LineSeries());
-      series_PM10.dataFields.valueY = "PM10";
+      series_PM10.dataFields.valueY = "AQI_PM10";
       series_PM10.dataFields.dateX = "timestamp";
       series_PM10.name = "PM10";
       series_PM10.strokeWidth = 3;
@@ -254,20 +301,21 @@ export class AmchartTest3Component implements OnInit {
       series_PM10.yAxis = valueAxis_AQI;
       series_PM10.fill = new am4core.Color({ r: 231, g: 188, b: 166, a: 1 });
       series_PM10.stroke = new am4core.Color({ r: 231, g: 188, b: 166, a: 1 });
-      series_PM10.segments.template.interactionsEnabled = true;
-      // series_PM10.segments.template.events.on("hit", (ev) => {
-      //   console.log('PM10 => ', ev);
-      //   this.indexEmit(ev);
-      // }, this);
-
+      series_PM10.segments.template.events.on("hit", (ev) => {
+        console.log('PM10 => ', ev)
+        this.indexEmit(ev.target.dataItem.component.tooltipDataItem.index);
+      }, this);
 
       // Add cursor
       chart.cursor = new am4charts.XYCursor();
 
       // Pre-zooming
-      chart.events.on('inited', (event)=>{
-        dateX.zoomToDates(chart.data[chart.data.length - 10].timestamp, chart.data[chart.data.length - 1].timestamp);
+      chart.events.on('inited', () => {
+        if(chart.data.length > 20){
+          dateX.zoomToDates(chart.data[0].timestamp, chart.data[20].timestamp);
+        }
       });
+
 
       // Add horizotal scrollbar with preview
       var scrollbarX = new am4charts.XYChartScrollbar();
@@ -281,17 +329,14 @@ export class AmchartTest3Component implements OnInit {
 
       // mouseZoom enable
       chart.mouseWheelBehavior = "zoomX";
-      
+
 
       this.chart = chart;
-      console.log('this.chart => ', this.chart);
 
     });
   }
 
-
-
-  ngOnDestroy() {
+  chartDestroy() {
     this.zone.runOutsideAngular(() => {
       if (this.chart) {
         this.chart.dispose();
@@ -299,43 +344,27 @@ export class AmchartTest3Component implements OnInit {
     });
   }
 
-  generatingChartData(): any {
-    var data = [];
-    var startDate = 1540278000000;
-    var endDate = 1540356905959;
-
-    for (var i = 0; i < 50; i++) {
-      if (startDate + i * 3000 > endDate) break;
-
-      data.push({
-        mac: '12:F1:D3:22:9C:FF',
-        activation: 2,
-        latitude: 32.8824726,
-        longitude: -117.23483890000001,
-        timestamp: new Date(startDate + i * 3000),
-        temperature: Math.floor(Math.random() * 50 + 10),
-        CO: Math.random() * 500 + 0,
-        O3: Math.random() * 500 + 0,
-        NO2: Math.random() * 500 + 0,
-        SO2: Math.random() * 500 + 0,
-        PM25: Math.random() * 500 + 0,
-        PM10: Math.random() * 500 + 0,
-        AQI_CO: Math.floor(Math.random() * 500 + 0),
-        AQI_O3: Math.floor(Math.random() * 500 + 0),
-        AQI_NO2: Math.floor(Math.random() * 500 + 0),
-        AQI_SO2: Math.floor(Math.random() * 500 + 0),
-        AQI_PM25: Math.floor(Math.random() * 500 + 0),
-        AQI_PM10: Math.floor(Math.random() * 500 + 0),
-      });
-    }
-
-    console.log(data);
-    return data;
-  }
-
   indexEmit(event) {
-    console.log(event.target.dataItem.index);
-    this.chartClick.emit(event.target.dataItem.index);
+    var index: number = event;
+    var endIndex: number = this.chart.data.length - 1;
+    var distance: number = endIndex - index;
+
+    console.log(index);
+    this.chartClick.emit(index);
+
+    if(this.chart.data.length > 20){
+
+      if (index < 10) {
+        this.dateX.zoomToDates(this.chart.data[0].timestamp, this.chart.data[10 + (10 - index)].timestamp);
+      }
+      else if (index > endIndex - 10) {
+        this.dateX.zoomToDates(this.chart.data[index - (10 + (10 - distance))].timestamp, this.chart.data[endIndex].timestamp);
+      }
+      else {
+        this.dateX.zoomToDates(this.chart.data[index - 10].timestamp, this.chart.data[index + 10].timestamp);
+      }
+
+    }
   }
 }
 

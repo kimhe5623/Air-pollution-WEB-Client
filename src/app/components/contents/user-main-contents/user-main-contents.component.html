@@ -15,7 +15,7 @@
             </div>
           </div>
           <mat-card-actions style="text-align: right">
-            <a [routerLink]="['/dashboard/heart-history']" mat-button>More details..</a>
+            <a (click)="clickDetails('heartrate')" mat-button>More details..</a>
           </mat-card-actions>
         </mat-card>
       </div>
@@ -44,7 +44,7 @@
             </div>
           </mat-card-content>
           <mat-card-actions style="text-align: right">
-            <a [routerLink]="['/dashboard/air-sensor-history']" routerLinkActive="router-link-active"  mat-button>More details..</a>
+            <a (click)="clickDetails('airquality')" routerLinkActive="router-link-active"  mat-button>More details..</a>
           </mat-card-actions>
         </mat-card>
       </div>
@@ -73,7 +73,7 @@
           </div>
         </mat-card-content>
         <mat-card-actions style="text-align: right">
-          <a [routerLink]="['/dashboard/air-sensor-history']" mat-button>More details..</a>
+          <a (click)="clickDetails('airquality')" mat-button>More details..</a>
         </mat-card-actions>
       </mat-card>
     </div>

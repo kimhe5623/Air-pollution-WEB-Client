@@ -12,4 +12,7 @@ export class TestComponent implements OnInit {
   ngOnInit() {
   }
 
+  buttonClickTest(e){
+    console.log('buttonClick event works!! buttonClickTest() => ', e);
+  }
 }

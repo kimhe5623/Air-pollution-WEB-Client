@@ -56,7 +56,7 @@ export class DataManagementService {
    */
   rspHistoricalAirDataParsing(rsp: any): any {
 
-    console.log("Entered historical air rsp data => ", rsp);
+    //console.log("Entered historical air rsp data => ", rsp);
     var result: any = [];
 
     for (var i = 0; i < rsp.length; i++) {
@@ -89,7 +89,7 @@ export class DataManagementService {
     }
 
 
-    console.log("Returned historical parsed data => ", result);
+    //console.log("Returned historical parsed data => ", result);
     return result;
   }
 
@@ -165,14 +165,7 @@ export class DataManagementService {
    * @param mac ex> 'AA:BB:CC:DD:EE:FF'
    */
   macAddressToReq(mac: string): string {
-    var req: string = "";
-    var splitedMac: Array<string> = mac.split(':');
-
-    for (var i = 0; i < splitedMac.length; i++) {
-      req += splitedMac[i];
-    }
-
-    return req;
+    return mac.split(':').join('');
   }
 
   sensorStatusParsing(status: number): any {

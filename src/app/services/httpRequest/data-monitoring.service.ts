@@ -60,10 +60,10 @@ export class DataMonitoringService {
 
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
+              cb(null);
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, () => {
                 this.router.navigate(['/']);
-                cb(null);
               });
               break;
 
@@ -99,10 +99,10 @@ export class DataMonitoringService {
 
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number');
+              cb(null);
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, () => {
                 this.router.navigate(['/']);
-                cb(null);
               });
               break;
 
@@ -117,11 +117,11 @@ export class DataMonitoringService {
   /** HAV */
   HAV(payload: any, cb) {
     var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.HAV_REQ, Number(this.storageService.get('userInfo').usn));
-    console.log("HAV-REQ => ", reqMsg);
+    //console.log("HAV-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        console.log("HAV-RSP => ", rspMsg);
+        //console.log("HAV-RSP => ", rspMsg);
 
         cb(rspMsg);
         if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.HAV_RSP, reqMsg.header.endpointId)) {
@@ -139,10 +139,10 @@ export class DataMonitoringService {
 
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
+              cb(null);
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, () => {
                 this.router.navigate(['/']);
-                cb(null);
               });
               break;
 
@@ -170,11 +170,11 @@ export class DataMonitoringService {
     else {
       reqMsg = this.msgService.packingMsg(payload, MSGTYPE.SHR_REQ, 0);
     }
-    console.log('SHR-REQ => ', reqMsg);
+    //console.log('SHR-REQ => ', reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
       .subscribe((rspMsg: any) => {
-        console.log('SHR-RSP => ', rspMsg);
+        //console.log('SHR-RSP => ', rspMsg);
         cb(rspMsg);
         if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SHR_RSP, reqMsg.header.endpointId)) {
           cb(null);
@@ -193,10 +193,10 @@ export class DataMonitoringService {
 
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
+              cb(null);
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, () => {
                 this.router.navigate(['/']);
-                cb(null);
               });
               break;
 
@@ -239,10 +239,10 @@ export class DataMonitoringService {
 
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
+              cb(null);
               var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
               this.umService.SGO(SGO_payload, () => {
                 this.router.navigate(['/']);
-                cb(null);
               });
               break;
 
@@ -289,9 +289,9 @@ export class DataMonitoringService {
 
             case (2):  // reject-unallocated user sequence number
               alert('Unallocated user sequence number.');
+              cb(null);
               this.umService.SGO(SGO_payload, () => {
                 this.router.navigate(['/']);
-                cb(null);
               });
               break;
 
