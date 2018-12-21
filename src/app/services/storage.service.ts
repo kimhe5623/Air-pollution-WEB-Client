@@ -21,4 +21,12 @@ export class StorageService {
   clear(cleartype: ClearType): any{
     this.sessionStorageService.clear(cleartype);
   }
+
+  fnGetUserSequenceNumber(): number {
+    return this.get('userInfo').usn;
+  }
+
+  fnGetNumberOfSignedInCompletions(): number {
+    return this.get('userInfo').nsc;
+  }
 }

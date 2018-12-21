@@ -104,7 +104,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
    */
   reqData(cb) {
     var payload = {
-      nsc: Number(this.storageService.get('userInfo').nsc),
+      nsc: Number(this.storageService.fnGetNumberOfSignedInCompletions()),
       ownershipCode: "1",
       sTs: Math.floor(new Date(this.startDate.value).getTime()/1000),
       eTs: Math.floor(new Date(new Date(this.endDate.value).setHours(23, 59, 59, 59)).getTime()/1000),

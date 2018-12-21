@@ -66,7 +66,7 @@ export class NavbarComponent implements OnInit {
         console.log('userInfo => ', this.storageService.get('userInfo'));
 
         if(this.storageService.get('userInfo') != null){
-          if(this.storageService.get('userInfo').usn > 1000){
+          if(this.storageService.fnGetUserSequenceNumber() > 1000){
             this.router.navigate(['/dashboard']);
           }
           else {

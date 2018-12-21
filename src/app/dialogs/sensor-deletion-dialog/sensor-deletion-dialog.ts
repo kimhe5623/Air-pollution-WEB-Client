@@ -17,6 +17,7 @@ export class SensorDeletionDialog {
   choose(data) {
     this.data.reasonCode = data.value;
   }
+  
   btnClick(isCanceled: boolean) {
     this.data.isCanceled = isCanceled;
   }

@@ -20,26 +20,25 @@ export class PersonalSensorRegistrationContentsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.initData();
+    this.fnInitData();
   }
 
-  initData(){
+  fnInitData(){
     this.wifi_mac.setValue(null);
     this.cellular_mac.setValue(null);
   }
 
-  onSubmit(){
+  fnOnSubmitSrgForm(){
     var payload = {
-      nsc: this.storageService.get('userInfo').nsc,
+      nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
       wmac: this.wifi_mac.value,
       cmac: this.cellular_mac.value,
     }
     
-    this.smService.SRG(payload, (success)=>{
-      if(!success){
-        alert('Failed!');
+    this.smService.fnSrg(payload, (success)=>{
+      if(success){
+        this.fnInitData();
       }
-      else  this.initData();
     });
   }
 

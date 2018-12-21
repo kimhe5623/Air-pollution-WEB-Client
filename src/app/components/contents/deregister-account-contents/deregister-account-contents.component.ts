@@ -40,7 +40,7 @@ export class DeregisterAccountContentsComponent implements OnInit {
   /**
    *  Dialog function 
    */
-  openConfirmDialog(): void {
+  fnOpenConfirmDialog(): void {
     const dialogRef = this.dialog.open(UserDeregistrationConfirmDialog, {
       width: 'auto', height: 'auto',
       data: { isCanceled: this.isCanceled }
@@ -51,25 +51,21 @@ export class DeregisterAccountContentsComponent implements OnInit {
       if (result != null && !result.isCanceled) {
 
         var payload = {
-          nsc: this.storageService.get('userInfo').nsc,
+          nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
           userpw: this.currentPassword.value
         }
   
-        this.umService.UDR(payload, (success)=>{
-          if (!success) {
-            alert('Failed!');
-          }
-        });
+        this.umService.fnUdr(payload);
       }
     });
   }
 
-  onSubmit() {
+  fnOnSubmitUdrForm() {
     this.errorhide = false;
 
     if (!this.currentPassword.invalid) {
 
-      this.openConfirmDialog();
+      this.fnOpenConfirmDialog();
     }
   }
 

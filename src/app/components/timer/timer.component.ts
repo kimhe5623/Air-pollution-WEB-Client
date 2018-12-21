@@ -36,7 +36,7 @@ export class TimerComponent implements OnInit, OnDestroy {
         this.hours = Math.floor(this.distance / 3600); this.distance = Math.floor(this.distance % 3600);
         this.min = Math.floor(this.distance / 60);
         this.sec = Math.floor(this.distance % 60);
-        this.timeout.emit(false);
+        
         if (this.distance <= 0) {
           this.timeout.emit(true);
           clearInterval(this.interval);

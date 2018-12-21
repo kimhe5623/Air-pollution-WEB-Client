@@ -59,9 +59,6 @@ export class AdminNavbarComponent implements OnInit {
       case (6):
         this.currentMenu.adminSensormg = true;
         break;
-      case (7):
-        this.currentMenu.profile = true;
-        break;
       case (8):
         this.currentMenu.changepw = true;
         break;
@@ -90,7 +87,7 @@ export class AdminNavbarComponent implements OnInit {
 
       case (3): // => air sensor history
         this.storageService.set('menuNum', 3);
-        this.router.navigate(['/administrator/air-sensor-history']);
+        this.router.navigate(['/administrator/air-history']);
         break;
 
       case (4): // => heart history
@@ -108,26 +105,18 @@ export class AdminNavbarComponent implements OnInit {
         this.router.navigate(['/administrator/admin-sensor-management']);
         break;
 
-      case (7): // => profile
-        this.storageService.set('menuNum', 7);
-        this.router.navigate(['/administrator/profile']);
-        break;
-
       case (8): // => changepw
         this.storageService.set('menuNum', 8);
         this.router.navigate(['/administrator/changepw']);
         break;
 
       case (9): // => sign out
-        alert('sign out!');
 
         /** HTTP NOTIFICATION */
         var payload: any = {
-          nsc: this.storageService.get('nsc')
+          nsc: this.storageService.fnGetNumberOfSignedInCompletions()
         };
-        this.umService.SGO(payload, ()=>{
-          this.router.navigate(['/']);
-        });
+        this.umService.fnSgo(payload);
         break;
     }
   }

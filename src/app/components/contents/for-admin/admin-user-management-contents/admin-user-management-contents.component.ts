@@ -3,6 +3,7 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { UserManagementService } from '../../../../services/httpRequest/user-management.service';
 import { StorageService } from '../../../../services/storage.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { HEADER } from 'src/app/header';
 
 @Component({
   selector: 'app-admin-user-management-contents',
@@ -40,7 +41,7 @@ export class AdminUserManagementContentsComponent implements OnInit {
   ngOnInit() {
 
     var payload = {
-      nsc: this.storageService.get('userInfo').nsc,
+      nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
     }
     this.reqData(payload);
 
@@ -50,9 +51,9 @@ export class AdminUserManagementContentsComponent implements OnInit {
    * Request data from server and set it to USER_LIST variable
    */
   reqData(payload: any) {
-    this.umService.AUV(payload, (result) => {
+    this.umService.fnAuv(payload, (result) => {
 
-      if (result != null) {
+      if (result != HEADER.NULL_VALUE) {
 
         this.existUser = result.payload.length != 0 ? true : false;
 
@@ -72,7 +73,6 @@ export class AdminUserManagementContentsComponent implements OnInit {
           });
         }
       }
-      else alert('Failed');
 
       console.log("USER LIST => ", this.USER_LIST);
       this.dataSource = new MatTableDataSource<PeriodicElement>(this.USER_LIST);
@@ -87,39 +87,39 @@ export class AdminUserManagementContentsComponent implements OnInit {
   /**
    * Add search option
    */
-  addSearchOption() {
+  fnAddSearchOption() {
     this.search_options_json[this.searchForm.value.option] = this.searchForm.value.input;
     this.jsonToArray(this.search_options_json);
 
     var payload: any = {
-      nsc: this.storageService.get('userInfo').nsc,
-      regf: this.search_options_json['registrationState'] == null ? "" : this.search_options_json['registrationState'],
-      signf: this.search_options_json['signinState'] == null ? "" : this.search_options_json['signinState'],
-      ml: this.search_options_json['membershipLevel'] == null ? "" : this.search_options_json['membershipLevel'],
-      mxdt: this.search_options_json['membershipExpDate'] == null ? "" : this.search_options_json['membershipExpDate'],
-      userId: this.search_options_json['userID'] == null ? "" : this.search_options_json['userID'],
-      userFn: this.search_options_json['firstname'] == null ? "" : this.search_options_json['firstname'],
-      userLn: this.search_options_json['lastname'] == null ? "" : this.search_options_json['lastname']
+      nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
+      regf: this.search_options_json['registrationState'] == HEADER.NULL_VALUE ? "" : this.search_options_json['registrationState'],
+      signf: this.search_options_json['signinState'] == HEADER.NULL_VALUE ? "" : this.search_options_json['signinState'],
+      ml: this.search_options_json['membershipLevel'] == HEADER.NULL_VALUE ? "" : this.search_options_json['membershipLevel'],
+      mxdt: this.search_options_json['membershipExpDate'] == HEADER.NULL_VALUE ? "" : this.search_options_json['membershipExpDate'],
+      userId: this.search_options_json['userID'] == HEADER.NULL_VALUE ? "" : this.search_options_json['userID'],
+      userFn: this.search_options_json['firstname'] == HEADER.NULL_VALUE ? "" : this.search_options_json['firstname'],
+      userLn: this.search_options_json['lastname'] == HEADER.NULL_VALUE ? "" : this.search_options_json['lastname']
     }
     this.reqData(payload);
   }
 
   /**
-   * @param key : The key of option which you wanna delete
+   * @param key : The key of option which you want to delete
    */
-  deleteSearchOption(key: string) {
+  fnDeleteSearchOption(key: string) {
     delete this.search_options_json[key];
     this.jsonToArray(this.search_options_json);
 
     var payload: any = {
-      nsc: this.storageService.get('userInfo').nsc,
-      regf: this.search_options_json['registrationState'] == null ? "" : this.search_options_json['registrationState'],
-      signf: this.search_options_json['signinState'] == null ? "" : this.search_options_json['signinState'],
-      ml: this.search_options_json['membershipLevel'] == null ? "" : this.search_options_json['membershipLevel'],
-      mxdt: this.search_options_json['membershipExpDate'] == null ? "" : this.search_options_json['membershipExpDate'],
-      userId: this.search_options_json['userID'] == null ? "" : this.search_options_json['userID'],
-      userFn: this.search_options_json['firstname'] == null ? "" : this.search_options_json['firstname'],
-      userLn: this.search_options_json['lastname'] == null ? "" : this.search_options_json['lastname']
+      nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
+      regf: this.search_options_json['registrationState'] == HEADER.NULL_VALUE ? "" : this.search_options_json['registrationState'],
+      signf: this.search_options_json['signinState'] == HEADER.NULL_VALUE ? "" : this.search_options_json['signinState'],
+      ml: this.search_options_json['membershipLevel'] == HEADER.NULL_VALUE ? "" : this.search_options_json['membershipLevel'],
+      mxdt: this.search_options_json['membershipExpDate'] == HEADER.NULL_VALUE ? "" : this.search_options_json['membershipExpDate'],
+      userId: this.search_options_json['userID'] == HEADER.NULL_VALUE ? "" : this.search_options_json['userID'],
+      userFn: this.search_options_json['firstname'] == HEADER.NULL_VALUE ? "" : this.search_options_json['firstname'],
+      userLn: this.search_options_json['lastname'] == HEADER.NULL_VALUE ? "" : this.search_options_json['lastname']
     }
     this.reqData(payload);
   }

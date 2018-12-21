@@ -10,7 +10,6 @@ import { TechnologyComponent } from './main/main-page/contents/technology/techno
 import { UserServiceIntroductionComponent } from './main/main-page/contents/user-service-introduction/user-service-introduction.component';
 import { HomeComponent } from './main/main-page/contents/home/home.component';
 import { UserMainComponent } from './main/dashboard/contents/user-main/user-main.component';
-import { UserProfileComponent } from './main/dashboard/contents/user-profile/user-profile.component';
 import { UserChangePasswordComponent } from './main/dashboard/contents/user-change-password/user-change-password.component';
 import { SensorManagementComponent } from './main/dashboard/contents/sensor/sensor-management/sensor-management.component';
 import { PersonalSensorRegComponent } from './main/dashboard/contents/sensor/personal-sensor-reg/personal-sensor-reg.component';
@@ -24,7 +23,6 @@ import { AdminSensorListComponent } from './main/administrator/contents/sensor/a
 import { AdminPersonalSensorRegistrationComponent } from './main/administrator/contents/sensor/admin-personal-sensor-registration/admin-personal-sensor-registration.component';
 import { AdminAirSensorHistoryComponent } from './main/administrator/contents/admin-air-sensor-history/admin-air-sensor-history.component';
 import { AdminHeartHistoryComponent } from './main/administrator/contents/admin-heart-history/admin-heart-history.component';
-import { AdminProfileComponent } from './main/administrator/contents/admin-profile/admin-profile.component';
 import { AdminChangepwComponent } from './main/administrator/contents/admin-changepw/admin-changepw.component';
 import { TestComponent } from './main/test/test.component';
 
@@ -56,10 +54,6 @@ export const routes: Routes = [
       {
         path: '',
         component: UserMainComponent
-      },
-      {
-        path: 'profile',
-        component: UserProfileComponent
       },
       {
         path: 'changepw',
@@ -97,7 +91,11 @@ export const routes: Routes = [
         component: AdminMainComponent
       },
       {
-        path: 'user-sensor-management',
+        path: 'changepw',
+        component: AdminChangepwComponent
+      },
+      {
+        path: 'sensor-list',
         component: AdminSensorListComponent
       },
       {
@@ -111,14 +109,6 @@ export const routes: Routes = [
       {
         path: 'heart-history',
         component: AdminHeartHistoryComponent
-      },
-      {
-        path: 'profile',
-        component: AdminProfileComponent
-      },
-      {
-        path: 'changepw',
-        component: AdminChangepwComponent
       },
       {
         path: 'admin-sensor-management',

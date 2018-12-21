@@ -7,6 +7,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { SensorManagementService } from 'src/app/services/httpRequest/sensor-management.service';
 import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { DataManagementService } from 'src/app/services/data-management.service';
+import { HEADER } from 'src/app/header';
 
 @Component({
   selector: 'app-admin-sensor-management-contents',
@@ -66,15 +67,15 @@ export class AdminSensorManagementContentsComponent implements OnInit {
 
 
   ngOnInit() {
-    this.initData();
+    this.fnInitData();
   }
 
-  initData() {
+  fnInitData() {
     this.selection = new SelectionModel<PeriodicElement>(true, []);
 
     /** HTTP REQUEST */
     var payload: any = {
-      nsc: this.storageService.get('userInfo').nsc,
+      nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
       wmac: "",
       actf: 1,
       mobf: 0,
@@ -89,79 +90,69 @@ export class AdminSensorManagementContentsComponent implements OnInit {
   /** request data */
   reqData(payload: any) {
 
-    // flush buffer
-    if (this.SENSOR_LIST.length != 0) this.SENSOR_LIST = [];
 
-    this.smService.ASV(payload, (result) => {
+    this.smService.fnAsv(payload, (result) => {
 
       console.log('ASV-RSP => ', result);
-      if (result != null) {
+      if (result != HEADER.NULL_VALUE) {
+
+        // flush buffer
+        this.SENSOR_LIST = [];
 
         this.existSensor = result.payload.selectedSensorInformationList.length != 0 ? true : false;
 
-        this.parseData(result);
+        for (var i = 0; i < result.payload.selectedSensorInformationList.length; i++) {
+          this.SENSOR_LIST.push({
+            mac: this.dataService.rspToMacAddress(result.payload.selectedSensorInformationList[i]['wmac']),
+            activation: Number(result.payload.selectedSensorInformationList[i]['actf']),
+            // nation: result.payload.selectedSensorInformationList[i]['nat'],
+            // statee: result.payload.selectedSensorInformationList[i]['state'],
+            // city: result.payload.selectedSensorInformationList[i]['city'],
+            nation: 122,
+            state: 'CA',
+            city: 'San diego',
+            cellularMac: this.dataService.rspToMacAddress(result.payload.selectedSensorInformationList[i]['cmac']),
+            regDate: new Date(Number(result.payload.selectedSensorInformationList[i]['rdt'])),
+            status: this.dataService.sensorStatusParsing(Number(result.payload.selectedSensorInformationList[i]['stat'])),
+            mobility: Number(result.payload.selectedSensorInformationList[i]['mobf']),
+            userID: result.payload.selectedSensorInformationList[i]['regusn']
+          });
+        }
         console.log('Parsed data => ', this.SENSOR_LIST);
       }
-      else alert('Failed');
 
     });
   }
 
-  // parse data
-  parseData(result: any) {
-
-    for (var i = 0; i < result.payload.selectedSensorInformationList.length; i++) {
-      this.SENSOR_LIST.push({
-        mac: this.dataService.rspToMacAddress(result.payload.selectedSensorInformationList[i]['wmac']),
-        activation: Number(result.payload.selectedSensorInformationList[i]['actf']),
-        nation: 122,
-        state: 'CA',
-        city: 'San diego',
-        cellularMac: this.dataService.rspToMacAddress(result.payload.selectedSensorInformationList[i]['cmac']),
-        regDate: new Date(Number(result.payload.selectedSensorInformationList[i]['rdt'])),
-        status: this.dataService.sensorStatusParsing(Number(result.payload.selectedSensorInformationList[i]['stat'])),
-        mobility: Number(result.payload.selectedSensorInformationList[i]['mobf']),
-        userID: result.payload.selectedSensorInformationList[i]['regusn']
-      });
-    }
-    console.log('parsed sensor data => ', this.SENSOR_LIST);
-  }
-
   /** Search */
-  addSearchOption() {
+  fnAddSearchOption() {
     this.search_options_json[this.searchForm.value.option] = this.searchForm.value.input;
     this.jsonToArray(this.search_options_json);
 
     var payload: any = {
-      nsc: this.storageService.get('userInfo').nsc,
-      wmac: this.search_options_json['mac'] == null ? "" : this.dataService.macAddressToReq(this.search_options_json['mac']),
-      actf: this.search_options_json['activation'] == null ? "" : Number(this.search_options_json['activation']),
-      mobf: this.search_options_json['mobility'] == null ? 0 : Number(this.search_options_json['mobility']),
-      // nat: this.search_options_json['nation'],
-      // state: this.search_options_json['state'],
-      // city: this.search_options_json['city'],
-      nat: "Q30",
-      state: "Q99",
-      city: "Q16552"
+      nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
+      wmac: this.search_options_json['mac'] == HEADER.NULL_VALUE ? "" : this.dataService.macAddressToReq(this.search_options_json['mac']),
+      actf: this.search_options_json['activation'] == HEADER.NULL_VALUE ? "" : Number(this.search_options_json['activation']),
+      mobf: this.search_options_json['mobility'] == HEADER.NULL_VALUE ? 0 : Number(this.search_options_json['mobility']),
+      nat: this.search_options_json['nation'] == HEADER.NULL_VALUE ? "Q30" : this.search_options_json['nation'],
+      state: this.search_options_json['state'] == HEADER.NULL_VALUE ? "Q99" : this.search_options_json['state'],
+      city: this.search_options_json['city'] == HEADER.NULL_VALUE ? "Q16552" : this.search_options_json['city'],
     }
     this.reqData(payload);
   }
 
-  deleteSearchOption(key: string) {
+  fnDeleteSearchOption(key: string) {
     delete this.search_options_json[key];
     this.jsonToArray(this.search_options_json);
 
     var payload: any = {
-      nsc: this.storageService.get('userInfo').nsc,
-      wmac: this.search_options_json['mac'] == null ? "" : this.search_options_json['mac'],
-      actf: this.search_options_json['activation'] == null ? "" : Number(this.search_options_json['activation']),
-      mobf: this.search_options_json['mobility'] == null ? 0 : Number(this.search_options_json['mobility']),
-      // nat: this.search_options_json['nation'],
-      // state: this.search_options_json['state'],
-      // city: this.search_options_json['city']
-      nat: "Q30",
-      state: "Q99",
-      city: "Q16552"
+      nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
+      wmac: this.search_options_json['mac'] == HEADER.NULL_VALUE ? "" : this.search_options_json['mac'],
+      actf: this.search_options_json['activation'] == HEADER.NULL_VALUE ? "" : Number(this.search_options_json['activation']),
+      mobf: this.search_options_json['mobility'] == HEADER.NULL_VALUE ? 0 : Number(this.search_options_json['mobility']),
+      nat: this.search_options_json['nation'] == HEADER.NULL_VALUE ? "Q30" : this.search_options_json['nation'],
+      state: this.search_options_json['state'] == HEADER.NULL_VALUE ? "Q99" : this.search_options_json['state'],
+      city: this.search_options_json['city'] == HEADER.NULL_VALUE ? "Q16552" : this.search_options_json['city'],
     }
     this.reqData(payload);
   }
@@ -176,18 +167,16 @@ export class AdminSensorManagementContentsComponent implements OnInit {
 
 
   /** Sensor Registration */
-  onSubmit() {
+  fnOnSubmitAsrForm() {
     var payload = {
-      nsc: this.storageService.get('userInfo').nsc,
+      nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
       wmac: this.dataService.macAddressToReq(this.wifi_mac.value),
       cmac: this.dataService.macAddressToReq(this.cellular_mac.value),
     }
-    this.smService.ASR(payload, (success) => {
-      if (!success) {
-        console.log('success => ', success);
-        alert('Failed!');
+    this.smService.fnAsr(payload, (success) => {
+      if (success) {
+        this.fnInitData();
       }
-      else this.initData();
     });
   }
   /**----------------*/
@@ -231,59 +220,50 @@ export class AdminSensorManagementContentsComponent implements OnInit {
   //------------------------------------
 
   //------(Dialog functions)--------
-  openAssociationDialog(): void {
+  fnOpenDialog_SAS_procedure(): void {
     const dialogRef = this.dialog.open(SensorAssociationDialog, {
       width: '600px', height: 'auto',
       data: { sensorSerial: this.senserSerial, mobility: this.mobility, isCanceled: this.isCanceled }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != null && !result.isCanceled) {
+      if (result != HEADER.NULL_VALUE && !result.isCanceled) {
         var payload = {
-          nsc: this.storageService.get('userInfo').nsc,
+          nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
           wmac: this.dataService.macAddressToReq(result.sensorSerial),
           mobf: result.mobility
         }
 
-        this.smService.SAS(payload, (success) => {
-          if (!success) {
-            alert('Failed!');
+        this.smService.fnSas(payload, (success) => {
+          if (success) {
+            this.fnInitData();
           }
-          else {
-            console.log('Succeeded!');
-          }
-          this.initData();
         });
       }
     });
   }
 
-  openDeletionDialog(): void {
+  fnOpenDialog_ASD_procedure(): void {
     const dialogRef = this.dialog.open(SensorDeregistrationDialog, {
       width: 'auto', height: 'auto',
       data: { num_of_selected_sensor: this.selection.selected.length, isCanceled: this.isCanceled, reasonCode: this.reasonCode }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != null && !result.isCanceled) {
+      if (result != HEADER.NULL_VALUE && !result.isCanceled) {
 
         for (var i = 0; i < result.num_of_selected_sensor; i++) {
           var payload = {
-            nsc: this.storageService.get('userInfo').nsc,
+            nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
             wmac: this.dataService.macAddressToReq(this.selectedSensor[i].mac),
-            //userId: this.selectedSensor[i].userID,
-            userId: 'hyon5623@gmail.com',
+            userId: this.selectedSensor[i].userID,
+            //userId: 'hyon5623@gmail.com',
             drgcd: result.reasonCode,
           }
           console.log(i);
-          this.smService.ASD(payload, (success) => {
-            console.log(i, result.num_of_selected_sensor);
-            if(i == result.num_of_selected_sensor){
-
-              this.initData();
-            }
-          });
+          this.smService.fnAsd(payload);
         }
+        this.fnInitData();
       }
     });
   }

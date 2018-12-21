@@ -57,7 +57,7 @@ export class HeartHistoryContentsComponent implements OnInit {
   reqData(tlv: any, cb) {
     console.log('startDate: ', this.startDate.value, ' endDate: ', this.endDate.value);
     var payload = {
-      nsc: this.storageService.get('userInfo').nsc,
+      nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
       sTs: Math.floor(new Date(this.startDate.value).getTime()/1000),
       eTs: Math.floor(new Date(new Date(this.endDate.value).setHours(23, 59, 59, 59)).getTime()/1000),
       nat: "Q30",

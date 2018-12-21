@@ -5,7 +5,7 @@ import { DataMonitoringService } from '../../services/httpRequest/data-monitorin
 import { StorageService } from 'src/app/services/storage.service';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
-import { TIMER } from 'src/app/header';
+import { HEADER } from 'src/app/header';
 declare var google;
 
 @Component({
@@ -100,7 +100,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
           //console.log('air-maps.component subscribe');
           this.updateMarkers();
         }
-      }, TIMER.T553);
+      }, HEADER.TIMER.T553);
 
     });
   }
@@ -181,10 +181,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
       }
 
       if (this.storageService.get('userInfo') != null) {
-        payload.nsc = this.storageService.get('userInfo').nsc
+        payload.nsc = this.storageService.fnGetNumberOfSignedInCompletions()
       }
 
-      this.dmService.RAV(payload, (result) => {
+      this.dmService.fnRav(payload, (result) => {
         console.log('air-maps.component - RAV callback => ', result);
         if (result == null) cb(null);
         else if (result.payload.realtimeAirQualityDataList.length == 0) cb(null);

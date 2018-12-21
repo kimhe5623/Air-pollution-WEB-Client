@@ -13,7 +13,7 @@ export class UserDeregistrationConfirmDialog {
     this.data.isCanceled = true;
   }
 
-  btnClick(isCanceled: boolean) {
+  fnBtnClick(isCanceled: boolean) {
     this.data.isCanceled = isCanceled;
   }
 

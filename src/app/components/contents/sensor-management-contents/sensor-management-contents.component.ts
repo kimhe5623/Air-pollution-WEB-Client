@@ -45,20 +45,22 @@ export class SensorManagementContentsComponent implements OnInit {
 
 
   ngOnInit() {
-    this.initData();
+    this.fnInitData();
   }
 
-  initData() {
+  fnInitData() {
     /** HTTP REQUEST */
     var payload: any = {
-      nsc: this.storageService.get('userInfo').nsc
+      nsc: this.storageService.fnGetNumberOfSignedInCompletions()
     }
 
     this.selection = new SelectionModel<PeriodicElement>(true, []);
-    this.SENSOR_LIST = [];
-    this.smService.SLV(payload, (result) => {
+
+    this.smService.fnSlv(payload, (result) => {
 
       if (result != null) {
+
+        this.SENSOR_LIST = [];
 
         this.existSensor = result.payload.selectedSensorInformationList.length != 0 ? true : false;
 
@@ -118,7 +120,7 @@ export class SensorManagementContentsComponent implements OnInit {
   //------------------------------------
 
   //------(Dialog functions)--------
-  openAssociationDialog(): void {
+  fnOpenDialog_SAS_procedure(): void {
     const dialogRef = this.dialog.open(SensorAssociationDialog, {
       width: '600px', height: 'auto',
       data: { sensorSerial: this.senserSerial, mobility: this.mobility, isCanceled: this.isCanceled }
@@ -127,22 +129,22 @@ export class SensorManagementContentsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && !result.isCanceled) {
         var payload = {
-          nsc: this.storageService.get('userInfo').nsc,
+          nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
           wmac: this.dataService.macAddressToReq(result.sensorSerial),
           mobf: result.mobility
         }
 
-        this.smService.SAS(payload, (success) => {
+        this.smService.fnSas(payload, (success) => {
           if (!success) {
             alert('Failed!');
           }
-          else this.initData();
+          else this.fnInitData();
         });
       }
     });
   }
 
-  openDeletionDialog(): void {
+  fnOpenDialog_SDD_procedure(): void {
     const dialogRef = this.dialog.open(SensorDeletionDialog, {
       width: 'auto', height: 'auto',
       data: { num_of_selected_sensor: this.selection.selected.length, isCanceled: this.isCanceled, reasonCode: this.reasonCode }
@@ -153,18 +155,14 @@ export class SensorManagementContentsComponent implements OnInit {
 
         for (var i = 0; i < result.num_of_selected_sensor; i++) {
           var payload = {
-            nsc: this.storageService.get('userInfo').nsc,
+            nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
             wmac: this.dataService.macAddressToReq(this.selectedSensor[i].mac),
             drgcd: result.reasonCode.toString()
           }
 
-          this.smService.SDD(payload, (success) => {
-            if(i == result.num_of_selected_sensor){
-              console.log("Init data!");
-              this.initData();
-            }
-          });
+          this.smService.fnSdd(payload);
         }
+        this.fnInitData();
       }
     });
   }

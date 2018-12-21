@@ -68,7 +68,7 @@ export class SensorMapsComponent implements OnInit {
       city: "Q16552"
     }
     if (this.isSignedin) {
-      payload.nsc = this.storageService.get('userInfo').nsc;
+      payload.nsc = this.storageService.fnGetNumberOfSignedInCompletions();
     }
 
     this.dmService.SHR(payload, (result) => {

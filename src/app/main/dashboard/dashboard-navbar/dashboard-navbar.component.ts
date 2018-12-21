@@ -50,9 +50,6 @@ export class DashboardNavbarComponent implements OnInit {
       case (4):
         this.currentMenu.HeartHistory = true;
         break;
-      case (5):
-        this.currentMenu.profile = true;
-        break;
       case (6):
         this.currentMenu.changepw = true;
         break;
@@ -91,13 +88,6 @@ export class DashboardNavbarComponent implements OnInit {
         this.router.navigate(['/dashboard/heart-history']);
         break;
 
-
-      case (5): // => profile
-        this.storageService.set('menuNum', 5);
-        this.router.navigate(['/dashboard/profile']);
-        break;
-
-
       case (6): // => changepw
         this.storageService.set('menuNum', 6);
         this.router.navigate(['/dashboard/changepw']);
@@ -111,9 +101,7 @@ export class DashboardNavbarComponent implements OnInit {
         var payload: any = {
           nsc: this.storageService.get('nsc')
         };
-        this.umService.SGO(payload, ()=>{
-          this.router.navigate(['/']);
-        });
+        this.umService.fnSgo(payload);
 
         break;
 

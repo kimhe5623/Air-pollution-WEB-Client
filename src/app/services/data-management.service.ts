@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SessionStorageService } from 'ngx-store';
 import { DataMonitoringService } from './httpRequest/data-monitoring.service';
+import { DisplayErrorService } from './display-error.service';
+import { HEADER } from 'src/app/header';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,24 @@ export class DataManagementService {
   constructor(
     private sessionStorageService: SessionStorageService,
     private dmService: DataMonitoringService,
+    private dispErrService: DisplayErrorService,
   ) { }
+
+  /** Verify administrator */
+  fnVerifyAdministrator(): number{
+    var isAdmin: number = HEADER.RES_FAILD;
+    
+    if(this.sessionStorageService.get('userInfo')){
+      if(this.sessionStorageService.get('userInfo').usn < 1001){
+        isAdmin = HEADER.RES_SUCCESS;
+      }
+      else {
+        this.dispErrService.fnDispErrorString('UNAUTHORIZED_USER_SEQUENCE_NUMBER');
+      }
+    }
+
+    return isAdmin;
+  }
 
   /**
    * HTTP response data parsing: Realtime air data

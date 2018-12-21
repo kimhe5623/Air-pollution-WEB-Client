@@ -3,6 +3,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { UserManagementService } from 'src/app/services/httpRequest/user-management.service';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
+import { HEADER } from 'src/app/header';
 
 @Component({
   selector: 'app-user-change-password-contents',
@@ -42,28 +43,23 @@ export class UserChangePasswordContentsComponent implements OnInit {
       this.newPassword.hasError('pattern') ? 'Password must contain at least one special character' : '';
   }
 
-  onSubmit() {
+  fnOnSubmitUpcForm() {
     this.errorhide = false;
 
     if (!this.currentPassword.invalid && !this.newPassword.invalid) {
 
       var payload = {
-        nsc: this.storageService.get('userInfo').nsc,
+        nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
         curPw: this.currentPassword.value,
         newPw: this.newPassword.value,
       }
 
-      this.umService.UPC(payload, (success)=>{
-        if (!success) {
-          alert('Failed!');
-        }
-        else this.initData();
-      });
+      this.umService.fnUpc(payload);
     }
   }
 
   clickDeregister() {
-    this.router.navigate([`/dashboard/deregister-account`], { skipLocationChange: true });
+    this.router.navigate([HEADER.ROUTER_PATHS.COMMON_USER_DEREGISTER_ACCOUNT], { skipLocationChange: true });
   }
 
 }

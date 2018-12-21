@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TIMER } from 'src/app/header';
+import { HEADER } from 'src/app/header';
 import { UserManagementService } from 'src/app/services/httpRequest/user-management.service';
+import { DisplayMessageService } from 'src/app/services/display-message.service';
 
 @Component({
   selector: 'app-signup-verification-code',
@@ -25,6 +26,7 @@ export class SignupVerificationCodeComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private umService: UserManagementService,
+    private dispMsgService: DisplayMessageService,
   ) {
     this.route.params.subscribe(params => {
       this.tci = Number(params['tci']);
@@ -36,7 +38,7 @@ export class SignupVerificationCodeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.timerDisplay = true;
 
-    this.settedTime = TIMER.T551;
+    this.settedTime = HEADER.TIMER.T551/1000;
     this.vfcFormControl = new FormControl('', [Validators.required, Validators.minLength(16), Validators.maxLength(16)])
 
     for (var i = 0; i < this.verificationCode.length; i++) {
@@ -52,24 +54,18 @@ export class SignupVerificationCodeComponent implements OnInit, OnDestroy {
     return this.vfcFormControl.hasError('required') ? 'The field is required' : 'Not a valid code';
   }
 
-  isTimeout(isTimeout: boolean) {
-    if (isTimeout) {
-      alert('Timeout!');
-      this.router.navigate(['/signup']);
-    }
+  fnTimeout() {
+      this.dispMsgService.fnDispErrorString('TIMEOUT');
+      this.router.navigate([HEADER.ROUTER_PATHS.SIGN_UP]);
   }
-  onSubmit() {
+
+  fnOnSubmitForVerifyingCode() {
     var payload: any = {
       vc: this.verificationCode,
       ac: this.vfcFormControl.value,
     }
 
     /** HTTP REQUEST */
-    this.umService.UVC(payload, this.tci, (success)=>{
-      if (!success) {
-        alert('failed!');
-        this.router.navigate(['/signup']);
-      }
-    });
+    this.umService.fnUvc(payload, this.tci);
   }
 }

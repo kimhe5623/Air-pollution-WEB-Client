@@ -3,9 +3,9 @@
     <strong>Are you sure to deregister your account?</strong>
 </div>
 <div mat-dialog-actions style="padding-left: 12.5rem">
-    <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle cancel" (click)="btnClick(true)"
+    <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle cancel" (click)="fnBtnClick(true)"
         mdbWavesEffect>Cancel</button>
     <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-    <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle primary-variant" (click)="btnClick(false)"
+    <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle primary-variant" (click)="fnBtnClick(false)"
         mdbWavesEffect>Deregister</button>
 </div>

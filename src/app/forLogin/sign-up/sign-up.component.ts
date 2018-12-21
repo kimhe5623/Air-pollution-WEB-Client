@@ -51,24 +51,22 @@ export class SignUpComponent implements OnInit {
 
 
   /** Event functions */
-  onSubmit() {
+  fnOnSubmitSignupForm() {
     if (this.signupForm.invalid) console.log('Input again');
 
-    var payload: any = {
-      bdt: this.signupForm.value['birthdate'].getTime().toString(),
-      gender: this.signupForm.value['gender'],
-      userId: this.signupForm.value['email'],
-      userPw: this.signupForm.value['password'],
-      userFn: this.signupForm.value['firstname'],
-      userLn: this.signupForm.value['lastname'],
-    }
-
-    /** HTTP REQUEST */
-    this.umService.SGU(payload, (success)=>{
-      if (!success) {
-        alert('Failed');
+    else {
+      var payload: any = {
+        bdt: this.signupForm.value['birthdate'].getTime().toString(),
+        gender: this.signupForm.value['gender'],
+        userId: this.signupForm.value['email'],
+        userPw: this.signupForm.value['password'],
+        userFn: this.signupForm.value['firstname'],
+        userLn: this.signupForm.value['lastname'],
       }
-    });
+
+      /** HTTP REQUEST */
+      this.umService.fnSgu(payload);
+    }
   }
 
 

@@ -4,7 +4,7 @@ import { KasDialog } from 'src/app/dialogs/kas-dialog/kas-dialog';
 import { StorageService } from './storage.service';
 import { DataMonitoringService } from './httpRequest/data-monitoring.service';
 import { UserManagementService } from './httpRequest/user-management.service';
-import { TIMER } from 'src/app/header';
+import { HEADER } from 'src/app/header';
 import { Router } from '@angular/router';
 
 
@@ -44,7 +44,7 @@ export class KasService {
         
         //console.log("KAS service => ", this.val, ' sec');
 
-        if (this.val >= TIMER.T552 - 180) { // 180 == 60 * 3  => 3 minutes 
+        if (this.val >= HEADER.TIMER.T552/1000 - 180) { // 180 == 60 * 3  => 3 minutes 
 
           if (!this.dialogOpen) {
             this.openKasDialog();
@@ -60,7 +60,7 @@ export class KasService {
             this.dialog.closeAll();
 
             var payload = {
-              nsc: this.storageService.get('userInfo').nsc
+              nsc: this.storageService.fnGetNumberOfSignedInCompletions()
             }
             this.umService.SGO(payload, () => { 
               this.router.navigate(['/']);
@@ -97,7 +97,7 @@ export class KasService {
       if (result != null && !result.isCanceled) { // When the user does action,
 
         var payload = {
-          nsc: this.storageService.get('userInfo').nsc
+          nsc: this.storageService.fnGetNumberOfSignedInCompletions()
         }
 
         this.dmService.KAS(payload, (success) => {

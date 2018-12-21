@@ -3,11 +3,11 @@
     <div class="chipWrapper">
       <span class="badge badgeStyle" *ngFor="let option of search_options_array let idx=index">
         <strong>{{option.key}}</strong>&nbsp;&nbsp;{{option.value}}
-        <i class="close fa fa-times closeButton" (click)="deleteSearchOption(option.key)"></i>
+        <i class="close fa fa-times closeButton" (click)="fnDeleteSearchOption(option.key)"></i>
       </span>
     </div>
     <!-- Search form -->
-    <form [formGroup]="searchForm" (ngSubmit)="addSearchOption()">
+    <form [formGroup]="searchForm" (ngSubmit)="fnAddSearchOption()">
       <mat-form-field class="searchSelect" [floatLabel]="searchForm.value.floatLabel">
         <mat-select placeholder="Option" formControlName="option">
           <mat-option>--</mat-option>

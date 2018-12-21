@@ -6,9 +6,9 @@
       <span class="vfcBox" *ngFor="let v of vfc">{{v}}</span>
     </div>
     <div class="timerContainer">
-      <app-timer *ngIf="timerDisplay" [style]="timerStyle" [visible]="true" [seconds]="settedTime" (timeout)="isTimeout($event)"></app-timer>
+      <app-timer *ngIf="timerDisplay" [style]="timerStyle" [visible]="true" [seconds]="settedTime" (timeout)="fnTimeout()"></app-timer>
     </div>
-    <form fxLayout="column" class="example-container" (ngSubmit)="onSubmit()">
+    <form fxLayout="column" class="example-container" (ngSubmit)="fnOnSubmitForVerifyingCode()">
       <div class="input-row">
         <mat-form-field class="formStyle">
           <input matInput placeholder="Authentication code" [formControl]="vfcFormControl">

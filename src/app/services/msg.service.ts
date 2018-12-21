@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HEADER } from 'src/app/header';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ export class MsgService {
   constructor() { }
 
   /** MsgPacking (if EP is tci, EP == null) */
-  packingMsg(payload: any, msgType: number, EP: number): any {
+  fnPackingMsg(payload: any, msgType: number, EP: number): any {
 
     if (EP == null) {
       EP = Number(Math.random().toString(36).replace(/[^0-9]+/g, '').substr(0, 3));
@@ -26,19 +27,19 @@ export class MsgService {
   }
 
   /** Header check */
-  isValidHeader(rspMsg: any, msgType: number, EP: string): boolean {
+  fnVerifyMsgHeader(rspMsg: any, msgType: number, EP: string): number {
     if (rspMsg.header.endpointId != EP) {
       console.log("Invalid endpointId");
-      return false;
+      return HEADER.RES_FAILD;
     }
     else if (rspMsg.header.msgType != msgType) {
       console.log("Invalid msgType");
-      return false;
+      return HEADER.RES_FAILD;
     }
     /*else if (rspMsg.header.msgLen != ~-encodeURI(JSON.stringify(rspMsg.payload)).split(/%..|./).length) {
       console.log("Damaged message");
-      return false;
+      return HEADER.RES_FAILD;
     }*/
-    else return true;
+    else return HEADER.RES_SUCCESS;
   }
 }

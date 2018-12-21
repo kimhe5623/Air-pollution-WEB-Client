@@ -1,7 +1,7 @@
 <div class="wrapper">
   <h1 class="title">Administrator - <strong>Sensor management</strong></h1>
   <mat-card class="card">
-    <form class="example-form form" (ngSubmit)="onSubmit()">
+    <form class="example-form form" (ngSubmit)="fnOnSubmitAsrForm()">
       <mat-form-field class="example-full-width inputStyle">
         <input matInput placeholder="Wifi MAC Address" [formControl]="wifi_mac">
       </mat-form-field>
@@ -16,12 +16,12 @@
     <div class="col-lg-12" style="text-align:center">
       <span class="badge badgeStyle" *ngFor="let option of search_options_array let idx=index">
         <strong>{{option.key}}</strong>&nbsp;&nbsp;{{option.value}}
-        <i class="close fa fa-times closeButton" (click)="deleteSearchOption(option.key)"></i>
+        <i class="close fa fa-times closeButton" (click)="fnDeleteSearchOption(option.key)"></i>
       </span>
     </div>
     <div class="col-lg-12 col-xl-9">
       <!-- Search form -->
-      <form [formGroup]="searchForm" (ngSubmit)="addSearchOption()">
+      <form [formGroup]="searchForm" (ngSubmit)="fnAddSearchOption()">
         <mat-form-field class="searchSelect" [floatLabel]="searchForm.value.floatLabel">
           <mat-select placeholder="Option" formControlName="option">
             <mat-option>--</mat-option>
@@ -41,9 +41,9 @@
       </form>
     </div>
     <div class="col-lg-12 col-xl-3 buttonsGroup">
-      <button mdbBtn type="button" class="waves-light addition roundBtn" (click)="openAssociationDialog()"
+      <button mdbBtn type="button" class="waves-light addition roundBtn" (click)="fnOpenDialog_SAS_procedure()"
         mdbWavesEffect>+</button>
-      <button mdbBtn type="button" class="waves-light deletion roundBtn" (click)="openDeletionDialog()" mdbWavesEffect>-</button>
+      <button mdbBtn type="button" class="waves-light deletion roundBtn" (click)="fnOpenDialog_ASD_procedure()" mdbWavesEffect>-</button>
     </div>
   </div>
   <div class="mat-elevation-z8">

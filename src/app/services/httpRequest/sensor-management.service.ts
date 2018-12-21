@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { timeout, retry } from 'rxjs/operators';
 import { StorageService } from 'src/app/services/storage.service';
-import { Router } from '@angular/router';
-import { MSGTYPE, TIMER, RETRIVE } from 'src/app/header';
+import { HEADER } from 'src/app/header';
 import { MsgService } from '../msg.service';
-import { UserManagementService } from './user-management.service';
+import { DisplayMessageService } from '../display-message.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,337 +13,411 @@ export class SensorManagementService {
 
   constructor(
     private http: HttpClient,
-    private router: Router,
     private storageService: StorageService,
     private msgService: MsgService,
-    private umService: UserManagementService) { }
+    private dispMsgService: DisplayMessageService) { }
 
 
-  /** ASR */
-  ASR(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.ASR_REQ, Number(this.storageService.get('userInfo').usn));
+  /** fnAsr */
+  fnAsr(payload: any, cb) {
+    var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.ASR_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
     console.log('ASR-REQ => ', reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
+
+      .pipe(timeout(HEADER.TIMER.T409),
+        retry(HEADER.RETRIVE.R409))
+
       .subscribe((rspMsg: any) => {
         console.log('ASR-RSP => ', rspMsg);
 
-        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.ASR_RSP, reqMsg.header.endpointId)) {
-          cb(false); return;
+        if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.ASR_RSP, reqMsg.header.endpointId)) {
+          this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); 
+          cb(HEADER.RES_FAILD); return;
         }
 
         else {
           switch (rspMsg.payload.resultCode) {
-            case (0):  // success
-              alert('Successfully registered');
-              cb(true);
+            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, UNAUTHORIZED_USER_SEQUENCE_NUMBER: 4,
+
+            case (HEADER.RESCODE_SWP_ASR.OK):  // success
+              this.dispMsgService.fnDispSuccessString('SENSOR_REG_COMPLETED', reqMsg.payload.wmac);
+              cb(HEADER.RES_SUCCESS);
               break;
 
-            case (1): // reject-other
-              alert('Unknown error');
-              cb(false);
-              break;;
-
-            case (2):  // reject-unallocated user sequence number
-              alert('Unallocated user sequence number.');
-              var SGO_payload = { nsc: Number(this.storageService.get('userInfo').nsc) };
-              this.umService.SGO(SGO_payload, () => {
-                cb(false);
-              });
+            case (HEADER.RESCODE_SWP_ASR.OTHER): // reject-other
+              this.dispMsgService.fnDispErrorString('OTHER');
+              cb(HEADER.RES_FAILD);
               break;
 
-            case (3): // reject-unauthorized user sequence number
-              alert('Unauthorized user sequence number.');
-              var SGO_payload = { nsc: Number(this.storageService.get('userInfo').nsc) };
-              this.umService.SGO(SGO_payload, () => {
-                cb(false);
-              });
+            case (HEADER.RESCODE_SWP_ASR.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
+              this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
+              cb(HEADER.RES_FAILD);
+              break;
+
+
+            case (HEADER.RESCODE_SWP_ASR.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS):  // reject-incorrect number of signed in completions
+              this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
+              cb(HEADER.RES_FAILD);
+              break;
+
+
+            case (HEADER.RESCODE_SWP_ASR.UNAUTHORIZED_USER_SEQUENCE_NUMBER): // reject-unauthorized user sequence number
+              this.dispMsgService.fnDispErrorString('UNAUTHORIZED_USER_SEQUENCE_NUMBER');
+              cb(HEADER.RES_FAILD);
               break;
           }
+        }
+      }, (err) => {
+        if (err.timeout) {
+          console.log('In timeout error which is -> ', err);
+        }
+        else {
+          console.log('Error which is -> ', err);
         }
       });
   }
 
   /** ASD */
-  ASD(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.ASD_REQ, Number(this.storageService.get('userInfo').usn));
+  fnAsd(payload: any) {
+    var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.ASD_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
 
     console.log('ASD-REQ => ', reqMsg);
     this.http.post(`/serverapi`, reqMsg)
+
+      .pipe(timeout(HEADER.TIMER.T410),
+        retry(HEADER.RETRIVE.R410))
+
       .subscribe((rspMsg: any) => {
         console.log('ASD-RSP => ', rspMsg);
-        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.ASD_RSP, reqMsg.header.endpointId)) {
-          cb(false); return;
+        if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.ASD_RSP, reqMsg.header.endpointId)) {
+          this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); 
+          return;
         }
 
         else {
           switch (rspMsg.payload.resultCode) {
-            case (0):  // success
-              alert('Successfully deregistered');
-              cb(true);
+            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, UNAUTHORIZED_USER_SEQUENCE_NUMBER: 4, NOT_EXIST_WIFI_MAC_ADDRESS: 5, NOT_EXIST_USER_ID: 6, NOT_ASSOCIATED_WITH_USER_ID: 7,
+
+            case (HEADER.RESCODE_SWP_ASD.OK):  // success
+              this.dispMsgService.fnDispSuccessString('SENSOR_DELETE_COMPLETED', HEADER.NULL_VALUE);
               break;
 
-            case (1): // reject-other
-              alert('Unknown error');
-              cb(false);
+            case (HEADER.RESCODE_SWP_ASD.OTHER): // reject-other
+              this.dispMsgService.fnDispErrorString('OTHER');
               break;
 
-            case (2):  // reject-unallocated user sequence number
-              alert('Unallocated user sequence number.');
-              var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, () => {
-                cb(false);
-              });
+            case (HEADER.RESCODE_SWP_ASD.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
+              this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
               break;
 
-            case (3):  // reject-incorrect number of signed-in completions
-              alert('Already signed in another computer');
-              cb(false);
+            case (HEADER.RESCODE_SWP_ASD.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS):  // reject-incorrect number of signed-in completions
+              this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
               break;
 
-            case (4): // reject-unauthorized user sequence number
-              alert('Unauthorized user sequence number.');
-              var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, () => {
-                cb(false);
-              });
+            case (HEADER.RESCODE_SWP_ASD.UNAUTHORIZED_USER_SEQUENCE_NUMBER): // reject-unauthorized user sequence number
+              this.dispMsgService.fnDispErrorString('UNAUTHORIZED_USER_SEQUENCE_NUMBER');
               break;
 
-            case (5): // reject-not exist WiFi MAC address
-              alert('Not exist Wifi MAC address');
-              cb(false);
+            case (HEADER.RESCODE_SWP_ASD.NOT_EXIST_WIFI_MAC_ADDRESS): // reject-not exist WiFi MAC address
+              this.dispMsgService.fnDispErrorString('NOT_EXIST_WIFI_MAC_ADDRESS');
               break;
 
-            case (6): // reject-not exist user ID
-              alert('Not exist user ID');
-              cb(false);
+            case (HEADER.RESCODE_SWP_ASD.NOT_EXIST_USER_ID): // reject-not exist user ID
+              this.dispMsgService.fnDispErrorString('NOT_EXIST_USER_ID');
               break;
 
-            case (7): // reject-the requested WiFi MAC address is not an associated with user ID
-              alert('the requested WiFi MAC address is not an associated with user ID');
-              cb(false);
+            case (HEADER.RESCODE_SWP_ASD.NOT_ASSOCIATED_WITH_USER_ID): // reject-the requested WiFi MAC address is not an associated with user ID
+              this.dispMsgService.fnDispErrorString('NOT_ASSOCIATED_WITH_USER_ID');
               break;
           }
+        }
+      }, (err) => {
+        if (err.timeout) {
+          console.log('In timeout error which is -> ', err);
+        }
+        else {
+          console.log('Error which is -> ', err);
         }
       });
   }
 
   /** ASV */
-  ASV(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.ASV_REQ, Number(this.storageService.get('userInfo').usn));
+  fnAsv(payload: any, cb) {
+    var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.ASV_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
     console.log(reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
+
+      .pipe(timeout(HEADER.TIMER.T411),
+        retry(HEADER.RETRIVE.R411))
+
       .subscribe((rspMsg: any) => {
 
-        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.ASV_RSP, reqMsg.header.endpointId)) {
-          cb(null); return;
+        if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.ASV_RSP, reqMsg.header.endpointId)) {
+          this.dispMsgService.fnDispErrorString('INCORRECT_HEADER');
+          cb(HEADER.NULL_VALUE); return;
         }
 
         else {
           switch (rspMsg.payload.resultCode) {
-            case (0): // success
+            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, UNAUTHORIZED_USER_SEQUENCE_NUMBER: 4,
+
+            case (HEADER.RESCODE_SWP_ASV.OK): // success
               cb(rspMsg);
               break;
 
-            case (1): // reject-other
-              alert('Unknown error');
-              cb(null);
+            case (HEADER.RESCODE_SWP_ASV.OTHER): // reject-other
+              this.dispMsgService.fnDispErrorString('OTHER');
+              cb(HEADER.NULL_VALUE);
               break;
 
-            case (2): // reject-unallocated user sequence number
-              alert('Unallocated user sequence number.');
-              var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, () => {
-                cb(null);
-              });
+            case (HEADER.RESCODE_SWP_ASV.UNALLOCATED_USER_SEQUENCE_NUMBER): // reject-unallocated user sequence number
+              this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
+              cb(HEADER.NULL_VALUE);
               break;
 
-            case (3): // reject-unauthorized user sequence number
-              alert('Unauthorized user sequence number.');
-              var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, () => {
-                cb(null);
-              });
+            case (HEADER.RESCODE_SWP_ASV.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed in completions
+              this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
+              cb(HEADER.NULL_VALUE);
+              break;
+
+            case (HEADER.RESCODE_SWP_ASV.UNAUTHORIZED_USER_SEQUENCE_NUMBER): // reject-unauthorized user sequence number
+              this.dispMsgService.fnDispErrorString('UNAUTHORIZED_USER_SEQUENCE_NUMBER');
+              cb(HEADER.NULL_VALUE);
               break;
           }
+        }
+      }, (err) => {
+        if (err.timeout) {
+          console.log('In timeout error which is -> ', err);
+        }
+        else {
+          console.log('Error which is -> ', err);
         }
       });
   }
 
 
   /** SRG */
-  SRG(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SRG_REQ, Number(this.storageService.get('userInfo').usn));
+  fnSrg(payload: any, cb) {
+    var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SRG_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
 
     this.http.post(`/serverapi`, reqMsg)
+
+      .pipe(timeout(HEADER.TIMER.T412),
+        retry(HEADER.RETRIVE.R412))
+
       .subscribe((rspMsg: any) => {
 
-        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SRG_RSP, reqMsg.header.endpointId)) {
-          cb(false); return;
+        if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.SRG_RSP, reqMsg.header.endpointId)) {
+          this.dispMsgService.fnDispErrorString('INCORRECT_HEADER');
+          cb(HEADER.RES_FAILD); return;
         }
 
         else {
           switch (rspMsg.payload.resultCode) {
-            case (0): // success
-              alert('Successfully registered');
-              cb(true);
+            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3,
+
+            case (HEADER.RESCODE_SWP_SRG.OK): // success
+              this.dispMsgService.fnDispSuccessString('SENSOR_REG_COMPLETED', reqMsg.payload.wmac);
+              cb(HEADER.RES_SUCCESS);
               break;
 
-            case (1): // reject-other
-              alert('Unknown error');
-              cb(false)
+            case (HEADER.RESCODE_SWP_SRG.OTHER): // reject-other
+              this.dispMsgService.fnDispErrorString('OTHER');
+              cb(HEADER.RES_FAILD);
               break;
 
-            case (2): // reject-unallocated user sequence number
-              alert('Invalid user sequence number. Login again');
-              var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, () => {
-                cb(false);
-              });
+            case (HEADER.RESCODE_SWP_SRG.UNALLOCATED_USER_SEQUENCE_NUMBER): // reject-unallocated user sequence number
+              this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
+              cb(HEADER.RES_FAILD);
               break;
 
-            case (3):  // reject-incorrect number of signed-in completions
-              alert('Already signed in another computer');
-              cb(false);
+            case (HEADER.RESCODE_SWP_SRG.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS):  // reject-incorrect number of signed-in completions
+              this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
+              cb(HEADER.RES_FAILD);
               break;
           }
+        }
+      }, (err) => {
+        if (err.timeout) {
+          console.log('In timeout error which is -> ', err);
+        }
+        else {
+          console.log('Error which is -> ', err);
         }
       });
   }
 
   /** SAS */
-  SAS(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SAS_REQ, Number(this.storageService.get('userInfo').usn));
+  fnSas(payload: any, cb) {
+    var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SAS_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
     console.log("SAS-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
+
+      .pipe(timeout(HEADER.TIMER.T413),
+        retry(HEADER.RETRIVE.R413))
+
       .subscribe((rspMsg: any) => {
         console.log("SAS-RSP => ", rspMsg);
-        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SAS_RSP, reqMsg.header.endpointId)) {
-          cb(false); return;
+        if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.SAS_RSP, reqMsg.header.endpointId)) {
+          this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); 
+          cb(HEADER.RES_FAILD); return;
         }
 
         else {
           switch (rspMsg.payload.resultCode) {
-            case (0): // success
-              alert('Successfully associated');
-              cb(true);
+            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, NOT_EXIST_WIFI_MAC_ADDRESS: 4, ALREADY_ASSOCIATED: 5,
+
+            case (HEADER.RESCODE_SWP_SAS.OK): // success
+              this.dispMsgService.fnDispSuccessString('SENSOR_ASSOCIATION_COMPLETED', reqMsg.payload.wmac);
+              cb(HEADER.RES_SUCCESS);
               break;
 
-            case (1): // reject-other
-              alert('Unknown error');
-              cb(false);
+            case (HEADER.RESCODE_SWP_SAS.OTHER): // reject-other
+              this.dispMsgService.fnDispErrorString('OTHER');
+              cb(HEADER.RES_FAILD);
               break;
 
-            case (2): // reject-unallocated user sequence number
-              alert('Invalid user sequence number. Login again');
-              var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, () => {
-                cb(false);
-              });
+            case (HEADER.RESCODE_SWP_SAS.UNALLOCATED_USER_SEQUENCE_NUMBER): // reject-unallocated user sequence number
+              this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
+              cb(HEADER.RES_FAILD);
               break;
 
-            case (3):  // reject-incorrect number of signed-in completions
-              alert('Already signed in another computer');
-              cb(false);
+            case (HEADER.RESCODE_SWP_SAS.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS):  // reject-incorrect number of signed-in completions
+              this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
+              cb(HEADER.RES_FAILD);
               break;
 
-            case (4): // reject-not exist Wifi MAC address
-              alert('Not exist wifi MAC address. Try another one');
-              cb(false);
+            case (HEADER.RESCODE_SWP_SAS.NOT_EXIST_WIFI_MAC_ADDRESS): // reject-not exist Wifi MAC address
+              this.dispMsgService.fnDispErrorString('NOT_EXIST_WIFI_MAC_ADDRESS');
+              cb(HEADER.RES_FAILD);
               break;
 
-            case (5): // reject-the requested WiFi MAC address was already associated with own user sequence number
-              alert('Already associated sensor. Try another one');
-              cb(false);
+            case (HEADER.RESCODE_SWP_SAS.ALREADY_ASSOCIATED): // reject-the requested WiFi MAC address was already associated with own user sequence number
+              this.dispMsgService.fnDispErrorString('ALREADY_ASSOCIATED');
+              cb(HEADER.RES_FAILD);
               break;
 
           }
+        }
+      }, (err) => {
+        if (err.timeout) {
+          console.log('In timeout error which is -> ', err);
+        }
+        else {
+          console.log('Error which is -> ', err);
         }
       });
   }
 
   /** SDD */
-  SDD(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SDD_REQ, Number(this.storageService.get('userInfo').usn));
+  fnSdd(payload: any) {
+    var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SDD_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
     console.log("HTTP:SDD-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
+
+      .pipe(timeout(HEADER.TIMER.T414),
+        retry(HEADER.RETRIVE.R414))
+
       .subscribe((rspMsg: any) => {
         console.log("HTTP:SDD-RSP => ", rspMsg);
         console.log("ResultCode: ", rspMsg.payload.resultCode);
-        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SDD_RSP, reqMsg.header.endpointId)) {
-          cb(false); return;
+        if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.SDD_RSP, reqMsg.header.endpointId)) {
+          this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); 
+          return;
         }
 
         else {
           switch (rspMsg.payload.resultCode) {
-            case (0): // success
-              alert('Successfully dissociated');
-              cb(true);
+            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, NOT_EXIST_WIFI_MAC_ADDRESS: 4, NOT_ASSOCIATED_WITH_USER_ID: 5,
+
+            case (HEADER.RESCODE_SWP_SDD.OK): // success
+              this.dispMsgService.fnDispSuccessString('SENSOR_ASSOCIATION_COMPLETED', reqMsg.payload.wmac);
               break;
 
-            case (1): // reject-other
-              alert('Unknown error');
-              cb(false);
+            case (HEADER.RESCODE_SWP_SDD.OTHER): // reject-other
+              this.dispMsgService.fnDispErrorString('OTHER');
               break;
 
-            case (2): // reject-unallocated user sequence number
-              alert('Invalid user sequence number. Login again');
-              var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, () => {
-                cb(false);
-              });
+            case (HEADER.RESCODE_SWP_SDD.UNALLOCATED_USER_SEQUENCE_NUMBER): // reject-unallocated user sequence number
+              this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
               break;
 
-            case (3): // reject-not exist Wifi MAC address
-              alert('The selected wifi MAC address is not exist. Try again');
-              cb(false);
+            case (HEADER.RESCODE_SWP_SDD.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed in completions
+              this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
               break;
 
-            case (4): // reject-the requested user sequence number and WiFi MAC addresss are not associated
-              alert('The selected wifi MAC address is not associated. Try again');
-              cb(false);
+            case (HEADER.RESCODE_SWP_SDD.NOT_EXIST_WIFI_MAC_ADDRESS): // reject-not exist Wifi MAC address
+              this.dispMsgService.fnDispErrorString('NOT_EXIST_WIFI_MAC_ADDRESS');
+              break;
+
+            case (HEADER.RESCODE_SWP_SDD.NOT_ASSOCIATED_WITH_USER_ID): // reject-the requested user sequence number and WiFi MAC addresss are not associated
+              this.dispMsgService.fnDispErrorString('NOT_ASSOCIATED_WITH_USER_ID');
               break;
           }
+        }
+      }, (err) => {
+        if (err.timeout) {
+          console.log('In timeout error which is -> ', err);
+        }
+        else {
+          console.log('Error which is -> ', err);
         }
       });
   }
 
 
   /** SLV */
-  SLV(payload: any, cb) {
-    var reqMsg: any = this.msgService.packingMsg(payload, MSGTYPE.SLV_REQ, Number(this.storageService.get('userInfo').usn));
+  fnSlv(payload: any, cb) {
+    var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SLV_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
     console.log("HTTP:SLV-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
+
+      .pipe(timeout(HEADER.TIMER.T415),
+        retry(HEADER.RETRIVE.R415))
+
       .subscribe((rspMsg: any) => {
         console.log("HTTP:SLV:RSP => ", rspMsg);
 
-        if (!this.msgService.isValidHeader(rspMsg, MSGTYPE.SLV_RSP, reqMsg.header.endpointId)) {
-          cb(null); return;
+        if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.SLV_RSP, reqMsg.header.endpointId)) {
+          this.dispMsgService.fnDispErrorString('INCORRECT_HEADER');
+          cb(HEADER.NULL_VALUE); return;
         }
 
         else {
           switch (rspMsg.payload.resultCode) {
-            case (0): // success
+            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3,
+            case (HEADER.RESCODE_SWP_SLV.OK): // success
               cb(rspMsg);
               break;
 
-            case (1): // reject-other
-              alert('Unknown error');
-              cb(null);
+            case (HEADER.RESCODE_SWP_SLV.OTHER): // reject-other
+              this.dispMsgService.fnDispErrorString('OTHER');
+              cb(HEADER.NULL_VALUE);
               break;
 
-            case (2): // reject-unallocated user sequence number
-              alert('Invalid user sequence number. Login again');
-              var SGO_payload = { nsc: this.storageService.get('userInfo').nsc };
-              this.umService.SGO(SGO_payload, () => {
-                cb(null);
-              });
+            case (HEADER.RESCODE_SWP_SLV.UNALLOCATED_USER_SEQUENCE_NUMBER): // reject-unallocated user sequence number
+              this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
+              cb(HEADER.NULL_VALUE);
+              break;
+
+            case (HEADER.RESCODE_SWP_SLV.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed in completions
+              this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
+              cb(HEADER.NULL_VALUE);
               break;
           }
+        }
+      }, (err) => {
+        if (err.timeout) {
+          console.log('In timeout error which is -> ', err);
+        }
+        else {
+          console.log('Error which is -> ', err);
         }
       });
   }

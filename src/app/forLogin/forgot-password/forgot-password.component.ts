@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserManagementService } from 'src/app/services/httpRequest/user-management.service';
-import { DataManagementService } from '../../services/data-management.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -14,8 +13,7 @@ export class ForgotPasswordComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private umService: UserManagementService,
-    private dataService: DataManagementService) {
+    private umService: UserManagementService,) {
     this.forgotpwForm = this.fb.group({
       firstname: ['', Validators.required],
       lastname: ['', Validators.required],
@@ -42,7 +40,7 @@ export class ForgotPasswordComponent implements OnInit {
 
 
   /** Event functions */
-  onSubmit() {
+  fnOnSubmitFpuForm() {
     if (this.forgotpwForm.invalid) console.log('Input again');
 
     var payload: any = {
@@ -53,11 +51,7 @@ export class ForgotPasswordComponent implements OnInit {
     }
 
     /** HTTP REQUEST */
-    this.umService.FPU(payload ,(success)=>{
-      if (!success) {
-        alert('Failed');
-      }
-    });
+    this.umService.fnFpu(payload);
   }
 
 

@@ -4,7 +4,7 @@ import { UnitsType } from 'src/app/components/temperature/temperature.component'
 import { DataMonitoringService } from 'src/app/services/httpRequest/data-monitoring.service';
 import { DataManagementService } from 'src/app/services/data-management.service';
 import { SessionStorageService } from 'ngx-store';
-import { RouterConfigLoader } from '@angular/router/src/router_config_loader';
+import { HEADER } from 'src/app/header';
 
 @Component({
   selector: 'app-user-main-contents',
@@ -157,7 +157,7 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
       if(this.inInterval){
         this.setCurrentHeartdata();
       }
-    }, 5000);
+    }, HEADER.TIMER.T554);
   }
 
   ngOnDestroy() {

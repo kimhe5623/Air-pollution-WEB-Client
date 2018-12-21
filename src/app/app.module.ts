@@ -69,7 +69,6 @@ import { TechnologyComponent } from './main/main-page/contents/technology/techno
 import { UserServiceIntroductionComponent } from './main/main-page/contents/user-service-introduction/user-service-introduction.component';
 import { DashboardNavbarComponent } from './main/dashboard/dashboard-navbar/dashboard-navbar.component';
 import { UserMainComponent } from './main/dashboard/contents/user-main/user-main.component';
-import { UserProfileComponent } from './main/dashboard/contents/user-profile/user-profile.component';
 import { UserChangePasswordComponent } from './main/dashboard/contents/user-change-password/user-change-password.component';
 import { DashboardFooterComponent } from './main/dashboard/dashboard-footer/dashboard-footer.component';
 import { AdminNavbarComponent } from './main/administrator/admin-navbar/admin-navbar.component';
@@ -82,7 +81,7 @@ import { SensorDeletionDialog } from './dialogs/sensor-deletion-dialog/sensor-de
 import { SensorAssociationDialog } from './dialogs/sensor-association-dialog/sensor-association-dialog';
 import { SensorDeregistrationDialog } from './dialogs/sensor-deregistration-dialog/sensor-deregistration-dialog';
 import { UserDeregistrationConfirmDialog } from './dialogs/user-deregistration-confirm-dialog/user-deregistration-confirm-dialog';
-import { Header } from 'src/app/header';
+import { HEADER } from 'src/app/header';
 import { AdminMainComponent } from './main/administrator/contents/admin-main/admin-main.component';
 import { TemperatureComponent } from './components/temperature/temperature.component';
 import { AirDataComponent } from './components/air-data/air-data.component';
@@ -100,7 +99,6 @@ import { UserChangePasswordContentsComponent } from './components/contents/user-
 import { UserMainContentsComponent } from './components/contents/user-main-contents/user-main-contents.component';
 import { AdminUserManagementContentsComponent } from './components/contents/for-admin/admin-user-management-contents/admin-user-management-contents.component';
 import { AdminSensorManagementContentsComponent } from './components/contents/for-admin/admin-sensor-management-contents/admin-sensor-management-contents.component';
-import { AdminProfileComponent } from './main/administrator/contents/admin-profile/admin-profile.component';
 import { AdminChangepwComponent } from './main/administrator/contents/admin-changepw/admin-changepw.component';
 import { AdminHeartHistoryComponent } from './main/administrator/contents/admin-heart-history/admin-heart-history.component';
 import { AdminDeregisterAccountComponent } from './main/administrator/contents/admin-deregister-account/admin-deregister-account.component';
@@ -133,7 +131,6 @@ import { AmchartTest4Component } from './components/amchart-test4/amchart-test4.
     UserServiceIntroductionComponent,
     DashboardNavbarComponent,
     UserMainComponent,
-    UserProfileComponent,
     UserChangePasswordComponent,
     DashboardFooterComponent,
     AdminNavbarComponent,
@@ -164,7 +161,6 @@ import { AmchartTest4Component } from './components/amchart-test4/amchart-test4.
     UserMainContentsComponent,
     AdminUserManagementContentsComponent,
     AdminSensorManagementContentsComponent,
-    AdminProfileComponent,
     AdminChangepwComponent,
     AdminHeartHistoryComponent,
     AdminDeregisterAccountComponent,
@@ -243,9 +239,6 @@ import { AmchartTest4Component } from './components/amchart-test4/amchart-test4.
 
     /** Router*/
     AppRoutes,
-
-    /** Header */
-    Header,
 
   ],
   entryComponents: [
