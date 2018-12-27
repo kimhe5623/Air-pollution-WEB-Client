@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SessionStorageService } from 'ngx-store';
 import { DataMonitoringService } from './httpRequest/data-monitoring.service';
-import { DisplayErrorService } from './display-error.service';
+import { DisplayMessageService } from './display-message.service';
 import { HEADER } from 'src/app/header';
 
 @Injectable({
@@ -12,19 +12,19 @@ export class DataManagementService {
   constructor(
     private sessionStorageService: SessionStorageService,
     private dmService: DataMonitoringService,
-    private dispErrService: DisplayErrorService,
+    private dispMsgService: DisplayMessageService,
   ) { }
 
   /** Verify administrator */
-  fnVerifyAdministrator(): number{
-    var isAdmin: number = HEADER.RES_FAILD;
+  fnVerifyAdministrator(): boolean{
+    var isAdmin: boolean = HEADER.RES_FAILD;
     
     if(this.sessionStorageService.get('userInfo')){
       if(this.sessionStorageService.get('userInfo').usn < 1001){
         isAdmin = HEADER.RES_SUCCESS;
       }
       else {
-        this.dispErrService.fnDispErrorString('UNAUTHORIZED_USER_SEQUENCE_NUMBER');
+        this.dispMsgService.fnDispErrorString('UNAUTHORIZED_USER_SEQUENCE_NUMBER');
       }
     }
 
@@ -398,7 +398,7 @@ export class DataManagementService {
         city: "Q16552",
       }
 
-      this.dmService.HAV(payload, (result) => {
+      this.dmService.fnHav(payload, (result) => {
 
         // callback
         if (result != null && result.payload.historicalAirQualityDataListEncodings.length != 0) {

@@ -172,7 +172,7 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
    */
   setCurrentHeartdata() {
     var payload = { nsc: this.sessionStorageService.get('userInfo').nsc };
-    this.dmService.RHV(payload, (result) => {
+    this.dmService.fnRhv(payload, (result) => {
       if (result != null) {
         this.currentHeartdata = result.payload;
         //console.log(this.currentHeartdata);

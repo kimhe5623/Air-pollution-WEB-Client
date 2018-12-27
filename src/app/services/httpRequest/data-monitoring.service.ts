@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { timeout, retry } from 'rxjs/operators';
 import { StorageService } from 'src/app/services/storage.service';
-import { Router } from '@angular/router';
 import { MsgService } from '../msg.service';
-import { UserManagementService } from 'src/app/services/httpRequest/user-management.service';
 import { HEADER } from 'src/app/header';
 import { DisplayMessageService } from '../display-message.service';
 
@@ -17,8 +15,6 @@ export class DataMonitoringService {
     private http: HttpClient,
     private storageService: StorageService,
     private msgService: MsgService,
-    private umService: UserManagementService,
-    private router: Router,
     private dispMsgService: DisplayMessageService) { }
 
   /**
@@ -69,12 +65,7 @@ export class DataMonitoringService {
 
             case (HEADER.RESCODE_SWP_RAV.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
               this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
-              cb(null);
-              var SGO_payload = { nsc: this.storageService.fnGetNumberOfSignedInCompletions() };
-              this.umService.fnSgo(SGO_payload, () => {
-                this.router.navigate(['/']);
-              });
-              break;
+              cb(null); break;
 
             case (HEADER.RESCODE_SWP_RAV.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed-in completions
               this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
@@ -121,12 +112,7 @@ export class DataMonitoringService {
 
             case (HEADER.RESCODE_SWP_RHV.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
               this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
-              cb(null);
-              var SGO_payload = { nsc: this.storageService.fnGetNumberOfSignedInCompletions() };
-              this.umService.fnSgo(SGO_payload, () => {
-                this.router.navigate(['/']);
-              });
-              break;
+              cb(null); break;
 
             case (HEADER.RESCODE_SWP_RHV.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed-in completions
               this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
@@ -174,12 +160,7 @@ export class DataMonitoringService {
 
             case (HEADER.RESCODE_SWP_HAV.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
               this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
-              cb(null);
-              var SGO_payload = { nsc: this.storageService.fnGetNumberOfSignedInCompletions() };
-              this.umService.fnSgo(SGO_payload, () => {
-                this.router.navigate(['/']);
-              });
-              break;
+              cb(null);  break;
 
             case (HEADER.RESCODE_SWP_HAV.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed-in completions
               this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
@@ -247,10 +228,6 @@ export class DataMonitoringService {
             case (HEADER.RESCODE_SWP_SHR.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
               this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
               cb(null);
-              var SGO_payload = { nsc: this.storageService.fnGetNumberOfSignedInCompletions() };
-              this.umService.fnSgo(SGO_payload, () => {
-                this.router.navigate(['/']);
-              });
               break;
 
             case (HEADER.RESCODE_SWP_SHR.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed in completions
@@ -307,10 +284,6 @@ export class DataMonitoringService {
             case (HEADER.RESCODE_SWP_HHV.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
               this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
               cb(null);
-              var SGO_payload = { nsc: this.storageService.fnGetNumberOfSignedInCompletions() };
-              this.umService.fnSgo(SGO_payload, () => {
-                this.router.navigate(['/']);
-              });
               break;
 
             case (HEADER.RESCODE_SWP_HHV.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed in completions
@@ -352,7 +325,6 @@ export class DataMonitoringService {
         }
 
         else {
-          var SGO_payload = { nsc: this.storageService.fnGetNumberOfSignedInCompletions() };
 
           switch (rspMsg.payload.resultCode) {
             // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3,
@@ -363,18 +335,11 @@ export class DataMonitoringService {
 
             case (HEADER.RESCODE_SWP_KAS.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
-              this.umService.fnSgo(SGO_payload, () => {
-                cb(null);
-              });
-              break;
+              cb(null); break;
 
             case (HEADER.RESCODE_SWP_KAS.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
               this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
-              cb(null);
-              this.umService.fnSgo(SGO_payload, () => {
-                this.router.navigate(['/']);
-              });
-              break;
+              cb(null);  break;
 
             case (HEADER.RESCODE_SWP_KAS.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed in completions
               this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');

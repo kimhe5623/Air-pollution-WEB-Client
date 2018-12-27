@@ -71,7 +71,7 @@ export class SensorMapsComponent implements OnInit {
       payload.nsc = this.storageService.fnGetNumberOfSignedInCompletions();
     }
 
-    this.dmService.SHR(payload, (result) => {
+    this.dmService.fnShr(payload, (result) => {
       if (result != null) {
 
         var tlvData = this.dataService.rspHistoricalSensorRecordDataParsing(result.payload.historyRecordList);

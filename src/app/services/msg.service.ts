@@ -27,7 +27,7 @@ export class MsgService {
   }
 
   /** Header check */
-  fnVerifyMsgHeader(rspMsg: any, msgType: number, EP: string): number {
+  fnVerifyMsgHeader(rspMsg: any, msgType: number, EP: string): boolean {
     if (rspMsg.header.endpointId != EP) {
       console.log("Invalid endpointId");
       return HEADER.RES_FAILD;

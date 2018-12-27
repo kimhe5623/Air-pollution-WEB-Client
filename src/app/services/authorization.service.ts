@@ -11,4 +11,5 @@ export class AuthorizationService {
     if (usn < 1000) return true;
     else return false;
   }
+
 }

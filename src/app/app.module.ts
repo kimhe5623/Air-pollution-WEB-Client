@@ -3,7 +3,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { WebStorageModule } from 'ngx-store';
 import "core-js/shim";
-import {} from 'markerclustererplus';
 
 import { NgCircleProgressModule } from 'ng-circle-progress';
 
@@ -81,7 +80,6 @@ import { SensorDeletionDialog } from './dialogs/sensor-deletion-dialog/sensor-de
 import { SensorAssociationDialog } from './dialogs/sensor-association-dialog/sensor-association-dialog';
 import { SensorDeregistrationDialog } from './dialogs/sensor-deregistration-dialog/sensor-deregistration-dialog';
 import { UserDeregistrationConfirmDialog } from './dialogs/user-deregistration-confirm-dialog/user-deregistration-confirm-dialog';
-import { HEADER } from 'src/app/header';
 import { AdminMainComponent } from './main/administrator/contents/admin-main/admin-main.component';
 import { TemperatureComponent } from './components/temperature/temperature.component';
 import { AirDataComponent } from './components/air-data/air-data.component';

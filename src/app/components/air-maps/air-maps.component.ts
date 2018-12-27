@@ -58,14 +58,14 @@ export class AirMapsComponent implements OnInit, OnDestroy {
    * Chart variables
    */
   checkbox: any = {
-    all: true,
-    temp: true,
-    co: true,
-    o3: true,
-    no2: true,
-    so2: true,
-    pm25: true,
-    pm10: true
+    all: HEADER.RES_SUCCESS,
+    temp: HEADER.RES_SUCCESS,
+    co: HEADER.RES_SUCCESS,
+    o3: HEADER.RES_SUCCESS,
+    no2: HEADER.RES_SUCCESS,
+    so2: HEADER.RES_SUCCESS,
+    pm25: HEADER.RES_SUCCESS,
+    pm10: HEADER.RES_SUCCESS
   }
 
   private chart: any = {}
@@ -79,12 +79,14 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.inInterval = true;
+    this.inInterval = HEADER.RES_SUCCESS;
     //console.log("air-maps.component ngOnInit()");
 
     this.reqData((result) => {
-      if (result != null) {
+      if (result != HEADER.NULL_VALUE) {
         this.data = result.data;
+
+        console.log('data => ')
 
         this.mapInit(result);
 
@@ -109,7 +111,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     /**
      * Google maps initialization
      */
-    if (this.data[result.firstKey] != null) {
+    if (this.data[result.firstKey] != HEADER.NULL_VALUE) {
       var mapProp = {
         center: new google.maps.LatLng(
           Number(this.data[result.firstKey].latitude),
@@ -141,7 +143,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     //console.log('air-maps.component ngOnDestroy()');
 
     clearInterval(this.interval);
-    this.inInterval = false;
+    this.inInterval = HEADER.RES_FAILD;
 
     // Chart
     this.chartDestroy();
@@ -180,14 +182,14 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         }
       }
 
-      if (this.storageService.get('userInfo') != null) {
+      if (this.storageService.get('userInfo') != HEADER.NULL_VALUE) {
         payload.nsc = this.storageService.fnGetNumberOfSignedInCompletions()
       }
 
       this.dmService.fnRav(payload, (result) => {
         console.log('air-maps.component - RAV callback => ', result);
-        if (result == null) cb(null);
-        else if (result.payload.realtimeAirQualityDataList.length == 0) cb(null);
+        if (result == HEADER.NULL_VALUE) cb(HEADER.NULL_VALUE);
+        else if (result.payload.realtimeAirQualityDataList.length == 0) cb(HEADER.NULL_VALUE);
 
         else {
           var tlvData = this.dataService.rspRealtimeAirDataParsing(result.payload.realtimeAirQualityDataList);
@@ -292,8 +294,8 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
     this.reqData((result) => {
 
-      if (result != null) {
-        if (this.map == null) {
+      if (result != HEADER.NULL_VALUE) {
+        if (this.map == HEADER.NULL_VALUE) {
           this.mapInit(result);
         }
 
@@ -301,7 +303,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         this.addChartData();
 
         for (var key in this.data) {
-          if (this.markers[key] == null) { // When old marker
+          if (this.markers[key] == HEADER.NULL_VALUE) { // When old marker
             this.removeMarkerOnMap(key);
           }
         }
@@ -309,16 +311,16 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         // Marker update
         for (var key in this.markers) {
 
-          var isChanged: boolean = false;
+          var isChanged: boolean = HEADER.RES_FAILD;
 
           // Comparing both of data
           //console.log("this.data => ", this.data, " this.markers => ", this.markers);
           for (var key_ in this.markers[key]['data']) {
-            if (this.data[key] == null) { // When new marker is entered
-              this.addNewMarkers
+            if (this.data[key] == HEADER.NULL_VALUE) { // When new marker is entered
+              this.addNewMarkers(key);
             }
             else if (this.data[key][key_] != this.markers[key]['data'][key_]) { // When marker value is changed,
-              isChanged = true;
+              isChanged = HEADER.RES_SUCCESS;
             }
           }
 
@@ -434,7 +436,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
    *  remove marker on the map
    */
   removeMarkerOnMap(key) {
-    this.markers[key].setMap(null);
+    this.markers[key].setMap(HEADER.NULL_VALUE);
   }
 
   /**
@@ -453,7 +455,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     //console.log("In aqiAvg(), Entered data => ", eachData);
     var sum: number = 0;
 
-    if (eachData != null) {
+    if (eachData != HEADER.NULL_VALUE) {
       sum = eachData.AQI_CO + eachData.AQI_NO2 + eachData.AQI_O3
         + eachData.AQI_SO2 + eachData.AQI_PM10 + eachData.AQI_PM25;
 

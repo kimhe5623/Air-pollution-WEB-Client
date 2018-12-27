@@ -3,9 +3,8 @@ import { MatDialog } from '@angular/material';
 import { KasDialog } from 'src/app/dialogs/kas-dialog/kas-dialog';
 import { StorageService } from './storage.service';
 import { DataMonitoringService } from './httpRequest/data-monitoring.service';
-import { UserManagementService } from './httpRequest/user-management.service';
 import { HEADER } from 'src/app/header';
-import { Router } from '@angular/router';
+import { SignoutService } from './signout.service';
 
 
 @Injectable({
@@ -14,9 +13,8 @@ import { Router } from '@angular/router';
 export class KasService {
 
   constructor(
-    private router: Router,
     private dmService: DataMonitoringService,
-    private umService: UserManagementService,
+    private signoutService: SignoutService,
     private storageService: StorageService,
     private dialog: MatDialog,
   ) { }
@@ -52,21 +50,15 @@ export class KasService {
           }
 
           if (this.val >= 20) { // When timeout,
-            //clearInterval(this.interval);
+            clearInterval(this.interval);
             this.val = 0;
             this.storageService.set('kas_val', this.val);
             this.inInterval = false;
 
             this.dialog.closeAll();
-
-            var payload = {
-              nsc: this.storageService.fnGetNumberOfSignedInCompletions()
-            }
-            this.umService.SGO(payload, () => { 
-              this.router.navigate(['/']);
-            });  // sign out..!
           }
 
+          this.signoutService.run();
         }
       }
     }, 1000);
@@ -100,7 +92,7 @@ export class KasService {
           nsc: this.storageService.fnGetNumberOfSignedInCompletions()
         }
 
-        this.dmService.KAS(payload, (success) => {
+        this.dmService.fnKas(payload, (success) => {
           if (!success) {
             alert('Failed!');
           }

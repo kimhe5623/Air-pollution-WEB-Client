@@ -67,7 +67,7 @@ export class HeartHistoryContentsComponent implements OnInit {
 
     if (tlv != null) payload['tlv'] = tlv
 
-    this.dmService.HHV(payload, (rspMsg) => {
+    this.dmService.fnHhv(payload, (rspMsg) => {
 
       this.heartHistoryData = this.dataService.rspHistoricalHeartDataParsing(rspMsg.payload.historicalHeartQualityDataListEncodings);
       this.numOfData = this.heartHistoryData.length;

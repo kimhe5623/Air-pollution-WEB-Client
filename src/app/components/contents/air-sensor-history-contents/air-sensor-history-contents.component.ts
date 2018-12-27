@@ -114,7 +114,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
       city: "Q16552",
     }
 
-    this.dmService.HAV(payload, (result) => {
+    this.dmService.fnHav(payload, (result) => {
       if(result == null) cb(null);
       
       else if (result.payload.historicalAirQualityDataListEncodings.length != 0) {
