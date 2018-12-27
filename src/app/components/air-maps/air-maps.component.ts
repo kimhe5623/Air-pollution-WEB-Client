@@ -86,7 +86,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
       if (result != HEADER.NULL_VALUE) {
         this.data = result.data;
 
-        console.log('data => ')
+        console.log('air-maps.component: data => ', this.data);
 
         this.mapInit(result);
 
