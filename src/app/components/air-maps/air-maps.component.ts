@@ -6,6 +6,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import { HEADER } from 'src/app/header';
+import { AuthorizationService } from 'src/app/services/authorization.service';
 declare var google;
 
 @Component({
@@ -23,6 +24,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   clickedMarker: string = '';
 
   realtimeAirChartData: any = [];
+
   currentLocation: any;
   currentAddress: any;
   data: any = [];
@@ -52,6 +54,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
   private interval: any;
   private inInterval: boolean;
+  
 
 
   /** 
@@ -75,6 +78,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     private dataService: DataManagementService,
     private dmService: DataMonitoringService,
     private storageService: StorageService,
+    private authService: AuthorizationService,
     private zone: NgZone
   ) { }
 
@@ -133,7 +137,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
       this.clickedMarker = result.firstKey;
       this.addNewMarkers(this.data);
-      this.addChartData();
+      this.addparsedDataWithFirstkey();
       console.log('clicked Marker: mapInit() => ', this.clickedMarker);
     }
     //console.log("mapInit() in air-maps.component, this.map => ", this.map);
@@ -182,7 +186,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         }
       }
 
-      if (this.storageService.get('userInfo') != HEADER.NULL_VALUE) {
+      if (this.authService.isUserLoggedIn()) {
         payload.nsc = this.storageService.fnGetNumberOfSignedInCompletions()
       }
 
@@ -192,21 +196,21 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         else if (result.payload.realtimeAirQualityDataList.length == 0) cb(HEADER.NULL_VALUE);
 
         else {
-          var tlvData = this.dataService.rspRealtimeAirDataParsing(result.payload.realtimeAirQualityDataList);
+          var parsedData = this.dataService.rspRealtimeAirDataParsing(result.payload.realtimeAirQualityDataList);
 
-          //console.log("RAV parsed tlvData =>", tlvData);
-          var parsedData = { 'firstKey': '', 'data': {} };
+          // Add firstkey with parsedData //
 
-          parsedData['firstKey'] = tlvData[0].mac;
-          for (var i = 0; i < tlvData.length; i++) {
-            parsedData['data'][tlvData[i].mac] = tlvData[i];
+          //console.log("parsed data =>", parsedData);
+          var parsedDataWithFirstkey = { 'firstKey': '', 'data': {} };
+
+          parsedDataWithFirstkey['firstKey'] = parsedData[0].mac;
+          for (var i = 0; i < parsedData.length; i++) {
+            parsedDataWithFirstkey['data'][parsedData[i].mac] = parsedData[i];
           }
 
-          this.realtimeAirChartData = parsedData;
 
-
-          //console.log('parsed Data: ', parsedData);
-          cb(parsedData);
+          //console.log('parsed data with firstkey: ', parsedDataWithFirstkey);
+          cb(parsedDataWithFirstkey);
         }
       });
     });
@@ -300,7 +304,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         }
 
         this.data = result.data;
-        this.addChartData();
+        this.addparsedDataWithFirstkey();
 
         for (var key in this.data) {
           if (this.markers[key] == HEADER.NULL_VALUE) { // When old marker
@@ -554,14 +558,14 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
       for (var key in this.chart) {
 
-        this.chart[key].data = this.initChartData();
+        this.chart[key].data = this.initparsedDataWithFirstkey();
         this.chart[key].paddingRight = 20;
 
         // Create xAxes
         var dateX = this.chart[key].xAxes.push(new am4charts.DateAxis());
         dateX.dataFields.date = "timestamp";
         //dateX.title.text = "Timestamp";
-        dateX.baseInterval = { timeUnit: 'second', count: 5 };
+        dateX.baseInterval = { timeUnit: 'second', count: 10 };
         dateX.align = 'center';
 
         // Create yAxis
@@ -746,7 +750,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     });
   }
 
-  initChartData(): any {
+  initparsedDataWithFirstkey(): any {
     var tsp: number = new Date().getTime();
     var data: any = [];
 
@@ -766,7 +770,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     return data;
   }
 
-  addChartData() {
+  addparsedDataWithFirstkey() {
 
     for (var key in this.chart) {
 

@@ -5,6 +5,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { MsgService } from '../msg.service';
 import { HEADER } from 'src/app/header';
 import { DisplayMessageService } from '../display-message.service';
+import { AuthorizationService } from '../authorization.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class DataMonitoringService {
     private http: HttpClient,
     private storageService: StorageService,
     private msgService: MsgService,
-    private dispMsgService: DisplayMessageService) { }
+    private dispMsgService: DisplayMessageService,
+    private authService: AuthorizationService) { }
 
   /**
    * Latlng to address
@@ -31,33 +33,32 @@ export class DataMonitoringService {
 
   /** RAV */
   fnRav(payload: any, cb) {
-    var usn;
-    if (this.storageService.get('userInfo') != null) {
-      usn = Number(this.storageService.fnGetUserSequenceNumber())
+    var usn = 0x000000;
+    if (this.authService.isUserLoggedIn()) {
+      usn = this.storageService.fnGetUserSequenceNumber();
     }
-    else usn = 0x000000;
 
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.RAV_REQ, usn);
-    //console.log("HTTP:RAV-REQ => ", reqMsg);
+    console.log("HTTP:RAV-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
         
-    .pipe(timeout(HEADER.TIMER.T416),
-    retry(HEADER.RETRIVE.R416))
+    // .pipe(timeout(HEADER.TIMER.T416),
+    // retry(HEADER.RETRIVE.R416))
 
       .subscribe((rspMsg: any) => {
-        //console.log("HTTP:RAV-RSP => ", rspMsg);
+        console.log("HTTP:RAV-RSP => ", rspMsg);
         cb(rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.RAV_RSP, reqMsg.header.endpointId)) {
           cb(null); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_RAV.OK) { // success
+          cb(rspMsg);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3,
-
-            case (HEADER.RESCODE_SWP_RAV.OK):  // success
-              cb(rspMsg); break;
 
             case (HEADER.RESCODE_SWP_RAV.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -89,8 +90,8 @@ export class DataMonitoringService {
 
     this.http.post(`/serverapi`, reqMsg)
             
-    .pipe(timeout(HEADER.TIMER.T417),
-    retry(HEADER.RETRIVE.R417))
+    // .pipe(timeout(HEADER.TIMER.T417),
+    // retry(HEADER.RETRIVE.R417))
 
       .subscribe((rspMsg: any) => {
         console.log('RHV-RSP => ', rspMsg);
@@ -99,12 +100,12 @@ export class DataMonitoringService {
           cb(null); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_RHV.OK) { // success
+          cb(rspMsg);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3,
-
-            case (HEADER.RESCODE_SWP_RHV.OK):  // success
-              cb(rspMsg); break;
 
             case (HEADER.RESCODE_SWP_RHV.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -136,8 +137,8 @@ export class DataMonitoringService {
 
     this.http.post(`/serverapi`, reqMsg)
                 
-    .pipe(timeout(HEADER.TIMER.T418),
-    retry(HEADER.RETRIVE.R418))
+    // .pipe(timeout(HEADER.TIMER.T418),
+    // retry(HEADER.RETRIVE.R418))
 
       .subscribe((rspMsg: any) => {
         //console.log("HAV-RSP => ", rspMsg);
@@ -147,12 +148,12 @@ export class DataMonitoringService {
           cb(null); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_HAV.OK) { // success
+          cb(rspMsg);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, UNAUTHORIZED_USER_SEQUENCE_NUMBER: 4, NOT_EXIST_SENSORS: 5,
-
-            case (HEADER.RESCODE_SWP_HAV.OK):  // success
-              cb(rspMsg); break;
 
             case (HEADER.RESCODE_SWP_HAV.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -192,7 +193,7 @@ export class DataMonitoringService {
 
     var reqMsg: any;
 
-    if (this.storageService.get('userInfo') != null) {
+    if (this.authService.isUserLoggedIn()) {
       reqMsg = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SHR_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
     }
     else {
@@ -202,8 +203,8 @@ export class DataMonitoringService {
 
     this.http.post(`/serverapi`, reqMsg)
                     
-    .pipe(timeout(HEADER.TIMER.T419),
-    retry(HEADER.RETRIVE.R419))
+    // .pipe(timeout(HEADER.TIMER.T419),
+    // retry(HEADER.RETRIVE.R419))
 
       .subscribe((rspMsg: any) => {
         //console.log('SHR-RSP => ', rspMsg);
@@ -212,13 +213,12 @@ export class DataMonitoringService {
           cb(null);
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SHR.OK) { // success
+          cb(rspMsg);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3,
-
-            case (HEADER.RESCODE_SWP_SHR.OK):  // success
-              cb(rspMsg);
-              break;
 
             case (HEADER.RESCODE_SWP_SHR.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -258,8 +258,8 @@ export class DataMonitoringService {
 
     this.http.post(`/serverapi`, reqMsg)
                         
-    .pipe(timeout(HEADER.TIMER.T420),
-    retry(HEADER.RETRIVE.R420))
+    // .pipe(timeout(HEADER.TIMER.T420),
+    // retry(HEADER.RETRIVE.R420))
 
       .subscribe((rspMsg: any) => {
         console.log('HHV-RSP => ', rspMsg);
@@ -268,13 +268,12 @@ export class DataMonitoringService {
           cb(null); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_HHV.OK) { // success
+          cb(rspMsg);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, UNAUTHORIZED_USER_SEQUENCE_NUMBER: 4,
-
-            case (HEADER.RESCODE_SWP_HHV.OK):  // success
-              cb(rspMsg);
-              break;
 
             case (HEADER.RESCODE_SWP_HHV.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -314,8 +313,8 @@ export class DataMonitoringService {
 
     this.http.post(`/serverapi`, reqMsg)
                             
-    .pipe(timeout(HEADER.TIMER.T421),
-    retry(HEADER.RETRIVE.R421))
+    // .pipe(timeout(HEADER.TIMER.T421),
+    // retry(HEADER.RETRIVE.R421))
 
       .subscribe((rspMsg: any) => {
         console.log('KAS-RSP => ', rspMsg);
@@ -324,14 +323,13 @@ export class DataMonitoringService {
           cb(null); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_KAS.OK) { // success
+          cb(rspMsg);
+        }
+
         else {
 
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3,
-
-            case (HEADER.RESCODE_SWP_KAS.OK):  // success
-              cb(rspMsg);
-              break;
 
             case (HEADER.RESCODE_SWP_KAS.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');

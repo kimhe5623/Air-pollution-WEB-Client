@@ -32,8 +32,8 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T401),
-        retry(HEADER.RETRIVE.R401))
+      // .pipe(timeout(HEADER.TIMER.T401),
+      //   retry(HEADER.RETRIVE.R401))
 
       .subscribe((rspMsg: any) => {
         console.log("HTTP:SGU-RSP => ", rspMsg);
@@ -41,14 +41,13 @@ export class UserManagementService {
           this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SGU.OK) { // success
+          this.dispMsgService.fnDispSuccessString('VERIFICATION_CODE_SENDED', reqMsg.payload.userId);
+          this.router.navigate([HEADER.ROUTER_PATHS.VERIFYING_UVC, rspMsg.header.endpointId, reqMsg.payload.userId, rspMsg.payload.vc], { skipLocationChange: true });
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, CONFLICT_OF_TEMPORARY_CLIENT_ID: 2, DUPLICATE_OF_USER_ID: 3,
-
-            case (HEADER.RESCODE_SWP_SGU.OK): // success
-              this.dispMsgService.fnDispSuccessString('VERIFICATION_CODE_SENDED', reqMsg.payload.userId);
-              this.router.navigate([HEADER.ROUTER_PATHS.VERIFYING_UVC, rspMsg.header.endpointId, reqMsg.payload.userId, rspMsg.payload.vc], { skipLocationChange: true });
-              break;
 
             case (HEADER.RESCODE_SWP_SGU.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -81,8 +80,8 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T402),
-        retry(HEADER.RETRIVE.R402))
+      // .pipe(timeout(HEADER.TIMER.T402),
+      //   retry(HEADER.RETRIVE.R402))
 
       .subscribe((rspMsg: any) => {
         console.log("HTTP:UVC-RSP => ", rspMsg);
@@ -134,8 +133,8 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T403),
-        retry(HEADER.RETRIVE.R403))
+      // .pipe(timeout(HEADER.TIMER.T403))
+      //   retry(HEADER.RETRIVE.R403))
 
       .subscribe((rspMsg: any) => {
         console.log("HTTP:SGI-RSP => ", rspMsg);
@@ -143,24 +142,23 @@ export class UserManagementService {
           this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SGI.OK) { // success
+          var userInfo = { usn: rspMsg.payload.usn, nsc: rspMsg.payload.nsc, email: reqMsg.payload.userID };
+          this.storageService.set('userInfo', userInfo);
+          this.dispMsgService.fnDispSuccessString('SIGNIN_COMPLETED', HEADER.NULL_VALUE);
+
+          // Rendering
+          if (this.authService.isAdministor(Number(rspMsg.payload.usn))) {
+            this.router.navigate([HEADER.ROUTER_PATHS.ADMIN_DASHBOARD]);
+          }
+          else this.router.navigate([HEADER.ROUTER_PATHS.COMMON_USER_DASHBOARD]);
+
+          this.kasService.startTimer();
+        }
+
         else {
 
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, CONFLICT_OF_TEMPORARY_CLIENT_ID: 2, NOT_EXIST_USER_ID: 3, INCORRECT_CURRENT_USER_PASSWORD: 4,
-
-            case (HEADER.RESCODE_SWP_SGI.OK): // success
-              var userInfo = { usn: rspMsg.payload.usn, nsc: rspMsg.payload.nsc, email: reqMsg.payload.userID };
-              this.storageService.set('userInfo', userInfo);
-              this.dispMsgService.fnDispSuccessString('SIGNIN_COMPLETED', HEADER.NULL_VALUE);
-
-              // Rendering
-              if (this.authService.isAdministor(Number(rspMsg.payload.usn))) {
-                this.router.navigate([HEADER.ROUTER_PATHS.ADMIN_DASHBOARD]);
-              }
-              else this.router.navigate([HEADER.ROUTER_PATHS.COMMON_USER_DASHBOARD]);
-
-              this.kasService.startTimer();
-              break;
 
             case (HEADER.RESCODE_SWP_SGI.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -196,8 +194,8 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T404),
-        retry(HEADER.RETRIVE.R404))
+      // .pipe(timeout(HEADER.TIMER.T404),
+      //   retry(HEADER.RETRIVE.R404))
 
       .subscribe((rspMsg: any) => {
         console.log("HTTP:SGO-RSP => ", rspMsg);
@@ -205,13 +203,12 @@ export class UserManagementService {
           this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SGO.OK) { // success
+          console.log('SUCCESS: Sign out');
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3,
-
-            case (HEADER.RESCODE_SWP_SGO.OK): // success
-              console.log('SUCCESS: Sign out');
-              break;
 
             case (HEADER.RESCODE_SWP_SGO.OTHER): // warning-other
               console.log("WARNING: Unknown warning");
@@ -246,20 +243,20 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T405),
-        retry(HEADER.RETRIVE.R405))
+      // .pipe(timeout(HEADER.TIMER.T405),
+      //   retry(HEADER.RETRIVE.R405))
 
       .subscribe((rspMsg: any) => {
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.UPC_RSP, reqMsg.header.endpointId)) {
           this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_UPC.OK) { // success
+          this.dispMsgService.fnDispSuccessString('PWCHANGE_COMPLETED', HEADER.NULL_VALUE);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, INCORRECT_CURRENT_USER_PASSWORD: 4,
-            case (HEADER.RESCODE_SWP_UPC.OK): // success
-              this.dispMsgService.fnDispSuccessString('PWCHANGE_COMPLETED', HEADER.NULL_VALUE);
-              break;
 
             case (HEADER.RESCODE_SWP_UPC.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -294,21 +291,20 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T406),
-        retry(HEADER.RETRIVE.R406))
+      // .pipe(timeout(HEADER.TIMER.T406),
+      //   retry(HEADER.RETRIVE.R406))
 
       .subscribe((rspMsg: any) => {
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.FPU_RSP, reqMsg.header.endpointId)) {
           this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_FPU.OK) { // success
+          this.router.navigate([HEADER.ROUTER_PATHS.SIGN_IN]);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, CONFLICT_OF_TEMPORARY_CLIENT_ID: 2, INCORRECT_USER_INFORMATION: 3, NOT_EXIST_USER_ID: 4,
-            case (HEADER.RESCODE_SWP_FPU.OK): // success
-              
-              this.router.navigate([HEADER.ROUTER_PATHS.SIGN_IN]);
-              break;
 
             case (HEADER.RESCODE_SWP_FPU.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -343,23 +339,22 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T407),
-        retry(HEADER.RETRIVE.R407))
+      // .pipe(timeout(HEADER.TIMER.T407),
+      //   retry(HEADER.RETRIVE.R407))
 
       .subscribe((rspMsg: any) => {
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.UDR_RSP, reqMsg.header.endpointId)) {
           this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_UDR.OK) { // success
+          this.dispMsgService.fnDispSuccessString('UDR_COMPLETED', HEADER.NULL_VALUE);
+          this.storageService.clear('all');
+          this.router.navigate([HEADER.ROUTER_PATHS.MAIN_PAGE]);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, INCORRECT_CURRENT_USER_PASSWORD: 4,
-
-            case (HEADER.RESCODE_SWP_UDR.OK): // success
-              this.dispMsgService.fnDispSuccessString('UDR_COMPLETED', HEADER.NULL_VALUE);
-              this.storageService.clear('all');
-              this.router.navigate([HEADER.ROUTER_PATHS.MAIN_PAGE]);
-              break;
 
             case (HEADER.RESCODE_SWP_UDR.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -397,8 +392,8 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T408),
-        retry(HEADER.RETRIVE.R408))
+      // .pipe(timeout(HEADER.TIMER.T408),
+      //   retry(HEADER.RETRIVE.R408))
 
       .subscribe((rspMsg: any) => {
         console.log("AUV-RSP => ", rspMsg);
@@ -407,12 +402,12 @@ export class UserManagementService {
           cb(HEADER.NULL_VALUE); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_AUV.OK) { // success
+          cb(rspMsg);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, UNAUTHORIZED_USER_SEQUENCE_NUMBER: 4,
-
-            case (HEADER.RESCODE_SWP_AUV.OK): // success
-              cb(rspMsg); break;
 
             case (HEADER.RESCODE_SWP_AUV.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');

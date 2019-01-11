@@ -3,8 +3,9 @@ import { Router } from '@angular/router';
 import { UnitsType } from 'src/app/components/temperature/temperature.component';
 import { DataMonitoringService } from 'src/app/services/httpRequest/data-monitoring.service';
 import { DataManagementService } from 'src/app/services/data-management.service';
-import { SessionStorageService } from 'ngx-store';
 import { HEADER } from 'src/app/header';
+import { StorageService } from 'src/app/services/storage.service';
+import { AuthorizationService } from 'src/app/services/authorization.service';
 
 @Component({
   selector: 'app-user-main-contents',
@@ -140,22 +141,23 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
   constructor(
     private dmService: DataMonitoringService,
     private dataService: DataManagementService,
-    private sessionStorageService: SessionStorageService,
+    private storageService: StorageService,
     private router: Router,
+    private authService: AuthorizationService
   ) { }
 
   ngOnInit() {
 
     this.inInterval = true;
     this.currentUnit = 'C';
-    this.setCurrentHeartdata();
-    this.setNearestSensordata();
+    this.fnSetCurrentHeartdata();
+    this.fnSetNearestSensordata();
 
     // every 5 seconds
 
     this.interval = setInterval(() => {
       if(this.inInterval){
-        this.setCurrentHeartdata();
+        this.fnSetCurrentHeartdata();
       }
     }, HEADER.TIMER.T554);
   }
@@ -170,8 +172,8 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
   /**
    * set current heart data
    */
-  setCurrentHeartdata() {
-    var payload = { nsc: this.sessionStorageService.get('userInfo').nsc };
+  fnSetCurrentHeartdata() {
+    var payload = { nsc: this.storageService.fnGetNumberOfSignedInCompletions() };
     this.dmService.fnRhv(payload, (result) => {
       if (result != null) {
         this.currentHeartdata = result.payload;
@@ -183,7 +185,7 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
   /**
    * Set the nearest sensor data from the current location
    */
-  setNearestSensordata() {
+  fnSetNearestSensordata() {
     this.dataService.getNearestSensorData((data) => {
 
       if (data != null) {
@@ -246,7 +248,7 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
   }
 
   clickDetails(w: string){
-    var isAdmin: boolean = this.sessionStorageService.get('userInfo').usn < 1001;
+    var isAdmin: boolean = this.authService.isAdministor(this.storageService.fnGetUserSequenceNumber());
     switch(w){
       case('heartrate'):
 

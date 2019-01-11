@@ -22,11 +22,24 @@ export class StorageService {
     this.sessionStorageService.clear(cleartype);
   }
 
-  fnGetUserSequenceNumber(): number {
-    return this.get('userInfo').usn;
+/***********************************/
+
+  //-- State machine management --//
+  fnSetCurrentState(enteredState: number) {
+    this.set('state', enteredState);
   }
 
+  fnGetCurrentState(): number {
+    return Number(this.get('state'));
+  }
+
+  //-- USN managment --//
+  fnGetUserSequenceNumber(): number {
+    return Number(this.get('userInfo').usn);
+  }
+
+  //-- NSC management --//
   fnGetNumberOfSignedInCompletions(): number {
-    return this.get('userInfo').nsc;
+    return Number(this.get('userInfo').nsc);
   }
 }

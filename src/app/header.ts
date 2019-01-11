@@ -27,17 +27,17 @@ export class HEADER {
 
     // Timer (ms)
     public static readonly TIMER: any = {
-        T401: 50, T402: 50,
-        T403: 50, T404: 50,
-        T405: 50, T406: 50,
-        T407: 50, T408: 50,
-        T409: 50, T410: 50,
-        T411: 50, T422: 50,
-        T413: 50, T414: 50,
-        T415: 50, T416: 50,
-        T417: 50, T418: 50,
-        T419: 50, T420: 50,
-        T421: 50,
+        T401: 5000, T402: 5000,
+        T403: 5000, T404: 5000,
+        T405: 5000, T406: 5000,
+        T407: 5000, T408: 5000,
+        T409: 5000, T410: 5000,
+        T411: 5000, T422: 5000,
+        T413: 5000, T414: 5000,
+        T415: 5000, T416: 5000,
+        T417: 5000, T418: 5000,
+        T419: 5000, T420: 5000,
+        T421: 500,
 
         /**
          * T551: 300,000 ms
@@ -170,6 +170,8 @@ export class HEADER {
     public static readonly STATE_SWP: any = {
         IDLE_STATE: 0, USER_DUPLICATE_REQUESTED_STATE: 1, HALF_USN_ALLOCATE_STATE: 2, HALF_USN_INFORMED_STATE: 3, USN_INFORMED_STATE: 4, HALF_IDLE_STATE: 5
     }
+
+    public static CURRENT_STATE: number = 0;
 
     // Routes
     public static readonly ROUTER_PATHS = {

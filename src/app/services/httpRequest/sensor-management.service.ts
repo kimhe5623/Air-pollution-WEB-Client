@@ -25,8 +25,8 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T409),
-        retry(HEADER.RETRIVE.R409))
+      // .pipe(timeout(HEADER.TIMER.T409),
+      //   retry(HEADER.RETRIVE.R409))
 
       .subscribe((rspMsg: any) => {
         console.log('ASR-RSP => ', rspMsg);
@@ -36,14 +36,13 @@ export class SensorManagementService {
           cb(HEADER.RES_FAILD); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_ASR.OK) { // success
+          this.dispMsgService.fnDispSuccessString('SENSOR_REG_COMPLETED', reqMsg.payload.wmac);
+          cb(HEADER.RES_SUCCESS);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, UNAUTHORIZED_USER_SEQUENCE_NUMBER: 4,
-
-            case (HEADER.RESCODE_SWP_ASR.OK):  // success
-              this.dispMsgService.fnDispSuccessString('SENSOR_REG_COMPLETED', reqMsg.payload.wmac);
-              cb(HEADER.RES_SUCCESS);
-              break;
 
             case (HEADER.RESCODE_SWP_ASR.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -85,8 +84,8 @@ export class SensorManagementService {
     console.log('ASD-REQ => ', reqMsg);
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T410),
-        retry(HEADER.RETRIVE.R410))
+      // .pipe(timeout(HEADER.TIMER.T410),
+      //   retry(HEADER.RETRIVE.R410))
 
       .subscribe((rspMsg: any) => {
         console.log('ASD-RSP => ', rspMsg);
@@ -95,13 +94,12 @@ export class SensorManagementService {
           return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_ASD.OK) { // success
+          this.dispMsgService.fnDispSuccessString('SENSOR_DELETE_COMPLETED', HEADER.NULL_VALUE);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, UNAUTHORIZED_USER_SEQUENCE_NUMBER: 4, NOT_EXIST_WIFI_MAC_ADDRESS: 5, NOT_EXIST_USER_ID: 6, NOT_ASSOCIATED_WITH_USER_ID: 7,
-
-            case (HEADER.RESCODE_SWP_ASD.OK):  // success
-              this.dispMsgService.fnDispSuccessString('SENSOR_DELETE_COMPLETED', HEADER.NULL_VALUE);
-              break;
 
             case (HEADER.RESCODE_SWP_ASD.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -149,8 +147,8 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T411),
-        retry(HEADER.RETRIVE.R411))
+      // .pipe(timeout(HEADER.TIMER.T411),
+      //   retry(HEADER.RETRIVE.R411))
 
       .subscribe((rspMsg: any) => {
 
@@ -159,13 +157,12 @@ export class SensorManagementService {
           cb(HEADER.NULL_VALUE); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_ASV.OK) { // success
+          cb(rspMsg);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, UNAUTHORIZED_USER_SEQUENCE_NUMBER: 4,
-
-            case (HEADER.RESCODE_SWP_ASV.OK): // success
-              cb(rspMsg);
-              break;
 
             case (HEADER.RESCODE_SWP_ASV.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -205,8 +202,8 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T412),
-        retry(HEADER.RETRIVE.R412))
+      // .pipe(timeout(HEADER.TIMER.T412),
+      //   retry(HEADER.RETRIVE.R412))
 
       .subscribe((rspMsg: any) => {
 
@@ -215,14 +212,13 @@ export class SensorManagementService {
           cb(HEADER.RES_FAILD); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SRG.OK) { // success
+          this.dispMsgService.fnDispSuccessString('SENSOR_REG_COMPLETED', reqMsg.payload.wmac);
+          cb(HEADER.RES_SUCCESS);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3,
-
-            case (HEADER.RESCODE_SWP_SRG.OK): // success
-              this.dispMsgService.fnDispSuccessString('SENSOR_REG_COMPLETED', reqMsg.payload.wmac);
-              cb(HEADER.RES_SUCCESS);
-              break;
 
             case (HEADER.RESCODE_SWP_SRG.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -257,8 +253,8 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T413),
-        retry(HEADER.RETRIVE.R413))
+      // .pipe(timeout(HEADER.TIMER.T413),
+      //   retry(HEADER.RETRIVE.R413))
 
       .subscribe((rspMsg: any) => {
         console.log("SAS-RSP => ", rspMsg);
@@ -267,14 +263,13 @@ export class SensorManagementService {
           cb(HEADER.RES_FAILD); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SAS.OK) { // success
+          this.dispMsgService.fnDispSuccessString('SENSOR_ASSOCIATION_COMPLETED', reqMsg.payload.wmac);
+          cb(HEADER.RES_SUCCESS);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, NOT_EXIST_WIFI_MAC_ADDRESS: 4, ALREADY_ASSOCIATED: 5,
-
-            case (HEADER.RESCODE_SWP_SAS.OK): // success
-              this.dispMsgService.fnDispSuccessString('SENSOR_ASSOCIATION_COMPLETED', reqMsg.payload.wmac);
-              cb(HEADER.RES_SUCCESS);
-              break;
 
             case (HEADER.RESCODE_SWP_SAS.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -320,8 +315,8 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T414),
-        retry(HEADER.RETRIVE.R414))
+      // .pipe(timeout(HEADER.TIMER.T414),
+      //   retry(HEADER.RETRIVE.R414))
 
       .subscribe((rspMsg: any) => {
         console.log("HTTP:SDD-RSP => ", rspMsg);
@@ -331,13 +326,12 @@ export class SensorManagementService {
           return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SDD.OK) { // success
+          this.dispMsgService.fnDispSuccessString('SENSOR_ASSOCIATION_COMPLETED', reqMsg.payload.wmac);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3, NOT_EXIST_WIFI_MAC_ADDRESS: 4, NOT_ASSOCIATED_WITH_USER_ID: 5,
-
-            case (HEADER.RESCODE_SWP_SDD.OK): // success
-              this.dispMsgService.fnDispSuccessString('SENSOR_ASSOCIATION_COMPLETED', reqMsg.payload.wmac);
-              break;
 
             case (HEADER.RESCODE_SWP_SDD.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
@@ -378,8 +372,8 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      .pipe(timeout(HEADER.TIMER.T415),
-        retry(HEADER.RETRIVE.R415))
+      // .pipe(timeout(HEADER.TIMER.T415),
+      //   retry(HEADER.RETRIVE.R415))
 
       .subscribe((rspMsg: any) => {
         console.log("HTTP:SLV:RSP => ", rspMsg);
@@ -389,12 +383,12 @@ export class SensorManagementService {
           cb(HEADER.NULL_VALUE); return;
         }
 
+        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SLV.OK) { // success
+          cb(rspMsg);
+        }
+
         else {
           switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3,
-            case (HEADER.RESCODE_SWP_SLV.OK): // success
-              cb(rspMsg);
-              break;
 
             case (HEADER.RESCODE_SWP_SLV.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
