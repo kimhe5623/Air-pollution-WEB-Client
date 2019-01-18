@@ -15,8 +15,8 @@ export class PersonalSensorRegistrationContentsComponent implements OnInit {
     private storageService: StorageService,
     private smService: SensorManagementService
   ) {
-    this.wifi_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]);
-    this.cellular_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$")]);
+    this.wifi_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$")]);
+    this.cellular_mac = new FormControl('', [Validators.required, Validators.pattern("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$")]);
   }
 
   ngOnInit() {

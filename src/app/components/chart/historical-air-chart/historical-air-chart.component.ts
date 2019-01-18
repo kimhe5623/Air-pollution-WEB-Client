@@ -11,7 +11,10 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 export class HistoricalAirChartComponent implements OnInit, DoCheck {
 
   @Input() data: any = [];
+  @Input() centerIndex: number = -1;
   @Output() chartClick: EventEmitter<number> = new EventEmitter<number>();
+
+  previousCenterIndex: number = -1;
 
   checkbox: any = {
     all: true,
@@ -37,12 +40,39 @@ export class HistoricalAirChartComponent implements OnInit, DoCheck {
   }
 
   ngDoCheck() {
-    const changes = this.differ.diff(this.data);
+    const changes = this.differ.diff([this.data, this.centerIndex]);
 
     if (changes) {
-      console.log('Entered chart data => ', this.data);
-      this.chartDestroy();
-      this.chartInit();
+
+      if (this.previousCenterIndex != this.centerIndex) {
+
+        this.previousCenterIndex = this.centerIndex;
+
+        var endIndex: number = this.chart.data.length - 1;
+        var distance: number = endIndex - this.centerIndex;
+
+        console.log('Entered center index => ', this.centerIndex);
+
+        if (this.centerIndex != -1 && this.chart.data.length > 20) {
+
+          if (this.centerIndex < 10) {
+            this.dateX.zoomToDates(this.chart.data[0].timestamp, this.chart.data[10 + (10 - this.centerIndex)].timestamp);
+          }
+          else if (this.centerIndex > endIndex - 10) {
+            this.dateX.zoomToDates(this.chart.data[this.centerIndex - (10 + (10 - distance))].timestamp, this.chart.data[endIndex].timestamp);
+          }
+          else {
+            this.dateX.zoomToDates(this.chart.data[this.centerIndex - 10].timestamp, this.chart.data[this.centerIndex + 10].timestamp);
+          }
+
+        }
+      }
+
+      else {
+        console.log('Entered chart data => ', this.data);
+        this.chartDestroy();
+        this.chartInit();
+      }
     }
   }
 
@@ -311,7 +341,7 @@ export class HistoricalAirChartComponent implements OnInit, DoCheck {
 
       // Pre-zooming
       chart.events.on('inited', () => {
-        if(chart.data.length > 20){
+        if (chart.data.length > 20) {
           dateX.zoomToDates(chart.data[0].timestamp, chart.data[20].timestamp);
         }
       });
@@ -352,7 +382,7 @@ export class HistoricalAirChartComponent implements OnInit, DoCheck {
     console.log(index);
     this.chartClick.emit(index);
 
-    if(this.chart.data.length > 20){
+    if (this.chart.data.length > 20) {
 
       if (index < 10) {
         this.dateX.zoomToDates(this.chart.data[0].timestamp, this.chart.data[10 + (10 - index)].timestamp);

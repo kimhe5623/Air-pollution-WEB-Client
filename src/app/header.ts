@@ -44,7 +44,7 @@ export class HEADER {
          * T552: 30,000,000 ms
          */
         T551: 300000, T552: 30000000,
-        T553: 10000, T554: 10000,
+        T553: 3000, T554: 10000,
     }
 
     // Retrive
@@ -176,8 +176,8 @@ export class HEADER {
     // Routes
     public static readonly ROUTER_PATHS = {
         SIGN_UP: '/signup', SIGN_IN: '/signin', VERIFYING_UVC: '/signup-code', FORGOT_PW: '/forgot-pw',
-        COMMON_USER_DASHBOARD: '/dashboard', COMMON_USER_CHANGE_PW: '/dashboard/changepw', COMMON_USER_DEREGISTER_ACCOUNT: '/dashboard/deregister-account', COMMON_USER_SENSOR_LIST: '/dashboard/sensor-list', COMMON_USER_PERSONAL_SENSOR_MANAGEMENT: 'dashboard/personal-sensor-management', COMMON_USER_AIR_HISTORY: '/dashboard/air-history', COMMON_USER_HEART_HISTORY: '/dashboard/heart-history',
-        ADMIN_DASHBOARD: '/administrator', ADMIN_CHANGE_PW: '/administrator/changepw', ADMIN_SENSOR_LIST: '/administrator/sensor-list', ADMIN_PERSONAL_SENSOR_MANAGEMENT: '/administrator/personal-sensor-management', ADMIN_AIR_HISTORY: '/administrator/air-history', ADMIN_HEART_HISTORY: '/administrator/heart-history', ADMIN_ALL_SENSORS_MANAGEMENT: '/administrator/admin-sensor-management', ADMIN_ALL_USERS_MANAGEMENT: '/administrator/admin-user-management',
+        COMMON_USER_DASHBOARD: '/dashboard', COMMON_USER_CHANGE_PW: '/dashboard/changepw', COMMON_USER_DEREGISTER_ACCOUNT: '/dashboard/deregister-account', COMMON_USER_SENSOR_LIST: '/dashboard/sensor-list', COMMON_USER_PERSONAL_SENSOR_MANAGEMENT: 'dashboard/personal-sensor-management', COMMON_USER_AIR_HISTORY: '/dashboard/air-history', COMMON_USER_HEART_HISTORY: '/dashboard/heart-history', COMMON_USER_SENSOR_HISTORY: 'dashboard/sensor-history',
+        ADMIN_DASHBOARD: '/administrator', ADMIN_CHANGE_PW: '/administrator/changepw', ADMIN_SENSOR_LIST: '/administrator/sensor-list', ADMIN_PERSONAL_SENSOR_MANAGEMENT: '/administrator/personal-sensor-management', ADMIN_AIR_HISTORY: '/administrator/air-history', ADMIN_HEART_HISTORY: '/administrator/heart-history', ADMIN_ALL_SENSORS_MANAGEMENT: '/administrator/admin-sensor-management', ADMIN_ALL_USERS_MANAGEMENT: '/administrator/admin-user-management', ADMIN_SENSOR_HISTORY: 'administrator/sensor-history',
         MAIN_PAGE: '/', MAIN_SOLUTIONS_PAGE: '/solutions', MAIN_TECHNOLOGY_PAGE: '/technology', MAIN_INTRODUCTION_PAGE: '/introduction',
     };
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
 import { UserManagementService } from '../../../services/httpRequest/user-management.service';
+import { HEADER } from 'src/app/header';
 
 @Component({
   selector: 'app-dashboard-navbar',
@@ -18,6 +19,7 @@ export class DashboardNavbarComponent implements OnInit {
     profile: false,
     sensormg: false,
     personalsensor: false,
+    airDataHistory: false,
     airSensorHistory: false,
     HeartHistory: false
   }
@@ -45,7 +47,7 @@ export class DashboardNavbarComponent implements OnInit {
         this.currentMenu.personalsensor = true;
         break;
       case (3):
-        this.currentMenu.airSensorHistory = true;
+        this.currentMenu.airDataHistory = true;
         break;
       case (4):
         this.currentMenu.HeartHistory = true;
@@ -54,6 +56,9 @@ export class DashboardNavbarComponent implements OnInit {
         this.currentMenu.changepw = true;
         break;
       //case (7): -------> sign out
+      case(8):
+        this.currentMenu.airSensorHistory = true;
+        break;
 
 
     }
@@ -64,33 +69,33 @@ export class DashboardNavbarComponent implements OnInit {
     switch (menuNum) {
       case (0): // => dashboard
         this.storageService.set('menuNum', 0);
-        this.router.navigate(['/dashboard']);
+        this.router.navigate([HEADER.ROUTER_PATHS.COMMON_USER_DASHBOARD]);
         break;
 
 
       case (1): // => sensor management
         this.storageService.set('menuNum', 1);
-        this.router.navigate([`/dashboard/sensor-list`]);
+        this.router.navigate([HEADER.ROUTER_PATHS.COMMON_USER_SENSOR_LIST]);
         break;
 
       case (2): // => personal sensor management
         this.storageService.set('menuNum', 2);
-        this.router.navigate(['/dashboard/personal-sensor-management']);
+        this.router.navigate([HEADER.ROUTER_PATHS.COMMON_USER_PERSONAL_SENSOR_MANAGEMENT]);
         break;
 
       case (3): // => air sensor history
         this.storageService.set('menuNum', 3);
-        this.router.navigate(['dashboard/air-history']);
+        this.router.navigate([HEADER.ROUTER_PATHS.COMMON_USER_AIR_HISTORY]);
         break;
 
       case (4): // => heart history
         this.storageService.set('menuNum', 4);
-        this.router.navigate(['/dashboard/heart-history']);
+        this.router.navigate([HEADER.ROUTER_PATHS.COMMON_USER_HEART_HISTORY]);
         break;
 
       case (6): // => changepw
         this.storageService.set('menuNum', 6);
-        this.router.navigate(['/dashboard/changepw']);
+        this.router.navigate([HEADER.ROUTER_PATHS.COMMON_USER_CHANGE_PW]);
         break;
 
 
@@ -103,6 +108,11 @@ export class DashboardNavbarComponent implements OnInit {
         };
         this.umService.fnSgo(payload);
 
+        break;
+      
+      case(8):
+        this.storageService.set('menuNum', 8);
+        this.router.navigate([HEADER.ROUTER_PATHS.COMMON_USER_SENSOR_HISTORY]);
         break;
 
     }

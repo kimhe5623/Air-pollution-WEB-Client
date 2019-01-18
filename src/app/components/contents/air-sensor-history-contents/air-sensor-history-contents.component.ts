@@ -85,7 +85,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
 
   constructor(
-    private dataService: DataManagementService,
+    public dataService: DataManagementService,
     private dmService: DataMonitoringService,
     private storageService: StorageService
   ) {
@@ -210,6 +210,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     this.selectedTsp = this.timeLists[this.timeSliderValue];
     this.selectedTime = this.dataService.formattingDate(new Date(Number(this.selectedTsp)));
     this.selectedAirdata = this.airData[this.selectedTsp][this.selectedMac];
+
     //console.log('selectedTime => ', this.selectedTime);
 
     this.keyCheck(() => {

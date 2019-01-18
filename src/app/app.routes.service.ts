@@ -25,6 +25,8 @@ import { AdminAirSensorHistoryComponent } from './main/administrator/contents/ad
 import { AdminHeartHistoryComponent } from './main/administrator/contents/admin-heart-history/admin-heart-history.component';
 import { AdminChangepwComponent } from './main/administrator/contents/admin-changepw/admin-changepw.component';
 import { TestComponent } from './main/test/test.component';
+import { SensorHistoryComponent } from './main/dashboard/contents/sensor-history/sensor-history.component';
+import { AdminSensorHistoryComponent } from './main/administrator/contents/admin-sensor-history/admin-sensor-history.component';
 
 export const routes: Routes = [
   {
@@ -78,6 +80,10 @@ export const routes: Routes = [
       {
         path: 'heart-history',
         component: HeartHistoryComponent
+      },
+      {
+        path: 'sensor-history',
+        component: SensorHistoryComponent
       }
     ]
   },
@@ -117,6 +123,10 @@ export const routes: Routes = [
       {
         path: 'admin-user-management',
         component: UsersManagementComponent
+      },
+      {
+        path: 'sensor-history',
+        component: AdminSensorHistoryComponent
       }
     ]
   },

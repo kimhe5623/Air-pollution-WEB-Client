@@ -75,7 +75,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private dataService: DataManagementService,
+    public dataService: DataManagementService,
     private dmService: DataMonitoringService,
     private storageService: StorageService,
     private authService: AuthorizationService,
@@ -565,7 +565,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         var dateX = this.chart[key].xAxes.push(new am4charts.DateAxis());
         dateX.dataFields.date = "timestamp";
         //dateX.title.text = "Timestamp";
-        dateX.baseInterval = { timeUnit: 'second', count: 10 };
+        dateX.baseInterval = { timeUnit: 'second', count: 3 };
         dateX.align = 'center';
 
         // Create yAxis
@@ -754,7 +754,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     var tsp: number = new Date().getTime();
     var data: any = [];
 
-    for (var i = 1; i <= 19; i++) {
+    for (var i = 1; i <= 24; i++) {
       data.push({
         AQI_CO: 0,
         AQI_O3: 0,
@@ -774,11 +774,12 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
     for (var key in this.chart) {
 
-      if (this.chart[key].data.length > 20) {
+      if (this.chart[key].data.length > 25) {
         this.chart[key].data.shift();
       }
 
       this.chart[key].data.push(this.data[this.clickedMarker]);
+
 
       this.chart[key].validateData();
 

@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class UserMainComponent implements OnInit, OnDestroy {
 
-  private contentDisplay: boolean;
+  public contentDisplay: boolean;
 
   constructor(
     private storageService: StorageService,

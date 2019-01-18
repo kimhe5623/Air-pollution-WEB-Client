@@ -54,7 +54,7 @@
                 hovered_font_color='#fff' dominent_color='' [data]='selectedAirdata'></app-air-data>
             </div>
             <div class="row">
-              <app-historical-air-chart [data]="airDataForCharts[selectedMac]" (chartClick)="chartClicked($event)"></app-historical-air-chart>
+              <app-historical-air-chart [data]="airDataForCharts[selectedMac]" [centerIndex]="timeSliderValue" (chartClick)="chartClicked($event)"></app-historical-air-chart>
             </div>
           </mat-card-content>
         </mat-card>

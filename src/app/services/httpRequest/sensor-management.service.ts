@@ -199,13 +199,15 @@ export class SensorManagementService {
   /** SRG */
   fnSrg(payload: any, cb) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SRG_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
-
+    console.log('SRG-REQ: ', reqMsg);
+    
     this.http.post(`/serverapi`, reqMsg)
 
       // .pipe(timeout(HEADER.TIMER.T412),
       //   retry(HEADER.RETRIVE.R412))
 
       .subscribe((rspMsg: any) => {
+        console.log('SRG-RES: ', rspMsg);
 
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.SRG_RSP, reqMsg.header.endpointId)) {
           this.dispMsgService.fnDispErrorString('INCORRECT_HEADER');

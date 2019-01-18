@@ -136,7 +136,7 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
   num_of_data: number;
 
   private interval: any;
-  private inInterval: boolean;
+  public inInterval: boolean;
 
   constructor(
     private dmService: DataMonitoringService,

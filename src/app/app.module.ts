@@ -70,6 +70,7 @@ import { DashboardNavbarComponent } from './main/dashboard/dashboard-navbar/dash
 import { UserMainComponent } from './main/dashboard/contents/user-main/user-main.component';
 import { UserChangePasswordComponent } from './main/dashboard/contents/user-change-password/user-change-password.component';
 import { DashboardFooterComponent } from './main/dashboard/dashboard-footer/dashboard-footer.component';
+import { FooterComponent } from './main/main-page/footer/footer.component';
 import { AdminNavbarComponent } from './main/administrator/admin-navbar/admin-navbar.component';
 import { AdminFooterComponent } from './main/administrator/admin-footer/admin-footer.component';
 import { UsersManagementComponent } from './main/administrator/contents/users-management/users-management.component';
@@ -113,6 +114,9 @@ import { TimerComponent } from './components/timer/timer.component';
 import { HistoricalAirChartComponent } from './components/chart/historical-air-chart/historical-air-chart.component';
 import { HistoricalHeartChartComponent } from './components/chart/historical-heart-chart/historical-heart-chart.component';
 import { AmchartTest4Component } from './components/amchart-test4/amchart-test4.component';
+import { SensorHistoryComponent } from './main/dashboard/contents/sensor-history/sensor-history.component';
+import { AdminSensorHistoryComponent } from './main/administrator/contents/admin-sensor-history/admin-sensor-history.component';
+import { SensorHistoryContentsComponent } from './components/contents/sensor-history-contents/sensor-history-contents.component';
 
 @NgModule({
   declarations: [
@@ -130,6 +134,7 @@ import { AmchartTest4Component } from './components/amchart-test4/amchart-test4.
     DashboardNavbarComponent,
     UserMainComponent,
     UserChangePasswordComponent,
+    FooterComponent,
     DashboardFooterComponent,
     AdminNavbarComponent,
     AdminFooterComponent,
@@ -173,6 +178,9 @@ import { AmchartTest4Component } from './components/amchart-test4/amchart-test4.
     HistoricalAirChartComponent,
     HistoricalHeartChartComponent,
     AmchartTest4Component,
+    SensorHistoryComponent,
+    AdminSensorHistoryComponent,
+    SensorHistoryContentsComponent,
   ],
   imports: [
     /** Angular Modules */
