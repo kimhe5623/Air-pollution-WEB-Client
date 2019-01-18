@@ -5479,4 +5479,3 @@ module.exports = __webpack_require__(/*! /mnt/c/Users/kimhe/Desktop/Air-pollutio
 /***/ })
 
 },[[4,"runtime"]]]);
-//# sourceMappingURL=polyfills.15f4b2a7fb5e7eb972f2.js.map
