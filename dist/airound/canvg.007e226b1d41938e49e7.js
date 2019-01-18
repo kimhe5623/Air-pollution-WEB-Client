@@ -949,3 +949,4 @@ module.exports = {
 /***/ })
 
 }]);
+//# sourceMappingURL=canvg.007e226b1d41938e49e7.js.map
