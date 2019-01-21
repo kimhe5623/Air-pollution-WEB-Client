@@ -70,7 +70,7 @@
             "browserTarget": "airound:build"
           }
         },
-        "test": {
+        "te`st`": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "src/test.ts",
