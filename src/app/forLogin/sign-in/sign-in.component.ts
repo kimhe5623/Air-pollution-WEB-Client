@@ -42,9 +42,6 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   onSubmitSigninForm() {
-    console.log('Before click: ', HEADER.CURRENT_STATE);
-    HEADER.CURRENT_STATE++;
-    console.log('After click: ', HEADER.CURRENT_STATE);
     this.errorhide = false;
 
     if (this.signinForm.invalid) console.log('Input again');

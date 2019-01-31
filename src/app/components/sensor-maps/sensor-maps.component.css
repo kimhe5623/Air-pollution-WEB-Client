@@ -12,3 +12,17 @@
           margin: 0;
           padding: 0;
       }
+
+      .select {
+          display: inline-block;
+          margin-right: 1rem;
+      }
+
+      /** Button */
+
+      .buttonStyle {
+          margin-left: 1rem;
+          font-size: 15px;
+          width: auto;
+          border-radius: 100px;
+      }

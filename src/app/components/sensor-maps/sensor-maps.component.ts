@@ -21,6 +21,13 @@ export class SensorMapsComponent implements OnInit {
 
   clickedMarker: string = '';
 
+  /**
+   * Options 
+   */
+  nationCode: string = '';
+  stateCode: string = '';
+  cityCode: string = '';
+
   constructor(
     private dataService: DataManagementService,
     private dmService: DataMonitoringService,

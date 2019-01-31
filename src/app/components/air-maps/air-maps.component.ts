@@ -21,7 +21,13 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
   map: google.maps.Map;
   markers: any = {};
+  circles: any = {};
+
+  isClicked: boolean = false;
+  isLoggedIn: boolean = false;
   clickedMarker: string = '';
+  clickedLocation: string = '';
+  clickedData: any = {};
 
   realtimeAirChartData: any = [];
 
@@ -50,11 +56,21 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     hazardous: '#ffffff',
     undefined: '#000000',
   };
+  /** Label color */
+  aqi_circle_color = {
+    good: '#33e081',
+    moderate: '#ebe841',
+    unhealthy_for_sensitive_groups: '#f19040',
+    unhealthy: '#ec4545',
+    very_unhealthy: '#b046e0',
+    hazardous: '#6b132e',
+    undefined: '#000000',
+  };
 
 
   private interval: any;
   private inInterval: boolean;
-  
+
 
 
   /** 
@@ -84,6 +100,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.inInterval = HEADER.RES_SUCCESS;
+    this.isLoggedIn = this.authService.isUserLoggedIn();
     //console.log("air-maps.component ngOnInit()");
 
     this.reqData((result) => {
@@ -130,9 +147,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
       this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
 
       /**
-       * Marker & Info window
+       * Marker & Circle & Info window
        */
       this.markers = {};
+      this.circles = {};
       this.infoWindow = new google.maps.InfoWindow();
 
       this.clickedMarker = result.firstKey;
@@ -168,9 +186,9 @@ export class AirMapsComponent implements OnInit, OnDestroy {
       var payload = {
         nsc: 0x00,
         provinceListEncodings: {
-          // lat: this.currentLocation.latitude,
-          // lng: this.currentLocation.longitude,
-          lat: 32.88247, lng: -117.23484,
+          lat: this.currentLocation.latitude,
+          lng: this.currentLocation.longitude,
+          // lat: 32.88247, lng: -117.23484,
           commonNatTierTuple: {
             nat: "Q30",
             commonStateTierTuple: [
@@ -192,7 +210,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
       this.dmService.fnRav(payload, (result) => {
         console.log('air-maps.component - RAV callback => ', result);
-        if (result == HEADER.NULL_VALUE) cb(HEADER.NULL_VALUE);
+        if (result == HEADER.NULL_VALUE || result.payload.resultCode != HEADER.RESCODE_SWP_RAV.OK) cb(HEADER.NULL_VALUE);
         else if (result.payload.realtimeAirQualityDataList.length == 0) cb(HEADER.NULL_VALUE);
 
         else {
@@ -232,10 +250,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         position: { lat: data[key].latitude, lng: data[key].longitude },
 
         icon: {
-          anchor: new google.maps.Point(40, 40),
-          labelOrigin: new google.maps.Point(40, 40),
+          anchor: new google.maps.Point(20, 20),
+          labelOrigin: new google.maps.Point(20, 20),
           origin: new google.maps.Point(0, 0),
-          scaledSize: new google.maps.Size(80, 80),
+          scaledSize: new google.maps.Size(40, 40),
           url: this.getAqiIcon(this.aqiAvg(data[key]))
         },
 
@@ -250,7 +268,20 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
       });
 
+      var circle = new google.maps.Circle({
+        strokeColor: this.getAqiCircleColor(this.aqiAvg(data[key])),
+        strokeOpacity: 0.8,
+        strokeWeight: 1,
+        fillColor: this.getAqiCircleColor(this.aqiAvg(data[key])),
+        fillOpacity: 0.35,
+        map: this.map,
+        center: { lat: data[key].latitude, lng: data[key].longitude },
+        radius: 500
+      });
+
+
       this.markers[key] = marker;
+      this.circles[key] = circle;
 
       this.addInfoWindow(key);
     }
@@ -267,10 +298,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
       position: { lat: eachData.latitude, lng: eachData.longitude },
 
       icon: {
-        anchor: new google.maps.Point(40, 40),
-        labelOrigin: new google.maps.Point(40, 40),
+        anchor: new google.maps.Point(20, 20),
+        labelOrigin: new google.maps.Point(20, 20),
         origin: new google.maps.Point(0, 0),
-        scaledSize: new google.maps.Size(80, 80),
+        scaledSize: new google.maps.Size(40, 40),
         url: this.getAqiIcon(this.aqiAvg(eachData))
       },
 
@@ -285,7 +316,19 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
     });
 
+    var circle = new google.maps.Circle({
+      strokeColor: this.getAqiCircleColor(this.aqiAvg(eachData)),
+      strokeOpacity: 0.8,
+      strokeWeight: 1,
+      fillColor: this.getAqiCircleColor(this.aqiAvg(eachData)),
+      fillOpacity: 0.35,
+      map: this.map,
+      center: { lat: eachData.latitude, lng: eachData.longitude },
+      radius: 500
+    });
+
     this.markers[eachData.mac] = marker;
+    this.circles[eachData.mac] = circle;
 
     this.addInfoWindow(eachData.mac);
 
@@ -333,10 +376,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
             this.markers[key].setIcon(
               {
-                anchor: new google.maps.Point(40, 40),
-                labelOrigin: new google.maps.Point(40, 40),
+                anchor: new google.maps.Point(20, 20),
+                labelOrigin: new google.maps.Point(20, 20),
                 origin: new google.maps.Point(0, 0),
-                scaledSize: new google.maps.Size(80, 80),
+                scaledSize: new google.maps.Size(40, 40),
                 url: this.getAqiIcon(this.aqiAvg(this.data[key]))
               }
             );
@@ -348,17 +391,31 @@ export class AirMapsComponent implements OnInit, OnDestroy {
                 text: this.aqiAvg(this.data[key]).toString(),
               }
             );
+            this.circles[key].setOptions({
+              strokeColor: this.getAqiCircleColor(this.aqiAvg(this.data[key])),
+              strokeOpacity: 0.8,
+              strokeWeight: 1,
+              fillColor: this.getAqiCircleColor(this.aqiAvg(this.data[key])),
+              fillOpacity: 0.35,
+              map: this.map,
+              center: { lat: this.data[key].latitude, lng: this.data[key].longitude },
+              radius: 500
+            });
+
             this.markers[key]['data'] = this.data[key];
+            this.clickedData = this.markers[key]['data'];
+
+            this.dmService.latlngToAddress(this.clickedData.latitude, this.clickedData.longitude, (address) => {
+
+              if (address.status == 'OK') { 
+                this.clickedLocation = address.results[0].formatted_address;
+              }
+              else {
+                this.clickedLocation = `latitude: ${this.clickedData.latitude} longitude: ${this.clickedData.longitude}`;
+              }
+            });       
 
             this.addInfoWindow(key);
-
-            if (key === this.clickedMarker) {
-              this.getInfoWindowContents(this.markers[key]['data'], (contents) => {
-                this.infoWindow.close();
-                this.infoWindow.setContent(contents);
-                this.infoWindow.open(this.map, this.markers[this.clickedMarker]);
-              });
-            }
 
           }
         }
@@ -375,64 +432,21 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
     google.maps.event.addListener(this.markers[key], 'click', () => {
 
+      this.isClicked = true;
+
       this.clickedMarker = this.markers[key]['data']['mac'];
       this.markerClicked(key);
       console.log('air-maps.component click:', this.clickedMarker);
-
-      this.getInfoWindowContents(this.markers[key]['data'], (contents) => {
-        this.infoWindow.close(); // Close previously opened infowindow
-        this.infoWindow.setContent(contents);
-        this.infoWindow.open(this.map, this.markers[key]);
-      });
-
+  
+      this.infoWindow.close(); // Close previously opened infowindow
+      this.infoWindow.setContent(`<strong>Clicked</strong>`);
+      this.infoWindow.open(this.map, this.markers[key]);
     });
 
-  }
+    google.maps.event.addListener(this.infoWindow, 'closeclick', () => {
+      this.isClicked = false;
+    })
 
-  /**
-   * @param eachData : each data
-   * get infoWindow contents
-   */
-  getInfoWindowContents(eachData: any, cb) {
-    this.dmService.latlngToAddress(eachData.latitude, eachData.longitude, (address) => {
-
-      var locationName: string;
-      if (address.status == 'OK') { locationName = `<strong>${address.results[0].formatted_address}</strong>`; }
-      else { locationName = `<strong>lat</strong>&nbsp; ${eachData.latitude}<br><strong>lng</strong>&nbsp; ${eachData.longitude}`; }
-
-      var contents = `
-        <style>
-        table, th, td {
-          border: 0.1px solid #ababab;
-        }
-        th, td {
-          padding: 7px;
-        }
-        </style>
-        <h6 style="margin-bottom:5px; line-height: 30px">${locationName}</h6>
-        <p>Wifi MAC address: ${this.dataService.rspToMacAddress(eachData.mac)}</p>
-        <table>
-            <tr>
-                <th>CO</th>
-                <th>O<sub>3</sub></th>
-                <th>NO<sub>2</sub></th>
-                <th>SO<sub>2</sub></th>
-                <th>PM2.5</th>
-                <th>PM10</th>
-                <th>Temp</th>
-            </tr>
-            <tr>
-                <td>${eachData.AQI_CO}</td>
-                <td>${eachData.AQI_O3}</td>
-                <td>${eachData.AQI_NO2}</td>
-                <td>${eachData.AQI_SO2}</td>
-                <td>${eachData.AQI_PM25}</td>
-                <td>${eachData.AQI_PM10}</td>
-                <td>${eachData.temperature}</td>
-            </tr>
-        </table> `;
-      cb(contents);
-    });
   }
 
   /**
@@ -521,6 +535,34 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     }
     else {
       return this.aqi_label_color.undefined;
+    }
+  }
+
+    /**
+   * get AQI font color
+   * @param aqi : Air quality index
+   */
+  getAqiCircleColor(aqi: number): string {
+    if (aqi >= 0 && aqi <= 50) {
+      return this.aqi_circle_color.good;
+    }
+    else if (aqi >= 51 && aqi <= 100) {
+      return this.aqi_circle_color.moderate;
+    }
+    else if (aqi >= 101 && aqi <= 150) {
+      return this.aqi_circle_color.unhealthy_for_sensitive_groups;
+    }
+    else if (aqi >= 151 && aqi <= 200) {
+      return this.aqi_circle_color.unhealthy;
+    }
+    else if (aqi >= 201 && aqi <= 300) {
+      return this.aqi_circle_color.very_unhealthy;
+    }
+    else if (aqi >= 301 && aqi <= 500) {
+      return this.aqi_circle_color.hazardous;
+    }
+    else {
+      return this.aqi_circle_color.undefined;
     }
   }
 
@@ -787,7 +829,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     }
   }
 
-  chartDestroy(){
+  chartDestroy() {
     this.zone.runOutsideAngular(() => {
       for (var key in this.chart) {
         if (this.chart[key]) {

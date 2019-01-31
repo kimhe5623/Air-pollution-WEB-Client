@@ -50,28 +50,32 @@ export class DataMonitoringService {
         console.log("HTTP:RAV-RSP => ", rspMsg);
         cb(rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.RAV_RSP, reqMsg.header.endpointId)) {
-          cb(null); return;
+          cb(HEADER.NULL_VALUE); return;
         }
 
         else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_RAV.OK) { // success
-          cb(rspMsg);
+          cb(rspMsg); return;
         }
 
         else {
+          
           switch (rspMsg.payload.resultCode) {
 
             case (HEADER.RESCODE_SWP_RAV.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
-              cb(null); break;
+              break;
 
             case (HEADER.RESCODE_SWP_RAV.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
               this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
-              cb(null); break;
+              break;
 
             case (HEADER.RESCODE_SWP_RAV.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed-in completions
               this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
-              cb(null); break;
+              break;
+
           }
+
+          cb(HEADER.NULL_VALUE); 
         }
       }, (err) => {
         if (err.timeout) {
@@ -97,7 +101,7 @@ export class DataMonitoringService {
         console.log('RHV-RSP => ', rspMsg);
         cb(rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.RHV_RSP, reqMsg.header.endpointId)) {
-          cb(null); return;
+          cb(HEADER.NULL_VALUE); return;
         }
 
         else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_RHV.OK) { // success
@@ -109,15 +113,15 @@ export class DataMonitoringService {
 
             case (HEADER.RESCODE_SWP_RHV.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
-              cb(null); break;
+              cb(HEADER.NULL_VALUE); break;
 
             case (HEADER.RESCODE_SWP_RHV.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
               this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
-              cb(null); break;
+              cb(HEADER.NULL_VALUE); break;
 
             case (HEADER.RESCODE_SWP_RHV.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed-in completions
               this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
-              cb(null); break;
+              cb(HEADER.NULL_VALUE); break;
           }
         }
       }, (err) => {
@@ -145,7 +149,7 @@ export class DataMonitoringService {
 
         cb(rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.HAV_RSP, reqMsg.header.endpointId)) {
-          cb(null); return;
+          cb(HEADER.NULL_VALUE); return;
         }
 
         else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_HAV.OK) { // success
@@ -157,24 +161,24 @@ export class DataMonitoringService {
 
             case (HEADER.RESCODE_SWP_HAV.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
-              cb(null); break;
+              cb(HEADER.NULL_VALUE); break;
 
             case (HEADER.RESCODE_SWP_HAV.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
               this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
-              cb(null);  break;
+              cb(HEADER.NULL_VALUE);  break;
 
             case (HEADER.RESCODE_SWP_HAV.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed-in completions
               this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
-              cb(null); break;
+              cb(HEADER.NULL_VALUE); break;
 
             case (HEADER.RESCODE_SWP_HAV.UNAUTHORIZED_USER_SEQUENCE_NUMBER): // reject-requested by an unauthorized user sequence number
               this.dispMsgService.fnDispErrorString('UNAUTHORIZED_USER_SEQUENCE_NUMBER');
-              cb(null);
+              cb(HEADER.NULL_VALUE);
               break;
 
             case (HEADER.RESCODE_SWP_HAV.NOT_EXIST_SENSORS): // reject-not exist a sensor under the spatial-temporal search condition included in the SDP: HAV-REQ message
               this.dispMsgService.fnDispErrorString('NOT_EXIST_SENSORS');
-              cb(null);
+              cb(HEADER.NULL_VALUE);
               break;
           }
         }
@@ -210,7 +214,7 @@ export class DataMonitoringService {
         //console.log('SHR-RSP => ', rspMsg);
         cb(rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.SHR_RSP, reqMsg.header.endpointId)) {
-          cb(null);
+          cb(HEADER.NULL_VALUE);
         }
 
         else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SHR.OK) { // success
@@ -222,22 +226,22 @@ export class DataMonitoringService {
 
             case (HEADER.RESCODE_SWP_SHR.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
-              cb(null);
+              cb(HEADER.NULL_VALUE);
               break;
 
             case (HEADER.RESCODE_SWP_SHR.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
               this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
-              cb(null);
+              cb(HEADER.NULL_VALUE);
               break;
 
             case (HEADER.RESCODE_SWP_SHR.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed in completions
               this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
-              cb(null);
+              cb(HEADER.NULL_VALUE);
               break;
 
             case (HEADER.RESCODE_SWP_SHR.UNAUTHORIZED_USER_SEQUENCE_NUMBER): // reject-unauthorized user sequece number
               this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
-              cb(null);
+              cb(HEADER.NULL_VALUE);
               break;
           }
         }
@@ -265,7 +269,7 @@ export class DataMonitoringService {
         console.log('HHV-RSP => ', rspMsg);
         cb(rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.HHV_RSP, reqMsg.header.endpointId)) {
-          cb(null); return;
+          cb(HEADER.NULL_VALUE); return;
         }
 
         else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_HHV.OK) { // success
@@ -277,22 +281,22 @@ export class DataMonitoringService {
 
             case (HEADER.RESCODE_SWP_HHV.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
-              cb(null);
+              cb(HEADER.NULL_VALUE);
               break;
 
             case (HEADER.RESCODE_SWP_HHV.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
               this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
-              cb(null);
+              cb(HEADER.NULL_VALUE);
               break;
 
             case (HEADER.RESCODE_SWP_HHV.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed in completions
               this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
-              cb(null);
+              cb(HEADER.NULL_VALUE);
               break;
 
             case (HEADER.RESCODE_SWP_HHV.UNAUTHORIZED_USER_SEQUENCE_NUMBER): // reject-unauthorized user sequece number
               this.dispMsgService.fnDispErrorString('UNAUTHORIZED_USER_SEQUENCE_NUMBER');
-              cb(null);
+              cb(HEADER.NULL_VALUE);
               break;
           }
         }
@@ -320,7 +324,7 @@ export class DataMonitoringService {
         console.log('KAS-RSP => ', rspMsg);
         cb(rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.KAS_RSP, reqMsg.header.endpointId)) {
-          cb(null); return;
+          cb(HEADER.NULL_VALUE); return;
         }
 
         else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_KAS.OK) { // success
@@ -333,15 +337,15 @@ export class DataMonitoringService {
 
             case (HEADER.RESCODE_SWP_KAS.OTHER): // reject-other
               this.dispMsgService.fnDispErrorString('OTHER');
-              cb(null); break;
+              cb(HEADER.NULL_VALUE); break;
 
             case (HEADER.RESCODE_SWP_KAS.UNALLOCATED_USER_SEQUENCE_NUMBER):  // reject-unallocated user sequence number
               this.dispMsgService.fnDispErrorString('UNALLOCATED_USER_SEQUENCE_NUMBER');
-              cb(null);  break;
+              cb(HEADER.NULL_VALUE);  break;
 
             case (HEADER.RESCODE_SWP_KAS.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // reject-incorrect number of signed in completions
               this.dispMsgService.fnDispErrorString('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS');
-              cb(null);
+              cb(HEADER.NULL_VALUE);
               break;
           }
         }

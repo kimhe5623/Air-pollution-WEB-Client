@@ -77,7 +77,7 @@ export class HEADER {
     public static readonly HEADER_SIZE: number = 6;
 
     // Default value
-    public static readonly NULL_VALUE: any = null;
+    public static readonly NULL_VALUE = null;
     public static readonly EMPTY_VALUE: number = 0;
     public static readonly RES_SUCCESS: boolean = true;
     public static readonly RES_FAILD: boolean = false;
@@ -180,4 +180,7 @@ export class HEADER {
         ADMIN_DASHBOARD: '/administrator', ADMIN_CHANGE_PW: '/administrator/changepw', ADMIN_SENSOR_LIST: '/administrator/sensor-list', ADMIN_PERSONAL_SENSOR_MANAGEMENT: '/administrator/personal-sensor-management', ADMIN_AIR_HISTORY: '/administrator/air-history', ADMIN_HEART_HISTORY: '/administrator/heart-history', ADMIN_ALL_SENSORS_MANAGEMENT: '/administrator/admin-sensor-management', ADMIN_ALL_USERS_MANAGEMENT: '/administrator/admin-user-management', ADMIN_SENSOR_HISTORY: 'administrator/sensor-history',
         MAIN_PAGE: '/', MAIN_SOLUTIONS_PAGE: '/solutions', MAIN_TECHNOLOGY_PAGE: '/technology', MAIN_INTRODUCTION_PAGE: '/introduction',
     };
+
+    // Geo codes
+    public static readonly
 }

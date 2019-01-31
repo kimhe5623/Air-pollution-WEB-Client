@@ -1,0 +1,17 @@
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+.padding {
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+.logo {
+    width: 200px;
+}
+.icon {
+    color: #ffffff;
+    margin-right: 1rem;
+}
