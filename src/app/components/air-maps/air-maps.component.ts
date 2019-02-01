@@ -613,7 +613,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         var dateX = this.chart[key].xAxes.push(new am4charts.DateAxis());
         dateX.dataFields.date = "timestamp";
         //dateX.title.text = "Timestamp";
-        dateX.baseInterval = { timeUnit: 'second', count: 3 };
+        dateX.baseInterval = { timeUnit: 'second', count: 10 };
         dateX.align = 'center';
 
         // Create yAxis

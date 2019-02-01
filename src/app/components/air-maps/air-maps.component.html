@@ -1,5 +1,5 @@
 <div class="row">
-    <div *ngIf="noSensor">
+    <div *ngIf="noSensor" class="col-12">
         <h4 style="padding: 2rem">There is no sensor</h4>
     </div>
     <div [ngClass]="{'col-lg-12': true, 'col-xl-4': isClicked, 'col-xl-12': !isClicked }" >
