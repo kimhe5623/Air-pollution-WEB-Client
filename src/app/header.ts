@@ -182,5 +182,7 @@ export class HEADER {
     };
 
     // Geo codes
-    public static readonly
+    public static CITIES_1 = {};
+    public static CITIES_2 = {};
+    public static CITIES_3 = {};
 }

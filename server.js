@@ -9,7 +9,7 @@ const port = process.env.PORT || 4200;
 
 app.use(express.static(path.join(__dirname, '/dist/airound')));
 
-app.use('/serverapi', proxy({ target: 'http://localhost:8080' }));
+app.use('/serverapi', proxy({ target: 'http://somnium.me:8080' }));
 
 app.get('/*', (req, res) => res.sendFile(path.join(__dirname)));
 

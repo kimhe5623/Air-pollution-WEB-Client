@@ -25,6 +25,8 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
   isClicked: boolean = false;
   isLoggedIn: boolean = false;
+  noSensor: boolean = true;
+
   clickedMarker: string = '';
   clickedLocation: string = '';
   clickedData: any = {};
@@ -210,10 +212,12 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
       this.dmService.fnRav(payload, (result) => {
         console.log('air-maps.component - RAV callback => ', result);
-        if (result == HEADER.NULL_VALUE || result.payload.resultCode != HEADER.RESCODE_SWP_RAV.OK) cb(HEADER.NULL_VALUE);
-        else if (result.payload.realtimeAirQualityDataList.length == 0) cb(HEADER.NULL_VALUE);
+        if (result == HEADER.NULL_VALUE || result.payload.resultCode != HEADER.RESCODE_SWP_RAV.OK) { this.noSensor = true; cb(HEADER.NULL_VALUE); }
+        else if (result.payload.realtimeAirQualityDataList.length == 0) { this.noSensor = true; cb(HEADER.NULL_VALUE); }
 
         else {
+          this.noSensor = false;
+
           var parsedData = this.dataService.rspRealtimeAirDataParsing(result.payload.realtimeAirQualityDataList);
 
           // Add firstkey with parsedData //
@@ -342,6 +346,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     this.reqData((result) => {
 
       if (result != HEADER.NULL_VALUE) {
+
         if (this.map == HEADER.NULL_VALUE) {
           this.mapInit(result);
         }
@@ -580,12 +585,13 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   }
 
 
-  /**
-   * Chart related functions
-   */
-  ngAfterViewInit() {
-    this.chartInit();
-  }
+  // /**
+  //  * Chart related functions
+  //  */
+  // ngAfterViewInit() {
+
+  //   this.chartInit();
+  // }
 
   chartInit() {
     this.zone.runOutsideAngular(() => {

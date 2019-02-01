@@ -7,3 +7,10 @@
     margin-top: 120px;
     margin-bottom: 25px;
 }
+
+.invisible {
+    visibility: hidden;
+}
+.visible {
+    visibility: visible;
+}
