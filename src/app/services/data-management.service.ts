@@ -15,6 +15,11 @@ export class DataManagementService {
     private dispMsgService: DisplayMessageService,
   ) { }
 
+  /** Sleep */
+  sleep (time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
   /** Verify administrator */
   fnVerifyAdministrator(): boolean{
     var isAdmin: boolean = HEADER.RES_FAILD;

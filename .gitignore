@@ -6,6 +6,7 @@
 
 # dependencies
 /node_modules
+/keys
 
 # IDEs and editors
 /.idea

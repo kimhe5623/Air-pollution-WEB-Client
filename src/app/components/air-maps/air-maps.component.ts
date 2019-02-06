@@ -211,7 +211,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
       }
 
       this.dmService.fnRav(payload, (result) => {
-        console.log('air-maps.component - RAV callback => ', result);
+        //console.log('air-maps.component - RAV callback => ', result);
         if (result == HEADER.NULL_VALUE || result.payload.resultCode != HEADER.RESCODE_SWP_RAV.OK) { this.noSensor = true; cb(HEADER.NULL_VALUE); }
         else if (result.payload.realtimeAirQualityDataList.length == 0) { this.noSensor = true; cb(HEADER.NULL_VALUE); }
 
@@ -412,13 +412,13 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
             this.dmService.latlngToAddress(this.clickedData.latitude, this.clickedData.longitude, (address) => {
 
-              if (address.status == 'OK') { 
+              if (address.status == 'OK') {
                 this.clickedLocation = address.results[0].formatted_address;
               }
               else {
                 this.clickedLocation = `latitude: ${this.clickedData.latitude} longitude: ${this.clickedData.longitude}`;
               }
-            });       
+            });
 
             this.addInfoWindow(key);
 
@@ -437,12 +437,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
     google.maps.event.addListener(this.markers[key], 'click', () => {
 
-      this.isClicked = true;
-
       this.clickedMarker = this.markers[key]['data']['mac'];
       this.markerClicked(key);
       console.log('air-maps.component click:', this.clickedMarker);
-  
+
       this.infoWindow.close(); // Close previously opened infowindow
       this.infoWindow.setContent(`<strong>Clicked</strong>`);
       this.infoWindow.open(this.map, this.markers[key]);
@@ -543,10 +541,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     }
   }
 
-    /**
-   * get AQI font color
-   * @param aqi : Air quality index
-   */
+  /**
+ * get AQI font color
+ * @param aqi : Air quality index
+ */
   getAqiCircleColor(aqi: number): string {
     if (aqi >= 0 && aqi <= 50) {
       return this.aqi_circle_color.good;
@@ -579,8 +577,17 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     this.clickedMarker = key;
     console.log('Clicked marker: markerClicked() => ', this.clickedMarker);
 
-    this.chartDestroy();
-    this.chartInit();
+    if (this.isClicked) {
+      this.chartDestroy();
+    }
+
+    this.isClicked = true;
+
+    if (!this.chartInit()) {
+      this.dataService.sleep(500).then(()=> {
+        this.chartInit();
+      });
+    }
 
   }
 
@@ -593,209 +600,221 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   //   this.chartInit();
   // }
 
-  chartInit() {
+  chartInit(): boolean {
+    var returnVal: boolean = false;
+
     this.zone.runOutsideAngular(() => {
 
-      this.chart.temp = am4core.create("chartdiv2_1", am4charts.XYChart),
-        this.chart.co = am4core.create("chartdiv2_2", am4charts.XYChart),
-        this.chart.o3 = am4core.create("chartdiv2_3", am4charts.XYChart),
-        this.chart.no2 = am4core.create("chartdiv2_4", am4charts.XYChart),
-        this.chart.so2 = am4core.create("chartdiv2_5", am4charts.XYChart),
-        this.chart.pm25 = am4core.create("chartdiv2_6", am4charts.XYChart),
-        this.chart.pm10 = am4core.create("chartdiv2_7", am4charts.XYChart)
-
-      for (var key in this.chart) {
-
-        this.chart[key].data = this.initparsedDataWithFirstkey();
-        this.chart[key].paddingRight = 20;
-
-        // Create xAxes
-        var dateX = this.chart[key].xAxes.push(new am4charts.DateAxis());
-        dateX.dataFields.date = "timestamp";
-        //dateX.title.text = "Timestamp";
-        dateX.baseInterval = { timeUnit: 'second', count: 10 };
-        dateX.align = 'center';
-
-        // Create yAxis
-        var valueAxis = this.chart[key].yAxes.push(new am4charts.ValueAxis());
-        valueAxis.rangeChangeDuration = 0;
-
-        if (key != 'temp') {
-          // Create AQI range grid
-          var gridWidth = 0.4; var gridOpacity = 0.5
-          var range = valueAxis.axisRanges.create();
-          range.value = 0; // start of good
-          range.grid.stroke = am4core.color("#33e081");
-          range.grid.strokeWidth = gridWidth;
-          range.grid.strokeOpacity = gridOpacity;
-
-          range = valueAxis.axisRanges.create();
-          range.value = 51; // start of moderate
-          range.grid.stroke = am4core.color("#ebe841");
-
-          range = valueAxis.axisRanges.create();
-          range.value = 101; // start of unhealthy for sensitive groups
-          range.grid.stroke = am4core.color("#f19040");
-
-          range = valueAxis.axisRanges.create();
-          range.value = 151; // start of unhealthy
-          range.grid.stroke = am4core.color("#ec4545");
-
-          range = valueAxis.axisRanges.create();
-          range.value = 201; // start of very unhealthy
-          range.grid.stroke = am4core.color("#b046e0");
-
-          range = valueAxis.axisRanges.create();
-          range.value = 301; // start of hazardous
-          range.grid.stroke = am4core.color("#6b132e");
-        }
-
-        switch (key) {
-
-          case ('temp'): // Temperature
-            valueAxis.title.text = "Temperature"
-
-            var series = this.chart[key].series.push(new am4charts.ColumnSeries());
-            series.dataFields.valueY = "temperature";
-            series.dataFields.dateX = "timestamp";
-            series.name = "Temperature";
-            series.tooltipText = "{name}: [bold]{valueY}[/]";
-            series.yAxis = valueAxis;
-            series.interpolationDuration = 0;
-            series.fill = new am4core.Color({ r: 255, g: 230, b: 136, a: 1 });
-            series.stroke = new am4core.Color({ r: 255, g: 230, b: 136, a: 1 });
-
-            //console.log('series_Temp => ', series);
-            break;
-
-          case ('co'): // AQI - CO
-            valueAxis.title.text = "AQI - CO"
-            var series = this.chart[key].series.push(new am4charts.LineSeries());
-            series.dataFields.valueY = "AQI_CO";
-            series.dataFields.dateX = "timestamp";
-            series.name = "CO";
-            series.strokeWidth = 3;
-            series.tooltipText = "{name}: [bold]{valueY}[/]";
-            series.yAxis = valueAxis;
-            series.interpolationDuration = 0;
-            break;
-
-          case ('o3'): // AQI - O3
-            valueAxis.title.text = "AQI - O3"
-
-            var series = this.chart[key].series.push(new am4charts.LineSeries());
-            series.dataFields.valueY = "AQI_O3";
-            series.dataFields.dateX = "timestamp";
-            series.name = "O[sub]3[/]";
-            series.strokeWidth = 3;
-            series.tooltipText = "{name}: [bold]{valueY}[/]";
-            series.yAxis = valueAxis;
-            series.interpolationDuration = 0;
-            break;
-
-          case ('no2'):  // AQI - NO2
-            valueAxis.title.text = "AQI - NO2"
-
-            var series = this.chart[key].series.push(new am4charts.LineSeries());
-            series.dataFields.valueY = "AQI_NO2";
-            series.dataFields.dateX = "timestamp";
-            series.name = "NO[sub]2[/]";
-            series.strokeWidth = 3;
-            series.tooltipText = "{name}: [bold]{valueY}[/]";
-            series.yAxis = valueAxis;
-            series.interpolationDuration = 0;
-            break;
-
-          case ('so2'):  // AQI - SO2
-            valueAxis.title.text = "AQI - SO2"
-
-            var series = this.chart[key].series.push(new am4charts.LineSeries());
-            series.dataFields.valueY = "AQI_SO2";
-            series.dataFields.dateX = "timestamp";
-            series.name = "SO[sub]2[/]";
-            series.strokeWidth = 3;
-            series.tooltipText = "{name}: [bold]{valueY}[/]";
-            series.yAxis = valueAxis;
-            series.interpolationDuration = 0;
-            break;
-
-          case ('pm25'): // AQI - PM2.5
-            valueAxis.title.text = "AQI - PM2.5"
-
-            var series = this.chart[key].series.push(new am4charts.LineSeries());
-            series.dataFields.valueY = "AQI_PM25";
-            series.dataFields.dateX = "timestamp";
-            series.name = "PM2.5";
-            series.strokeWidth = 3;
-            series.tooltipText = "{name}: [bold]{valueY}[/]";
-            series.yAxis = valueAxis;
-            series.interpolationDuration = 0;
-            break;
-
-          case ('pm10'): // AQI - PM10
-            valueAxis.title.text = "AQI - PM10"
-            var series = this.chart[key].series.push(new am4charts.LineSeries());
-            series.dataFields.valueY = "AQI_PM10";
-            series.dataFields.dateX = "timestamp";
-            series.name = "PM10";
-            series.strokeWidth = 3;
-            series.tooltipText = "{name}: [bold]{valueY}[/]";
-            series.yAxis = valueAxis;
-            series.interpolationDuration = 0;
-            break;
-        }
-
-        if (key != 'temp') {
-          // Create yAxis Range. Only if the Key is related to AQI
-          var range_good = valueAxis.createSeriesRange(series);
-          range_good.value = 0;
-          range_good.endValue = 50;
-          range_good.contents.stroke = am4core.color("#33e081");
-
-          var range_moderate = valueAxis.createSeriesRange(series);
-          range_moderate.value = 51;
-          range_moderate.endValue = 100;
-          range_moderate.contents.stroke = am4core.color("#ebe841");
-
-          var range_unhealthy_1 = valueAxis.createSeriesRange(series);
-          range_unhealthy_1.value = 101;
-          range_unhealthy_1.endValue = 150;
-          range_unhealthy_1.contents.stroke = am4core.color("#f19040");
-
-          var range_unhealthy_2 = valueAxis.createSeriesRange(series);
-          range_unhealthy_2.value = 151;
-          range_unhealthy_2.endValue = 200;
-          range_unhealthy_2.contents.stroke = am4core.color("#ec4545");
-
-          var range_unhealthy_3 = valueAxis.createSeriesRange(series);
-          range_unhealthy_3.value = 201;
-          range_unhealthy_3.endValue = 300;
-          range_unhealthy_3.contents.stroke = am4core.color("#b046e0");
-
-          var range_hazardous = valueAxis.createSeriesRange(series);
-          range_hazardous.value = 301;
-          range_hazardous.endValue = 500;
-          range_hazardous.contents.stroke = am4core.color("#6b132e");
-          range_hazardous.contents.fill = am4core.color("#ffffff");
-
-
-
-          //console.log(key, "series After range setting => ", series);
-
-        }
-
-
-        // Add cursor
-        this.chart[key].cursor = new am4charts.XYCursor();
-
-
-        this.chart[key].events.on("doublehit", (ev) => {
-          console.log(ev);
-        });
+      if (document.getElementById("chartdiv2_1") == null || document.getElementById("chartdiv2_2") == null
+        || document.getElementById("chartdiv2_3") == null || document.getElementById("chartdiv2_4") == null
+        || document.getElementById("chartdiv2_5") == null || document.getElementById("chartdiv2_6") == null
+        || document.getElementById("chartdiv2_7") == null) {
+        return returnVal;
       }
 
+      else {
+        returnVal = true;
 
+        this.chart.temp = am4core.create("chartdiv2_1", am4charts.XYChart),
+          this.chart.co = am4core.create("chartdiv2_2", am4charts.XYChart),
+          this.chart.o3 = am4core.create("chartdiv2_3", am4charts.XYChart),
+          this.chart.no2 = am4core.create("chartdiv2_4", am4charts.XYChart),
+          this.chart.so2 = am4core.create("chartdiv2_5", am4charts.XYChart),
+          this.chart.pm25 = am4core.create("chartdiv2_6", am4charts.XYChart),
+          this.chart.pm10 = am4core.create("chartdiv2_7", am4charts.XYChart)
+
+        for (var key in this.chart) {
+
+          this.chart[key].data = this.initparsedDataWithFirstkey();
+          this.chart[key].paddingRight = 20;
+
+          // Create xAxes
+          var dateX = this.chart[key].xAxes.push(new am4charts.DateAxis());
+          dateX.dataFields.date = "timestamp";
+          //dateX.title.text = "Timestamp";
+          dateX.baseInterval = { timeUnit: 'second', count: 10 };
+          dateX.align = 'center';
+
+          // Create yAxis
+          var valueAxis = this.chart[key].yAxes.push(new am4charts.ValueAxis());
+          valueAxis.rangeChangeDuration = 0;
+
+          if (key != 'temp') {
+            // Create AQI range grid
+            var gridWidth = 0.4; var gridOpacity = 0.5
+            var range = valueAxis.axisRanges.create();
+            range.value = 0; // start of good
+            range.grid.stroke = am4core.color("#33e081");
+            range.grid.strokeWidth = gridWidth;
+            range.grid.strokeOpacity = gridOpacity;
+
+            range = valueAxis.axisRanges.create();
+            range.value = 51; // start of moderate
+            range.grid.stroke = am4core.color("#ebe841");
+
+            range = valueAxis.axisRanges.create();
+            range.value = 101; // start of unhealthy for sensitive groups
+            range.grid.stroke = am4core.color("#f19040");
+
+            range = valueAxis.axisRanges.create();
+            range.value = 151; // start of unhealthy
+            range.grid.stroke = am4core.color("#ec4545");
+
+            range = valueAxis.axisRanges.create();
+            range.value = 201; // start of very unhealthy
+            range.grid.stroke = am4core.color("#b046e0");
+
+            range = valueAxis.axisRanges.create();
+            range.value = 301; // start of hazardous
+            range.grid.stroke = am4core.color("#6b132e");
+          }
+
+          switch (key) {
+
+            case ('temp'): // Temperature
+              valueAxis.title.text = "Temperature"
+
+              var series = this.chart[key].series.push(new am4charts.ColumnSeries());
+              series.dataFields.valueY = "temperature";
+              series.dataFields.dateX = "timestamp";
+              series.name = "Temperature";
+              series.tooltipText = "{name}: [bold]{valueY}[/]";
+              series.yAxis = valueAxis;
+              series.interpolationDuration = 0;
+              series.fill = new am4core.Color({ r: 255, g: 230, b: 136, a: 1 });
+              series.stroke = new am4core.Color({ r: 255, g: 230, b: 136, a: 1 });
+
+              //console.log('series_Temp => ', series);
+              break;
+
+            case ('co'): // AQI - CO
+              valueAxis.title.text = "AQI - CO"
+              var series = this.chart[key].series.push(new am4charts.LineSeries());
+              series.dataFields.valueY = "AQI_CO";
+              series.dataFields.dateX = "timestamp";
+              series.name = "CO";
+              series.strokeWidth = 3;
+              series.tooltipText = "{name}: [bold]{valueY}[/]";
+              series.yAxis = valueAxis;
+              series.interpolationDuration = 0;
+              break;
+
+            case ('o3'): // AQI - O3
+              valueAxis.title.text = "AQI - O3"
+
+              var series = this.chart[key].series.push(new am4charts.LineSeries());
+              series.dataFields.valueY = "AQI_O3";
+              series.dataFields.dateX = "timestamp";
+              series.name = "O[sub]3[/]";
+              series.strokeWidth = 3;
+              series.tooltipText = "{name}: [bold]{valueY}[/]";
+              series.yAxis = valueAxis;
+              series.interpolationDuration = 0;
+              break;
+
+            case ('no2'):  // AQI - NO2
+              valueAxis.title.text = "AQI - NO2"
+
+              var series = this.chart[key].series.push(new am4charts.LineSeries());
+              series.dataFields.valueY = "AQI_NO2";
+              series.dataFields.dateX = "timestamp";
+              series.name = "NO[sub]2[/]";
+              series.strokeWidth = 3;
+              series.tooltipText = "{name}: [bold]{valueY}[/]";
+              series.yAxis = valueAxis;
+              series.interpolationDuration = 0;
+              break;
+
+            case ('so2'):  // AQI - SO2
+              valueAxis.title.text = "AQI - SO2"
+
+              var series = this.chart[key].series.push(new am4charts.LineSeries());
+              series.dataFields.valueY = "AQI_SO2";
+              series.dataFields.dateX = "timestamp";
+              series.name = "SO[sub]2[/]";
+              series.strokeWidth = 3;
+              series.tooltipText = "{name}: [bold]{valueY}[/]";
+              series.yAxis = valueAxis;
+              series.interpolationDuration = 0;
+              break;
+
+            case ('pm25'): // AQI - PM2.5
+              valueAxis.title.text = "AQI - PM2.5"
+
+              var series = this.chart[key].series.push(new am4charts.LineSeries());
+              series.dataFields.valueY = "AQI_PM25";
+              series.dataFields.dateX = "timestamp";
+              series.name = "PM2.5";
+              series.strokeWidth = 3;
+              series.tooltipText = "{name}: [bold]{valueY}[/]";
+              series.yAxis = valueAxis;
+              series.interpolationDuration = 0;
+              break;
+
+            case ('pm10'): // AQI - PM10
+              valueAxis.title.text = "AQI - PM10"
+              var series = this.chart[key].series.push(new am4charts.LineSeries());
+              series.dataFields.valueY = "AQI_PM10";
+              series.dataFields.dateX = "timestamp";
+              series.name = "PM10";
+              series.strokeWidth = 3;
+              series.tooltipText = "{name}: [bold]{valueY}[/]";
+              series.yAxis = valueAxis;
+              series.interpolationDuration = 0;
+              break;
+          }
+
+          if (key != 'temp') {
+            // Create yAxis Range. Only if the Key is related to AQI
+            var range_good = valueAxis.createSeriesRange(series);
+            range_good.value = 0;
+            range_good.endValue = 50;
+            range_good.contents.stroke = am4core.color("#33e081");
+
+            var range_moderate = valueAxis.createSeriesRange(series);
+            range_moderate.value = 51;
+            range_moderate.endValue = 100;
+            range_moderate.contents.stroke = am4core.color("#ebe841");
+
+            var range_unhealthy_1 = valueAxis.createSeriesRange(series);
+            range_unhealthy_1.value = 101;
+            range_unhealthy_1.endValue = 150;
+            range_unhealthy_1.contents.stroke = am4core.color("#f19040");
+
+            var range_unhealthy_2 = valueAxis.createSeriesRange(series);
+            range_unhealthy_2.value = 151;
+            range_unhealthy_2.endValue = 200;
+            range_unhealthy_2.contents.stroke = am4core.color("#ec4545");
+
+            var range_unhealthy_3 = valueAxis.createSeriesRange(series);
+            range_unhealthy_3.value = 201;
+            range_unhealthy_3.endValue = 300;
+            range_unhealthy_3.contents.stroke = am4core.color("#b046e0");
+
+            var range_hazardous = valueAxis.createSeriesRange(series);
+            range_hazardous.value = 301;
+            range_hazardous.endValue = 500;
+            range_hazardous.contents.stroke = am4core.color("#6b132e");
+            range_hazardous.contents.fill = am4core.color("#ffffff");
+
+
+
+            //console.log(key, "series After range setting => ", series);
+
+          }
+
+
+          // Add cursor
+          this.chart[key].cursor = new am4charts.XYCursor();
+
+
+          this.chart[key].events.on("doublehit", (ev) => {
+            console.log(ev);
+          });
+        }
+      }
     });
+    return returnVal;
   }
 
   initparsedDataWithFirstkey(): any {
