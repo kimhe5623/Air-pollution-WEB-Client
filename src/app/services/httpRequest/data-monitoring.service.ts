@@ -39,7 +39,7 @@ export class DataMonitoringService {
     }
 
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.RAV_REQ, usn);
-    //console.log("HTTP:RAV-REQ => ", reqMsg);
+    console.log("HTTP:RAV-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
         
@@ -47,7 +47,7 @@ export class DataMonitoringService {
     // retry(HEADER.RETRIVE.R416))
 
       .subscribe((rspMsg: any) => {
-        //console.log("HTTP:RAV-RSP => ", rspMsg);
+        console.log("HTTP:RAV-RSP => ", rspMsg);
         cb(rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.RAV_RSP, reqMsg.header.endpointId)) {
           cb(HEADER.NULL_VALUE); return;
