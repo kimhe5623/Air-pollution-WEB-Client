@@ -34,5 +34,5 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 		> npm start
     
 		(or)
-		
-    > ng serve --proxy-config proxy.conf.json
+    
+		> ng serve --proxy-config proxy.conf.json
