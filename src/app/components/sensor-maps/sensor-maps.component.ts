@@ -3,6 +3,7 @@ import { } from 'googlemaps';
 import { DataManagementService } from '../../services/data-management.service';
 import { DataMonitoringService } from '../../services/httpRequest/data-monitoring.service';
 import { StorageService } from 'src/app/services/storage.service';
+import { HEADER } from 'src/app/header';
 declare var google;
 
 @Component({
@@ -15,6 +16,8 @@ export class SensorMapsComponent implements OnInit {
   @Input() isSignedin: boolean = false;
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
+  autocomplete: google.maps.places.Autocomplete;
+
   sensorData: any = {};
   markers: any = {};
   infoWindow: google.maps.InfoWindow;
@@ -22,11 +25,19 @@ export class SensorMapsComponent implements OnInit {
   clickedMarker: string = '';
 
   /**
+   * Nations
+   */
+  nations0: any = {};
+  nations1: any = {};
+  nations2: any = {};
+  nations3: any = {};
+
+  /**
    * Options 
    */
-  nationCode: string = '';
-  stateCode: string = '';
-  cityCode: string = '';
+  enteredNationCode: string = '';
+  enteredAddress: string = '';
+
 
   constructor(
     private dataService: DataManagementService,
@@ -35,30 +46,75 @@ export class SensorMapsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    this.nations0 = HEADER.NATIONS[0]
+    this.nations1 = HEADER.NATIONS[1];
+    this.nations2 = HEADER.NATIONS[2];
+    this.nations3 = HEADER.NATIONS[3];
+
     this.reqData((result) => {
       this.sensorData = result.data;
 
-      //console.log('this.sensorData: ', this.sensorData);
-      /**
-       * Google maps initialization
-       */
-      var mapProp = {
-        center: new google.maps.LatLng(
-          Number(this.sensorData[result.firstKey].latitude),
-          Number(this.sensorData[result.firstKey].longitude)
-        ),
-        zoom: 9,
-        draggableCursor: '',
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
+      this.dataService.getCurrentAddress((currentAddress) => {
 
-      this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+        var currentNationShortname = currentAddress.address.results[8].address_components[0].short_name;
 
-      /**
-       * Marker & Info window
-       */
-      this.infoWindow = new google.maps.InfoWindow();
-      this.addNewMarkers();
+        console.log('nations3 => ', this.nations3[currentNationShortname]);
+        if (this.nations3[currentNationShortname] != null) {
+          this.enteredNationCode = this.nations3[currentNationShortname][1];
+        }
+        console.log('currentAddress => ', currentAddress);
+        //console.log('this.sensorData: ', this.sensorData);
+        /**
+         * Google maps initialization
+         */
+        var mapProp = {
+          center: new google.maps.LatLng(
+            currentAddress.currentLatlng.latitude,
+            currentAddress.currentLatlng.longitude
+          ),
+          zoom: 17,
+          draggableCursor: '',
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+        this.autocomplete = new google.maps.places.Autocomplete(document.getElementById(`autocomplete`), {
+          types: [`address`],
+          componentRestrictions: [currentNationShortname],
+        });
+
+        /**
+         * Event Listener for Autocomplete
+         */
+        google.maps.event.addListener(this.autocomplete, 'place_changed', () => {
+          var place = this.autocomplete.getPlace();
+
+          console.log('place changed event => ', place);
+
+          if (!place.geometry) {
+            alert("No details available for input: '" + place.name + "'");
+            return;
+          }
+
+          if (place.geometry.viewport) {
+            this.map.fitBounds(place.geometry.viewport);
+          }
+          else {
+            this.map.setCenter(place.geometry.location);
+            this.map.setZoom(17);
+          }
+        });
+
+
+        /**
+         * Marker & Info window
+         */
+        this.infoWindow = new google.maps.InfoWindow();
+        this.addNewMarkers();
+
+      });
+
     });
   }
 
@@ -212,6 +268,13 @@ export class SensorMapsComponent implements OnInit {
         </table> `;
       cb(contents);
     });
+  }
+
+  /** Nation */
+  nationChanged(value) {
+    console.log(value, this.nations2[value][1]);
+
+    this.autocomplete.setComponentRestrictions({ 'country': [this.nations2[value][1]] });
   }
 
 }

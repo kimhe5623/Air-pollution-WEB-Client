@@ -23,7 +23,7 @@ export class DataMonitoringService {
    * Latlng to address
    */
   latlngToAddress(lat: number, lng: number, cb) {
-    this.http.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${HEADER.GOOGLE_MAP_API_KEY}`)
+    this.http.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${HEADER.GOOGLE_MAP_API_KEY}&sensor=false`)
       .subscribe((result) => {
         //console.log('latlngToAddress function: ', result);
         cb(result);
@@ -39,7 +39,7 @@ export class DataMonitoringService {
     }
 
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.RAV_REQ, usn);
-    console.log("HTTP:RAV-REQ => ", reqMsg);
+    // console.log("HTTP:RAV-REQ => ", reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
         
@@ -47,7 +47,7 @@ export class DataMonitoringService {
     // retry(HEADER.RETRIVE.R416))
 
       .subscribe((rspMsg: any) => {
-        console.log("HTTP:RAV-RSP => ", rspMsg);
+        // console.log("HTTP:RAV-RSP => ", rspMsg);
         cb(rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.RAV_RSP, reqMsg.header.endpointId)) {
           cb(HEADER.NULL_VALUE); return;
@@ -90,7 +90,7 @@ export class DataMonitoringService {
   /** RHV */
   fnRhv(payload: any, cb) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.RHV_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
-    console.log('RHV-REQ => ', reqMsg);
+    // console.log('RHV-REQ => ', reqMsg);
 
     this.http.post(`/serverapi`, reqMsg)
             
@@ -98,7 +98,7 @@ export class DataMonitoringService {
     // retry(HEADER.RETRIVE.R417))
 
       .subscribe((rspMsg: any) => {
-        console.log('RHV-RSP => ', rspMsg);
+        // console.log('RHV-RSP => ', rspMsg);
         cb(rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.RHV_RSP, reqMsg.header.endpointId)) {
           cb(HEADER.NULL_VALUE); return;

@@ -190,9 +190,9 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
 
       if (data != null) {
         this.nearestSensorMac = this.dataService.rspToMacAddress(data[0].mac);
-        console.log('setNearestSensordata: ', data);
+        // console.log('setNearestSensordata: ', data);
         this.dmService.latlngToAddress(data[0]['latitude'], data[0]['longitude'], (address)=>{
-          console.log('nearestSensorAddress: ', address);
+          // console.log('nearestSensorAddress: ', address);
           this.nearestSensorAddress = address.results[0].formatted_address;
         });
 
@@ -241,10 +241,10 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
   }
 
   markerChanged(e){
-    console.log('user-main-contents.component markerChanged => ', e);
+    // console.log('user-main-contents.component markerChanged => ', e);
   }
   buttonClickTest(e){
-    console.log('buttonClick event works!! buttonClickTest() =>', e);
+    // console.log('buttonClick event works!! buttonClickTest() =>', e);
   }
 
   clickDetails(w: string){

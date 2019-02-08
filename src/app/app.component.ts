@@ -3,6 +3,7 @@ import { KasService } from './services/kas.service';
 import { StorageService } from './services/storage.service';
 import { HEADER } from 'src/app/header';
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -20,7 +21,6 @@ export class AppComponent implements OnInit {
     this.kasService.init();
 
     this.storageService.fnSetCurrentState(HEADER.STATE_SWP.IDLE_STATE);
-
   }
   
 }

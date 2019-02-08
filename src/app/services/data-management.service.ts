@@ -123,12 +123,12 @@ export class DataManagementService {
    */
   rspHistoricalHeartDataParsing(rsp: any): any {
 
-    console.log("Entered historical heart rsp data => ", rsp);
+    // console.log("Entered historical heart rsp data => ", rsp);
     var result: any = [];
 
     for (var i = 0; i < rsp.length; i++) {
       var splitedData = rsp[i].split(',');
-      //console.log('Splited! =>', splitedData);
+      // console.log('Splited! =>', splitedData);
 
       result.push({
         timestamp: new Date(Number(splitedData[0]) * 1000),
@@ -138,7 +138,7 @@ export class DataManagementService {
       });
     }
 
-    console.log("Returned historical heart parsed data => ", result);
+    // console.log("Returned historical heart parsed data => ", result);
     return result;
   }
 
@@ -152,7 +152,7 @@ export class DataManagementService {
     var result: any = [];
 
     for (var i = 0; i < rsp.length; i++) {
-      //console.log('Splited! =>', splitedData);
+      // console.log('Splited! =>', splitedData);
 
       result.push({
         mac: rsp[i][0],
@@ -165,7 +165,7 @@ export class DataManagementService {
       });
     }
 
-    console.log("Returned historical sensor record parsed data => ", result);
+    // console.log("Returned historical sensor record parsed data => ", result);
     return result;
   }
 
@@ -345,7 +345,7 @@ export class DataManagementService {
    * get Chart data 
    */
   getChartData(data: any): any {
-    console.log('getChartData Input: ', data);
+    // console.log('getChartData Input: ', data);
     var chartData: any = {};
 
     for (var key in data[0]) {
@@ -359,7 +359,7 @@ export class DataManagementService {
       }
     }
 
-    console.log('getChartData Output: ', chartData);
+    // console.log('getChartData Output: ', chartData);
     return chartData;
   }
 
