@@ -4,6 +4,7 @@ import { DataMonitoringService } from 'src/app/services/httpRequest/data-monitor
 import { FormControl, Validators } from '@angular/forms';
 import { } from 'googlemaps';
 import { StorageService } from 'src/app/services/storage.service';
+import { HEADER } from 'src/app/header';
 declare var google;
 
 
@@ -18,7 +19,10 @@ export class AirSensorHistoryContentsComponent implements OnInit {
    */
   @ViewChild('gmap') gmapElement: any;
   map: google.maps.Map;
+  autocomplete: google.maps.places.Autocomplete;
+
   markers: any = {};
+  circles: any = {};
   clickedMarker: string = '';
 
   currentLocation: any;
@@ -44,6 +48,30 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     very_unhealthy: '#ffffff',
     hazardous: '#ffffff',
   };
+  /** Circle color */
+  aqi_circle_color = {
+    good: '#33e081',
+    moderate: '#ebe841',
+    unhealthy_for_sensitive_groups: '#f19040',
+    unhealthy: '#ec4545',
+    very_unhealthy: '#b046e0',
+    hazardous: '#6b132e',
+    undefined: '#000000',
+  };
+
+  /**
+   * Nations
+   */
+  nations0: any = {};
+  nations1: any = {};
+  nations2: any = {};
+  nations3: any = {};
+
+  /**
+   * Options 
+   */
+  enteredNationCode: string = '';
+  enteredAddress: string = '';
 
   /**
    * Slider
@@ -94,7 +122,10 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.nations0 = HEADER.NATIONS[0]
+    this.nations1 = HEADER.NATIONS[1];
+    this.nations2 = HEADER.NATIONS[2];
+    this.nations3 = HEADER.NATIONS[3];
   }
 
   // Functions list //
@@ -106,8 +137,8 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     var payload = {
       nsc: Number(this.storageService.fnGetNumberOfSignedInCompletions()),
       ownershipCode: "1",
-      sTs: Math.floor(new Date(this.startDate.value).getTime()/1000),
-      eTs: Math.floor(new Date(new Date(this.endDate.value).setHours(23, 59, 59, 59)).getTime()/1000),
+      sTs: Math.floor(new Date(this.startDate.value).getTime() / 1000),
+      eTs: Math.floor(new Date(new Date(this.endDate.value).setHours(23, 59, 59, 59)).getTime() / 1000),
       // Number of HAV Fragments Required for Retransmission, (if it is 0, =>) List of Unsuccessful HAV Fragment Sequence Numbers
       nat: "Q30",
       state: "Q99",
@@ -115,8 +146,8 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     }
 
     this.dmService.fnHav(payload, (result) => {
-      if(result == null) cb(null);
-      
+      if (result == null) cb(null);
+
       else if (result.payload.historicalAirQualityDataListEncodings.length != 0) {
         var tlvData = this.dataService.rspHistoricalAirDataParsing(result.payload.historicalAirQualityDataListEncodings);
         var tspBasedData = {};
@@ -239,10 +270,10 @@ export class AirSensorHistoryContentsComponent implements OnInit {
    */
   chartClicked(event) {
 
-      console.log('chart click event function:air-sensor-history-contents.component => ', event);
+    console.log('chart click event function:air-sensor-history-contents.component => ', event);
 
-      this.timeSliderValue = event;
-      this.timeSliderChanged();
+    this.timeSliderValue = event;
+    this.timeSliderChanged();
 
   }
 
@@ -250,25 +281,68 @@ export class AirSensorHistoryContentsComponent implements OnInit {
    * Map initialization
    */
   mapInit() {
-    var mapProp = {
-      center: new google.maps.LatLng(
-        Number(this.airData[this.timeLists[0]][this.firstKeys[this.timeLists[0]]].latitude),
-        Number(this.airData[this.timeLists[0]][this.firstKeys[this.timeLists[0]]].longitude)
-      ),
-      zoom: 10,
-      draggableCursor: '',
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
 
-    this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+    this.dataService.getCurrentAddress((currentAddress) => {
+
+      console.log('currentAddress => ', currentAddress);
+
+      for (var i = 0; i < currentAddress.address.results[5].address_components.length; i++) {
+        if (currentAddress.address.results[5].address_components[i].types[0] == 'country') {
+          var currentNationShortname = currentAddress.address.results[5].address_components[i].short_name;
+        }
+      }
+
+      console.log('nations3 => ', this.nations3[currentNationShortname]);
+      if (this.nations3[currentNationShortname] != null) {
+        this.enteredNationCode = this.nations3[currentNationShortname][1];
+      }
+      console.log('currentAddress => ', currentAddress);
+      var mapProp = {
+        center: new google.maps.LatLng(
+          Number(this.airData[this.timeLists[0]][this.firstKeys[this.timeLists[0]]].latitude),
+          Number(this.airData[this.timeLists[0]][this.firstKeys[this.timeLists[0]]].longitude)
+        ),
+        zoom: 17,
+        draggableCursor: '',
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+
+      this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+      this.autocomplete = new google.maps.places.Autocomplete(document.getElementById(`autocomplete`), {
+        types: [`address`],
+        componentRestrictions: [currentNationShortname],
+      });
+
+      /**
+       * Event Listener for Autocomplete
+       */
+      google.maps.event.addListener(this.autocomplete, 'place_changed', () => {
+        var place = this.autocomplete.getPlace();
+
+        console.log('place changed event => ', place);
+
+        if (!place.geometry) {
+          alert("No details available for input: '" + place.name + "'");
+          return;
+        }
+
+        if (place.geometry.viewport) {
+          this.map.fitBounds(place.geometry.viewport);
+        }
+        else {
+          this.map.setCenter(place.geometry.location);
+          this.map.setZoom(17);
+        }
+      });
 
 
-    /**
-     * Marker & Info window
-     */
-    this.markers = {};
-    this.infoWindow = new google.maps.InfoWindow();
-    this.addNewMarkers(this.airData[this.timeLists[0]]);
+      /**
+       * Marker & Info window
+       */
+      this.markers = {};
+      this.infoWindow = new google.maps.InfoWindow();
+      this.addNewMarkers(this.airData[this.timeLists[0]]);
+    });
 
   }
 
@@ -306,7 +380,20 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
       });
 
+      var circle = new google.maps.Circle({
+        strokeColor: this.getAqiCircleColor(this.aqiAvg(data[key])),
+        strokeOpacity: 0.8,
+        strokeWeight: 1,
+        fillColor: this.getAqiCircleColor(this.aqiAvg(data[key])),
+        fillOpacity: 0.35,
+        map: this.map,
+        center: { lat: data[key].latitude, lng: data[key].longitude },
+        radius: 500
+      });
+
       this.markers[key] = marker;
+      this.circles[key] = circle;
+
       this.addInfoWindow(key);
     }
   }
@@ -403,6 +490,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
           url: this.getAqiIcon(this.aqiAvg(this.data[key]))
         }
       );
+
       this.markers[key].setLabel(
         {
           color: this.getAqiFontColor(this.aqiAvg(this.data[key])),
@@ -411,6 +499,18 @@ export class AirSensorHistoryContentsComponent implements OnInit {
           text: this.aqiAvg(this.data[key]).toString(),
         }
       );
+
+      this.circles[key].setOptions({
+        strokeColor: this.getAqiCircleColor(this.aqiAvg(this.data[key])),
+        strokeOpacity: 0.8,
+        strokeWeight: 1,
+        fillColor: this.getAqiCircleColor(this.aqiAvg(this.data[key])),
+        fillOpacity: 0.35,
+        map: this.map,
+        center: { lat: this.data[key].latitude, lng: this.data[key].longitude },
+        radius: 500
+      });
+
       this.markers[key]['data'] = this.data[key];
 
       this.addInfoWindow(key);
@@ -448,7 +548,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
         this.selectedAirdata = this.airData[this.selectedTsp][this.selectedMac];
 
         console.log('Selected Mac => ', this.selectedMac);
-             
+
       });
     });
 
@@ -596,6 +696,34 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     }
     else if (aqi >= 301 && aqi <= 500) {
       return this.aqi_label_color.hazardous;
+    }
+  }
+
+  /**
+* get AQI circle color
+* @param aqi : Air quality index
+*/
+  getAqiCircleColor(aqi: number): string {
+    if (aqi >= 0 && aqi <= 50) {
+      return this.aqi_circle_color.good;
+    }
+    else if (aqi >= 51 && aqi <= 100) {
+      return this.aqi_circle_color.moderate;
+    }
+    else if (aqi >= 101 && aqi <= 150) {
+      return this.aqi_circle_color.unhealthy_for_sensitive_groups;
+    }
+    else if (aqi >= 151 && aqi <= 200) {
+      return this.aqi_circle_color.unhealthy;
+    }
+    else if (aqi >= 201 && aqi <= 300) {
+      return this.aqi_circle_color.very_unhealthy;
+    }
+    else if (aqi >= 301 && aqi <= 500) {
+      return this.aqi_circle_color.hazardous;
+    }
+    else {
+      return this.aqi_circle_color.undefined;
     }
   }
 }

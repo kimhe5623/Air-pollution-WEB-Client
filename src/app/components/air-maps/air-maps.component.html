@@ -1,10 +1,26 @@
 <div class="row">
     <div *ngIf="noSensor" class="col-12">
-        <h4 style="padding: 2rem">There is no sensor</h4>
+        <h4 style="padding-top: 2rem; padding-left: 2rem; padding-right: 2rem">There is no sensor</h4>
     </div>
+
     <div [ngClass]="{'col-lg-12': true, 'col-xl-4': isClicked, 'col-xl-12': !isClicked }">
+        <div *ngIf="!noSensor" class="addressSearchContainer">
+            <mat-form-field class="nation" [ngClass]="{'nation100':isClicked}">
+                <mat-select placeholder="Nation" [(ngModel)]="enteredNationCode"
+                    (ngModelChange)="nationChanged($event)">
+                    <mat-option>None</mat-option>
+                    <mat-option *ngFor="let nation of nations0" [value]="nations1[nation][0]">{{nation}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="address" [ngClass]="{'address100': isClicked}">
+                <input matInput id="autocomplete" placeholder="Address" [(ngModel)]="enteredAddress">
+            </mat-form-field>
+        </div>
+
         <div #gmap style="width:100%;height:800px"></div>
+
     </div>
+
     <div *ngIf="isClicked" class="col-lg-12 col-xl-8">
         <div class="row">
             <div *ngIf="isLoggedIn" class="col-lg-4" style="margin-top: 1rem; margin-bottom: 1rem">

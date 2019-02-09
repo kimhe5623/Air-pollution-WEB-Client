@@ -18,3 +18,16 @@
     width: auto;
     border-radius: 100px;
 }
+
+/********/
+.nation {
+    display: inline-block;
+    margin-right: 1rem;
+    width: 70%
+}
+
+.address {
+    display: inline-block;
+    width: 70%;
+    margin-right: 1rem;
+}

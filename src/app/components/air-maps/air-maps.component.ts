@@ -20,6 +20,8 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   @ViewChild('gmap') gmapElement: any;
 
   map: google.maps.Map;
+  autocomplete: google.maps.places.Autocomplete;
+
   markers: any = {};
   circles: any = {};
 
@@ -37,6 +39,20 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   currentAddress: any;
   data: any = [];
   infoWindow: google.maps.InfoWindow;
+
+  /**
+   * Nations
+   */
+  nations0: any = {};
+  nations1: any = {};
+  nations2: any = {};
+  nations3: any = {};
+
+  /**
+   * Options 
+   */
+  enteredNationCode: string = '';
+  enteredAddress: string = '';
 
   /** Icon urls */
   aqi_icon = {
@@ -58,7 +74,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     hazardous: '#ffffff',
     undefined: '#000000',
   };
-  /** Label color */
+  /** Circle color */
   aqi_circle_color = {
     good: '#33e081',
     moderate: '#ebe841',
@@ -105,6 +121,11 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     this.isLoggedIn = this.authService.isUserLoggedIn();
     //console.log("air-maps.component ngOnInit()");
 
+    this.nations0 = HEADER.NATIONS[0]
+    this.nations1 = HEADER.NATIONS[1];
+    this.nations2 = HEADER.NATIONS[2];
+    this.nations3 = HEADER.NATIONS[3];
+
     this.reqData((result) => {
       if (result != HEADER.NULL_VALUE) {
         this.data = result.data;
@@ -131,35 +152,77 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   }
 
   mapInit(result: any) {
-    /**
-     * Google maps initialization
-     */
-    if (this.data[result.firstKey] != HEADER.NULL_VALUE) {
-      var mapProp = {
-        center: new google.maps.LatLng(
-          Number(this.data[result.firstKey].latitude),
-          Number(this.data[result.firstKey].longitude)
-        ),
-        zoom: 15,
-        draggableCursor: '',
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
 
+    this.dataService.getCurrentAddress((currentAddress) => {
 
-      this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+      for(var i=0; i<currentAddress.address.results[5].address_components.length; i++){
+        if(currentAddress.address.results[5].address_components[i].types[0] == 'country'){
+          var currentNationShortname = currentAddress.address.results[5].address_components[i].short_name;
+        }
+      }
 
+      console.log('nations3 => ', this.nations3[currentNationShortname]);
+      if (this.nations3[currentNationShortname] != null) {
+        this.enteredNationCode = this.nations3[currentNationShortname][1];
+      }
+      console.log('currentAddress => ', currentAddress);
       /**
-       * Marker & Circle & Info window
+       * Google maps initialization
        */
-      this.markers = {};
-      this.circles = {};
-      this.infoWindow = new google.maps.InfoWindow();
+      if (this.data[result.firstKey] != HEADER.NULL_VALUE) {
+        var mapProp = {
+          center: new google.maps.LatLng(
+            Number(this.data[result.firstKey].latitude),
+            Number(this.data[result.firstKey].longitude)
+          ),
+          zoom: 17,
+          draggableCursor: '',
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
 
-      this.clickedMarker = result.firstKey;
-      this.addNewMarkers(this.data);
-      this.addparsedDataWithFirstkey();
-      console.log('clicked Marker: mapInit() => ', this.clickedMarker);
-    }
+
+        this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+        this.autocomplete = new google.maps.places.Autocomplete(document.getElementById(`autocomplete`), {
+          types: [`address`],
+          componentRestrictions: [currentNationShortname],
+        });
+
+        /**
+         * Event Listener for Autocomplete
+         */
+        google.maps.event.addListener(this.autocomplete, 'place_changed', () => {
+          var place = this.autocomplete.getPlace();
+
+          console.log('place changed event => ', place);
+
+          if (!place.geometry) {
+            alert("No details available for input: '" + place.name + "'");
+            return;
+          }
+
+          if (place.geometry.viewport) {
+            this.map.fitBounds(place.geometry.viewport);
+          }
+          else {
+            this.map.setCenter(place.geometry.location);
+            this.map.setZoom(17);
+          }
+        });
+
+
+        /**
+         * Marker & Circle & Info window
+         */
+        this.markers = {};
+        this.circles = {};
+        this.infoWindow = new google.maps.InfoWindow();
+
+        this.clickedMarker = result.firstKey;
+        this.addNewMarkers(this.data);
+        this.addparsedDataWithFirstkey();
+        console.log('clicked Marker: mapInit() => ', this.clickedMarker);
+      }
+    });
     //console.log("mapInit() in air-maps.component, this.map => ", this.map);
   }
 
@@ -541,8 +604,8 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
- * get AQI font color
+/**
+ * get AQI circle color
  * @param aqi : Air quality index
  */
   getAqiCircleColor(aqi: number): string {
@@ -584,7 +647,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     this.isClicked = true;
 
     if (!this.chartInit()) {
-      this.dataService.sleep(500).then(()=> {
+      this.dataService.sleep(500).then(() => {
         this.chartInit();
       });
     }
@@ -862,5 +925,13 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  
+  /** Nation */
+  nationChanged(value) {
+    console.log(value, this.nations2[value][1]);
+
+    this.autocomplete.setComponentRestrictions({ 'country': [this.nations2[value][1]] });
   }
 }

@@ -17,8 +17,8 @@
       </mat-datepicker-toggle>
       <mat-datepicker #end></mat-datepicker>
     </mat-form-field>
-    <button type="submit" class="btn waves-light primary-variant on-primary buttonStyle" [disabled]="endDate.invalid || startDate.invalid"
-      mdbWavesEffect>
+    <button type="submit" class="btn waves-light primary-variant on-primary buttonStyle"
+      [disabled]="endDate.invalid || startDate.invalid" mdbWavesEffect>
       Search</button>
   </form>
 
@@ -27,6 +27,17 @@
     <div class="col-lg-12 col-xl-5" [ngClass]="{'hidden':!isSearched}">
       <mat-card class="card">
         <div class="row">
+          <div class="col-12">
+            <mat-form-field class="nation">
+              <mat-select placeholder="Nation" [(ngModel)]="enteredNationCode" (ngModelChange)="nationChanged($event)">
+                <mat-option>None</mat-option>
+                <mat-option *ngFor="let nation of nations0" [value]="nations1[nation][0]">{{nation}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="address">
+              <input matInput id="autocomplete" placeholder="Address" [(ngModel)]="enteredAddress">
+            </mat-form-field>
+          </div>
           <div class="col" style="text-align: left">
             <span style="font-size: 1.3rem;margin-right:auto">{{ selectedTime }}</span>
           </div>
@@ -50,11 +61,13 @@
           <mat-card-content>
             <div class="row" style="margin-top:1.2rem; margin-bottom: 1.3rem">
               <!-- airData Circles -->
-              <app-air-data [radius]="150" [sub_radius]="80" main_color='#FFFFFF' main_font_color='#000' hovered_color='var(--grey)'
-                hovered_font_color='#fff' dominent_color='' [data]='selectedAirdata'></app-air-data>
+              <app-air-data [radius]="150" [sub_radius]="80" main_color='#FFFFFF' main_font_color='#000'
+                hovered_color='var(--grey)' hovered_font_color='#fff' dominent_color='' [data]='selectedAirdata'>
+              </app-air-data>
             </div>
             <div class="row">
-              <app-historical-air-chart [data]="airDataForCharts[selectedMac]" [centerIndex]="timeSliderValue" (chartClick)="chartClicked($event)"></app-historical-air-chart>
+              <app-historical-air-chart [data]="airDataForCharts[selectedMac]" [centerIndex]="timeSliderValue"
+                (chartClick)="chartClicked($event)"></app-historical-air-chart>
             </div>
           </mat-card-content>
         </mat-card>

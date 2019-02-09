@@ -57,8 +57,14 @@ export class SensorMapsComponent implements OnInit {
 
       this.dataService.getCurrentAddress((currentAddress) => {
 
-        var currentNationShortname = currentAddress.address.results[8].address_components[0].short_name;
+        console.log('currentAddress => ', currentAddress);
 
+        for(var i=0; i<currentAddress.address.results[5].address_components.length; i++){
+          if(currentAddress.address.results[5].address_components[i].types[0] == 'country'){
+            var currentNationShortname = currentAddress.address.results[5].address_components[i].short_name;
+          }
+        }
+        
         console.log('nations3 => ', this.nations3[currentNationShortname]);
         if (this.nations3[currentNationShortname] != null) {
           this.enteredNationCode = this.nations3[currentNationShortname][1];

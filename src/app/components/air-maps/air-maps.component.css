@@ -32,3 +32,29 @@
         overflow-x: auto;
         margin: 1rem;
       }
+
+      .nation {
+        display: inline-block;
+        margin-right: 1rem;
+        width: 25%
+      }
+
+      .nation100 {
+        width: 100%
+      }
+
+      .address {
+        display: inline-block;
+        width: 72%;
+        margin-right: 1rem;
+      }
+
+      .address100 {
+        width: 100%;
+      }
+
+      .addressSearchContainer{
+        padding-left: 1rem;
+        padding-top: 1rem;
+        padding-right: 1rem;
+      }
