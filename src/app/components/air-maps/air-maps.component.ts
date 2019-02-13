@@ -884,7 +884,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     var tsp: number = new Date().getTime();
     var data: any = [];
 
-    for (var i = 1; i <= 24; i++) {
+    for (var i = 1; i <= 23; i++) {
       data.push({
         AQI_CO: 0,
         AQI_O3: 0,
