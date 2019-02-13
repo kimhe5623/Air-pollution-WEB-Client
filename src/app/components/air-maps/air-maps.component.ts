@@ -172,8 +172,8 @@ export class AirMapsComponent implements OnInit, OnDestroy {
       if (this.data[result.firstKey] != HEADER.NULL_VALUE) {
         var mapProp = {
           center: new google.maps.LatLng(
-            Number(this.data[result.firstKey].latitude),
-            Number(this.data[result.firstKey].longitude)
+            currentAddress.currentLatlng.latitude,
+            currentAddress.currentLatlng.longitude
           ),
           zoom: 17,
           draggableCursor: '',

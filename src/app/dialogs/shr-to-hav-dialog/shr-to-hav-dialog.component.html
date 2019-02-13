@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>Historical air data</h1>
+<div mat-dialog-content class="dialog">
+  <p>Choose a start date and end date you want to see for historical air data</p>
+  <mat-form-field class="example-full-width">
+    <input matInput [matDatepicker]="start" placeholder="Start date" [formControl]="startDateForm">
+    <mat-datepicker-toggle matSuffix [for]="start">
+      <mat-icon style="font-size: 1.5rem;" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+    </mat-datepicker-toggle>
+    <mat-datepicker #start></mat-datepicker>
+  </mat-form-field>
+  &nbsp;
+  <mat-form-field class="example-full-width">
+    <input matInput [matDatepicker]="end" placeholder="End date" [formControl]="endDateForm">
+    <mat-datepicker-toggle matSuffix [for]="end">
+      <mat-icon style="font-size: 1.5rem;" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+    </mat-datepicker-toggle>
+    <mat-datepicker #end></mat-datepicker>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions style="padding-left: 7rem">
+  <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle cancel" (click)="fnBtnClick(true)"
+    mdbWavesEffect>Cancel</button>
+  <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+  <button mdbBtn [mat-dialog-close]="data" [disabled]="associationForm.invalid"
+    class="waves-light btnStyle primary-variant" (click)="fnBtnClick(false)" mdbWavesEffect>Search</button>
+</div>

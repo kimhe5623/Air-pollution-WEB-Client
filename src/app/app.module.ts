@@ -117,6 +117,7 @@ import { AmchartTest4Component } from './components/amchart-test4/amchart-test4.
 import { SensorHistoryComponent } from './main/dashboard/contents/sensor-history/sensor-history.component';
 import { AdminSensorHistoryComponent } from './main/administrator/contents/admin-sensor-history/admin-sensor-history.component';
 import { SensorHistoryContentsComponent } from './components/contents/sensor-history-contents/sensor-history-contents.component';
+import { ShrToHavDialog } from './dialogs/shr-to-hav-dialog/shr-to-hav-dialog.component';
 
 @NgModule({
   declarations: [
@@ -181,6 +182,7 @@ import { SensorHistoryContentsComponent } from './components/contents/sensor-his
     SensorHistoryComponent,
     AdminSensorHistoryComponent,
     SensorHistoryContentsComponent,
+    ShrToHavDialog,
   ],
   imports: [
     /** Angular Modules */

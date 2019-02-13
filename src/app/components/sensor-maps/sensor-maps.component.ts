@@ -4,6 +4,11 @@ import { DataManagementService } from '../../services/data-management.service';
 import { DataMonitoringService } from '../../services/httpRequest/data-monitoring.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { HEADER } from 'src/app/header';
+import { AuthorizationService } from 'src/app/services/authorization.service';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { ShrToHavDialog } from 'src/app/dialogs/shr-to-hav-dialog/shr-to-hav-dialog.component';
+
 declare var google;
 
 @Component({
@@ -42,7 +47,10 @@ export class SensorMapsComponent implements OnInit {
   constructor(
     private dataService: DataManagementService,
     private dmService: DataMonitoringService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private authService: AuthorizationService,
+    private router: Router,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -59,12 +67,12 @@ export class SensorMapsComponent implements OnInit {
 
         console.log('currentAddress => ', currentAddress);
 
-        for(var i=0; i<currentAddress.address.results[5].address_components.length; i++){
-          if(currentAddress.address.results[5].address_components[i].types[0] == 'country'){
+        for (var i = 0; i < currentAddress.address.results[5].address_components.length; i++) {
+          if (currentAddress.address.results[5].address_components[i].types[0] == 'country') {
             var currentNationShortname = currentAddress.address.results[5].address_components[i].short_name;
           }
         }
-        
+
         console.log('nations3 => ', this.nations3[currentNationShortname]);
         if (this.nations3[currentNationShortname] != null) {
           this.enteredNationCode = this.nations3[currentNationShortname][1];
@@ -283,4 +291,29 @@ export class SensorMapsComponent implements OnInit {
     this.autocomplete.setComponentRestrictions({ 'country': [this.nations2[value][1]] });
   }
 
+  /** SHR to HAV */
+  showShrToHavDialog() {
+    // Authorization check
+    if (!this.authService.isUserLoggedIn()) {
+      this.router.navigate([HEADER.ROUTER_PATHS.SIGN_IN]);
+    }
+    else {
+      // If OK, Open a date input dialog
+      const dialogRef = this.dialog.open(ShrToHavDialog, {
+        width: 'auto', height: 'auto',
+        data: { num_of_selected_sensor: new Date(new Date().setHours(0,0,0,0)), endDate: new Date(new Date().setHours(23,59,59,99)), isCanceled: true }
+      });
+
+      // After selecting date, HAV
+      dialogRef.afterClosed().subscribe(result => {
+        if (result != null && !result.isCanceled) {
+
+          
+        }
+      });
+
+      
+    }
+  }
 }
+

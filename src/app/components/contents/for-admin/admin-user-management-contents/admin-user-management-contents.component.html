@@ -55,7 +55,9 @@
         <!-- Membership level Column -->
         <ng-container matColumnDef="membershipLevel">
           <th mat-header-cell *matHeaderCellDef> Memebership level </th>
-          <td mat-cell *matCellDef="let element"> {{element.membershipLevel}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.membershipLevel == 0 ? "Silver" :
+                                                    element.membershipLevel == 1 ? "Gold" :
+                                                    element.membershipLevel == 2 ? "Platinum" : "-"}} </td>
         </ng-container>
   
         <!-- Membership exp date Column -->
@@ -67,13 +69,18 @@
         <!-- Registration state Column -->
         <ng-container matColumnDef="registrationState">
           <th mat-header-cell *matHeaderCellDef> Registration state </th>
-          <td mat-cell *matCellDef="let element"> {{element.registrationState}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.registrationState == 0 ? "Lively-registered" :
+                                                    element.registrationState == 1 ? "Dormant-registered" :
+                                                    element.registrationState == 2 ? "Deregistered" : "-"}} </td>
         </ng-container>
   
         <!-- Sign in state Column -->
-        <ng-container matColumnDef="signinState">
+        <ng-container matColumnDef="signinState"> 
           <th mat-header-cell *matHeaderCellDef> Sign in state </th>
-          <td mat-cell *matCellDef="let element"> {{element.signinState}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.signinState == 0 ? "-" :
+                                                    element.signinState == 1 ? "App" :
+                                                    element.signinState == 2 ? "Web" :
+                                                    element.signinState == 3 ? "App & Web" : "-"}} </td>
         </ng-container>
   
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

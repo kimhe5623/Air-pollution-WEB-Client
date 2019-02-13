@@ -31,6 +31,6 @@
       .buttonStyle {
           margin-left: 1rem;
           font-size: 15px;
-          width: auto;
+          display: inline-block;
           border-radius: 100px;
       }

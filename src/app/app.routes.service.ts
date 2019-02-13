@@ -27,6 +27,7 @@ import { AdminChangepwComponent } from './main/administrator/contents/admin-chan
 import { TestComponent } from './main/test/test.component';
 import { SensorHistoryComponent } from './main/dashboard/contents/sensor-history/sensor-history.component';
 import { AdminSensorHistoryComponent } from './main/administrator/contents/admin-sensor-history/admin-sensor-history.component';
+import { AdminDeregisterAccountComponent } from './main/administrator/contents/admin-deregister-account/admin-deregister-account.component';
 
 export const routes: Routes = [
   {
@@ -103,6 +104,10 @@ export const routes: Routes = [
       {
         path: 'sensor-list',
         component: AdminSensorListComponent
+      },
+      {
+        path: 'deregister-account',
+        component: AdminDeregisterAccountComponent
       },
       {
         path: 'personal-sensor-management',

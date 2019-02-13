@@ -84,4 +84,7 @@ export class NavbarComponent implements OnInit {
         break;
     }
   }
+  clickLogo(){
+    this.storageService.set('menuNum', 0);
+  }
 }
