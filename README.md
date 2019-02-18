@@ -1,5 +1,7 @@
 
 
+
+
 # Airound
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.7.
@@ -50,7 +52,36 @@ If you modify some codes and want to apply them on server, follow the below step
 
 ##
 
-2. Run the 'server.js' file
+2. Make the SSL keys using openssl for HTTPS
+
+		Install openssl
+		> wget https://www.openssl.org/source/openssl-1.0.2k.tar.gz
+		> tar -xzf openssl-1.0.2k
+		> cd openssl-1.0.2k
+		> ./Configure
+		> make
+		> sudo make install
+		
+		Make key files
+		> cd ..
+		> openssl genrsa -des3 -out server.pass.key 2048
+		(Enter pass phrase for server.pass.key)
+		> openssl rsa -in server.pass.key -out server.key
+		> rm server.pass.key
+
+		Make csr file
+		> openssl req -new -key server.key -out server.csr
+
+		Make crt file
+		> openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt
+
+		Move keys into the './keys' directory
+		> mkdir keys
+		> mv server.csr server.key server.crt ./keys
+
+##
+  
+4. Run the 'server.js' file
 
 		> node server.js
 
