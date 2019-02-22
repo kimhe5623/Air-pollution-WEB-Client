@@ -21,6 +21,6 @@
   <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle cancel" (click)="fnBtnClick(true)"
     mdbWavesEffect>Cancel</button>
   <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-  <button mdbBtn [mat-dialog-close]="data" [disabled]="associationForm.invalid"
+  <button mdbBtn [mat-dialog-close]="data" [disabled]="startDateForm.invalid || endDateForm.invalid || startDateForm.value > endDateForm.value"
     class="waves-light btnStyle primary-variant" (click)="fnBtnClick(false)" mdbWavesEffect>Search</button>
 </div>

@@ -145,7 +145,7 @@ export class DataMonitoringService {
     // retry(HEADER.RETRIVE.R418))
 
       .subscribe((rspMsg: any) => {
-        //console.log("HAV-RSP => ", rspMsg);
+        console.log("HAV-RSP => ", rspMsg);
 
         cb(rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.HAV_RSP, reqMsg.header.endpointId)) {

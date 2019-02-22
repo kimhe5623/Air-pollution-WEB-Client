@@ -148,6 +148,7 @@ import { ShrToHavDialog } from './dialogs/shr-to-hav-dialog/shr-to-hav-dialog.co
     SensorDeregistrationDialog,
     UserDeregistrationConfirmDialog,
     KasDialog,
+    ShrToHavDialog,
     AdminMainComponent,
     TemperatureComponent,
     AirDataComponent,
@@ -182,7 +183,6 @@ import { ShrToHavDialog } from './dialogs/shr-to-hav-dialog/shr-to-hav-dialog.co
     SensorHistoryComponent,
     AdminSensorHistoryComponent,
     SensorHistoryContentsComponent,
-    ShrToHavDialog,
   ],
   imports: [
     /** Angular Modules */
@@ -255,6 +255,7 @@ import { ShrToHavDialog } from './dialogs/shr-to-hav-dialog/shr-to-hav-dialog.co
     SensorDeregistrationDialog,
     UserDeregistrationConfirmDialog,
     KasDialog,
+    ShrToHavDialog,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [KasService],

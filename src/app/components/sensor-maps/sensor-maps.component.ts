@@ -43,6 +43,11 @@ export class SensorMapsComponent implements OnInit {
   enteredNationCode: string = '';
   enteredAddress: string = '';
 
+  /**
+   * Current geometry
+   */
+  currentGeometry: any = { nation: '', address: '', location: {} };
+
 
   constructor(
     private dataService: DataManagementService,
@@ -65,7 +70,10 @@ export class SensorMapsComponent implements OnInit {
 
       this.dataService.getCurrentAddress((currentAddress) => {
 
-        console.log('currentAddress => ', currentAddress);
+        this.currentGeometry.location = new google.maps.LatLng({ lat: currentAddress.currentLatlng.latitude, lng: currentAddress.currentLatlng.longitude });
+
+        console.log('currentGeometry => ', this.currentGeometry);
+        // console.log('currentAddress => ', currentAddress);
 
         for (var i = 0; i < currentAddress.address.results[5].address_components.length; i++) {
           if (currentAddress.address.results[5].address_components[i].types[0] == 'country') {
@@ -76,6 +84,7 @@ export class SensorMapsComponent implements OnInit {
         console.log('nations3 => ', this.nations3[currentNationShortname]);
         if (this.nations3[currentNationShortname] != null) {
           this.enteredNationCode = this.nations3[currentNationShortname][1];
+          this.currentGeometry.nation = this.enteredNationCode;
         }
         console.log('currentAddress => ', currentAddress);
         //console.log('this.sensorData: ', this.sensorData);
@@ -99,6 +108,14 @@ export class SensorMapsComponent implements OnInit {
         });
 
         /**
+         * Event Listener for Bounds changed
+         */
+        google.maps.event.addListener(this.map, 'bounds_changed', () => {
+          this.currentGeometry.viewport = this.map.getBounds();
+          this.currentGeometry.location = this.map.getCenter();
+        })
+
+        /**
          * Event Listener for Autocomplete
          */
         google.maps.event.addListener(this.autocomplete, 'place_changed', () => {
@@ -106,18 +123,34 @@ export class SensorMapsComponent implements OnInit {
 
           console.log('place changed event => ', place);
 
-          if (!place.geometry) {
+          if (!place || !place.geometry) {
             alert("No details available for input: '" + place.name + "'");
             return;
           }
 
+          this.currentGeometry.nation = this.enteredNationCode;
+          this.currentGeometry.address = this.enteredAddress;
+
           if (place.geometry.viewport) {
+
+            this.currentGeometry.viewport = place.geometry.viewport;
+            this.currentGeometry.location = place.geometry.location;
+
             this.map.fitBounds(place.geometry.viewport);
+            console.log('viewport => ', place.geometry.viewport);
           }
           else {
+
+            if (this.currentGeometry.viewport) {
+              delete this.currentGeometry.viewport;
+            }
+            this.currentGeometry.location = place.geometry.location;
+
             this.map.setCenter(place.geometry.location);
+            console.log('location => ', place.geometry.location);
             this.map.setZoom(17);
           }
+          console.log('current')
         });
 
 
@@ -301,18 +334,24 @@ export class SensorMapsComponent implements OnInit {
       // If OK, Open a date input dialog
       const dialogRef = this.dialog.open(ShrToHavDialog, {
         width: 'auto', height: 'auto',
-        data: { num_of_selected_sensor: new Date(new Date().setHours(0,0,0,0)), endDate: new Date(new Date().setHours(23,59,59,99)), isCanceled: true }
+        data: { startDate: new Date(new Date().setHours(0, 0, 0, 0)), endDate: new Date(new Date().setHours(23, 59, 59, 99)), isCanceled: true }
       });
 
       // After selecting date, HAV
       dialogRef.afterClosed().subscribe(result => {
         if (result != null && !result.isCanceled) {
+          this.storageService.set('shrToHav', { startDate: result.startDate, endDate: result.endDate, currentGeometry: this.currentGeometry });
 
-          
+          if (this.authService.isAdministor(this.storageService.fnGetUserSequenceNumber())) {
+            this.router.navigate([HEADER.ROUTER_PATHS.ADMIN_AIR_HISTORY]);
+          }
+          else {
+            this.router.navigate([HEADER.ROUTER_PATHS.COMMON_USER_AIR_HISTORY]);
+          }
         }
       });
 
-      
+
     }
   }
 }

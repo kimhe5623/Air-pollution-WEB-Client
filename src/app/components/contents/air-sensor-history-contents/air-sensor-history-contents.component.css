@@ -2,9 +2,6 @@
     margin: auto auto;
     width: 100%;
 }
-.hidden{
-    visibility: hidden;
-}
 
 /** Slider */
 .slider{
@@ -30,4 +27,15 @@
     display: inline-block;
     width: 70%;
     margin-right: 1rem;
+}
+
+/*******/
+.timeSelect {
+    display: inline-block;
+    width: 3rem;
+}
+
+.dateSelect {
+    display: inline-block;
+    width: 8rem;
 }

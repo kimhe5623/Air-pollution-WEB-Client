@@ -195,7 +195,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
           console.log('place changed event => ', place);
 
-          if (!place.geometry) {
+          if (!place || !place.geometry) {
             alert("No details available for input: '" + place.name + "'");
             return;
           }
@@ -477,6 +477,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
               if (address.status == 'OK') {
                 this.clickedLocation = address.results[0].formatted_address;
+                console.log('clickedLocation => ', this.clickedLocation);
               }
               else {
                 this.clickedLocation = `latitude: ${this.clickedData.latitude} longitude: ${this.clickedData.longitude}`;
@@ -503,6 +504,20 @@ export class AirMapsComponent implements OnInit, OnDestroy {
       this.clickedMarker = this.markers[key]['data']['mac'];
       this.markerClicked(key);
       console.log('air-maps.component click:', this.clickedMarker);
+
+      this.markers[key]['data'] = this.data[key];
+      this.clickedData = this.markers[key]['data'];
+
+      this.dmService.latlngToAddress(this.clickedData.latitude, this.clickedData.longitude, (address) => {
+
+        if (address.status == 'OK') {
+          this.clickedLocation = address.results[0].formatted_address;
+          console.log('clickedLocation => ', this.clickedLocation);
+        }
+        else {
+          this.clickedLocation = `latitude: ${this.clickedData.latitude} longitude: ${this.clickedData.longitude}`;
+        }
+      });
 
       this.infoWindow.close(); // Close previously opened infowindow
       this.infoWindow.setContent(`<strong>Clicked</strong>`);
@@ -832,33 +847,46 @@ export class AirMapsComponent implements OnInit, OnDestroy {
             var range_good = valueAxis.createSeriesRange(series);
             range_good.value = 0;
             range_good.endValue = 50;
-            range_good.contents.stroke = am4core.color("#33e081");
+            // range_good.contents.stroke = am4core.color("#33e081");
+            range_good.contents.stroke = am4core.color("#ace4c5");
+            range_good.contents.strokeOpacity = 30;
 
             var range_moderate = valueAxis.createSeriesRange(series);
             range_moderate.value = 51;
             range_moderate.endValue = 100;
-            range_moderate.contents.stroke = am4core.color("#ebe841");
+            // range_moderate.contents.stroke = am4core.color("#ebe841");
+            range_moderate.contents.stroke = am4core.color("#e9e791");
+            range_moderate.contents.strokeOpacity = 30;
 
             var range_unhealthy_1 = valueAxis.createSeriesRange(series);
             range_unhealthy_1.value = 101;
             range_unhealthy_1.endValue = 150;
-            range_unhealthy_1.contents.stroke = am4core.color("#f19040");
+            // range_unhealthy_1.contents.stroke = am4core.color("#f19040");
+            range_unhealthy_1.contents.stroke = am4core.color("#f1c29c");
+            range_unhealthy_1.contents.strokeOpacity = 30;
 
             var range_unhealthy_2 = valueAxis.createSeriesRange(series);
             range_unhealthy_2.value = 151;
             range_unhealthy_2.endValue = 200;
-            range_unhealthy_2.contents.stroke = am4core.color("#ec4545");
+            // range_unhealthy_2.contents.stroke = am4core.color("#ec4545");
+            range_unhealthy_2.contents.stroke = am4core.color("#eba5a5");
+            range_unhealthy_2.contents.strokeOpacity = 30;
 
             var range_unhealthy_3 = valueAxis.createSeriesRange(series);
             range_unhealthy_3.value = 201;
             range_unhealthy_3.endValue = 300;
-            range_unhealthy_3.contents.stroke = am4core.color("#b046e0");
+            // range_unhealthy_3.contents.stroke = am4core.color("#b046e0");
+            range_unhealthy_3.contents.stroke = am4core.color("#d1a2e7");
+            range_unhealthy_3.contents.strokeOpacity = 30;
 
             var range_hazardous = valueAxis.createSeriesRange(series);
             range_hazardous.value = 301;
             range_hazardous.endValue = 500;
-            range_hazardous.contents.stroke = am4core.color("#6b132e");
-            range_hazardous.contents.fill = am4core.color("#ffffff");
+            // range_hazardous.contents.stroke = am4core.color("#6b132e");
+            range_hazardous.contents.stroke = am4core.color("#a87d8a");
+            range_hazardous.contents.strokeOpacity = 30;
+
+            range_hazardous.contents.fill = am4core.color('ffffff');
 
 
 
@@ -886,12 +914,12 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
     for (var i = 1; i <= 23; i++) {
       data.push({
-        AQI_CO: 0,
-        AQI_O3: 0,
-        AQI_NO2: 0,
-        AQI_SO2: 0,
-        AQI_PM25: 0,
-        AQI_PM10: 0,
+        // AQI_CO: 0,
+        // AQI_O3: 0,
+        // AQI_NO2: 0,
+        // AQI_SO2: 0,
+        // AQI_PM25: 0,
+        // AQI_PM10: 0,
         temperature: 0,
         timestamp: new Date(tsp - 1000 * (19 - i))
       });

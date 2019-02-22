@@ -18,6 +18,11 @@ export class StorageService {
   get(key: string): any{
     return this.sessionStorageService.get(key);
   }
+
+  remove(key: string){
+    this.sessionStorageService.remove(key);
+  }
+  
   clear(cleartype: ClearType): any{
     this.sessionStorageService.clear(cleartype);
   }

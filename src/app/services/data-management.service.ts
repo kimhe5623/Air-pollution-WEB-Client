@@ -15,17 +15,32 @@ export class DataManagementService {
     private dispMsgService: DisplayMessageService,
   ) { }
 
+  /** Number Formatting 0 -> 00, 1 -> 01 */
+  numberFormattingUnits2(num: number): string{
+    if(num < 100){
+      if(num < 10){
+        return '0' + num.toString();
+      }
+      else {
+        return num.toString();
+      }
+    }
+    else {
+      return '00';
+    }
+  }
+
   /** Sleep */
-  sleep (time) {
+  sleep(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
   }
 
   /** Verify administrator */
-  fnVerifyAdministrator(): boolean{
+  fnVerifyAdministrator(): boolean {
     var isAdmin: boolean = HEADER.RES_FAILD;
-    
-    if(this.sessionStorageService.get('userInfo')){
-      if(this.sessionStorageService.get('userInfo').usn < 1001){
+
+    if (this.sessionStorageService.get('userInfo')) {
+      if (this.sessionStorageService.get('userInfo').usn < 1001) {
         isAdmin = HEADER.RES_SUCCESS;
       }
       else {
@@ -75,6 +90,74 @@ export class DataManagementService {
   }
 
   /**
+ * clicked historical data parsing: Historical air data
+ * @param rsp 
+ */
+  clickedHistoricalAirDataParsing(clickedHistoricalData: any): any {
+
+    var result = {
+      wmac: '',
+      lat: 0,
+      lng: 0,
+      timeList: [],
+      airdataByTmsp: {},
+      airdataArray: []
+    }
+
+    console.log("clickedHistoricalData => ", clickedHistoricalData);
+
+    result.wmac = clickedHistoricalData.wmac;
+    result.lat = Number(clickedHistoricalData.lat);
+    result.lng = Number(clickedHistoricalData.lng);
+
+    for (var i = 0; i < clickedHistoricalData.commonDataTierTuple.length; i++) {
+
+      var splitedData = clickedHistoricalData.commonDataTierTuple[i].split(',');
+      //console.log('Splited! =>', splitedData);
+      var timestamp = String(Number(splitedData[0]) * 1000);
+
+      result.timeList.push(timestamp);
+
+      result.airdataByTmsp[timestamp] = {
+        timestamp: new Date(Number(splitedData[0]) * 1000),
+        temperature: Number(splitedData[1]),
+        CO: Number(splitedData[2]),
+        O3: Number(splitedData[3]),
+        NO2: Number(splitedData[4]),
+        SO2: Number(splitedData[5]),
+        PM25: Number(splitedData[6]),
+        PM10: Number(splitedData[7]),
+        AQI_CO: Number(splitedData[8]),
+        AQI_O3: Number(splitedData[9]),
+        AQI_NO2: Number(splitedData[10]),
+        AQI_SO2: Number(splitedData[11]),
+        AQI_PM25: Number(splitedData[12]),
+        AQI_PM10: Number(splitedData[13]),
+      };
+
+      result.airdataArray.push({
+        timestamp: new Date(Number(splitedData[0]) * 1000),
+        temperature: Number(splitedData[1]),
+        CO: Number(splitedData[2]),
+        O3: Number(splitedData[3]),
+        NO2: Number(splitedData[4]),
+        SO2: Number(splitedData[5]),
+        PM25: Number(splitedData[6]),
+        PM10: Number(splitedData[7]),
+        AQI_CO: Number(splitedData[8]),
+        AQI_O3: Number(splitedData[9]),
+        AQI_NO2: Number(splitedData[10]),
+        AQI_SO2: Number(splitedData[11]),
+        AQI_PM25: Number(splitedData[12]),
+        AQI_PM10: Number(splitedData[13]),
+      });
+    }
+
+    //console.log("Returned historical parsed data => ", result);
+    return result;
+  }
+
+  /**
    * HTTP response data parsing: Historical air data
    * @param rsp 
    */
@@ -85,11 +168,11 @@ export class DataManagementService {
 
     for (var i = 0; i < rsp.length; i++) {
 
-      for(var j = 0; j < rsp[i].commonDataTierTuple.length; j++){
+      for (var j = 0; j < rsp[i].commonDataTierTuple.length; j++) {
 
         var splitedData = rsp[i].commonDataTierTuple[j].split(',');
         //console.log('Splited! =>', splitedData);
-  
+
         result.push({
           mac: rsp[i].wmac,
           timestamp: new Date(Number(splitedData[0]) * 1000),
@@ -158,8 +241,8 @@ export class DataManagementService {
         mac: rsp[i][0],
         latitude: Number(rsp[i][1]),
         longitude: Number(rsp[i][2]),
-        measurementStartDate: new Date(Number(rsp[i][3])*1000),
-        measurementEndDate: new Date(Number(rsp[i][4])*1000),
+        measurementStartDate: new Date(Number(rsp[i][3]) * 1000),
+        measurementEndDate: new Date(Number(rsp[i][4]) * 1000),
         activation: Number(rsp[i][5]),
         status: this.sensorStatusParsing(Number(rsp[i][6])),
       });

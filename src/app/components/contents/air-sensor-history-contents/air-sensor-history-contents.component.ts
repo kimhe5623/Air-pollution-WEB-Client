@@ -22,13 +22,12 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   autocomplete: google.maps.places.Autocomplete;
 
   markers: any = {};
-  circles: any = {};
-  clickedMarker: string = '';
+  clickedMarkerMacAddress: string = '';
+  circle: google.maps.Circle = null;
 
   currentLocation: any;
   currentAddress: any;
-  data: any = [];
-  infoWindow: google.maps.InfoWindow;
+  infoWindow: google.maps.InfoWindow = new google.maps.InfoWindow();
 
   /** Icon urls */
   aqi_icon = {
@@ -81,6 +80,8 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   timeSliderThumbLabel: boolean = true;
   timeSliderValue: number = 0;
   previousTimeSliderValue: number = 0;
+  timeListForSelectedMarker: any = [];
+  selectedTime: string = '';
 
   /**
    * Forms
@@ -88,17 +89,80 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   startDate: FormControl;
   endDate: FormControl;
 
+  timeSet: any = { hour: [], min: [] };
+
+  enteredStartHour: number;
+  enteredStartMin: number;
+  enteredStartMode: number; // 0 or 12
+  enteredEndHour: number;
+  enteredEndMin: number;
+  enteredEndMode: number; // 0 or 12
+  isIncorrectTimeSelection: boolean;
+
   /**
    * Data
    */
-  airData: any = {};
-  airDataForCharts: any = {};
-  timeLists: any = [];
-  selectedTsp: string = "";
-  selectedTime: string = "";
-  selectedMac: string = "";
+
+  havRspAirdata: any = [];
+  // [
+  //   {
+  //     wmac: '',
+  //     lat: 0,
+  //     lng: 0,
+  //     commonDataTierTuple: ["", ""]
+  //   }
+  //    ...
+  // ]
+
+  parsedAirdata: any = {};
+  // {
+  //   'aabbccddeeff': {
+  //     wmac: '',
+  //     lat: 0,
+  //     lng: 0,
+  //     timeList: [],
+  //     airdataBasedTmsp: {},
+  //     airdataByTmsp: []
+  //   }
+  //    ...
+  // }
+
   selectedAirdata: any = {};
-  firstKeys: any = {};
+  //   {
+  //     timestamp: 0,
+  //     temperature: 0,
+  //     CO: 0,
+  //     O3: 0,
+  //     NO2: 0,
+  //     SO2: 0,
+  //     PM25: 0,
+  //     PM10: 0,
+  //     AQI_CO: 0,
+  //     AQI_O3: 0,
+  //     AQI_NO2: 0,
+  //     AQI_SO2: 0,
+  //     AQI_PM25: 0,
+  //     AQI_PM10: 0,
+  //   }
+
+  amChartData: any = [
+    {
+      timestamp: 0,
+      temperature: 0,
+      CO: 0,
+      O3: 0,
+      NO2: 0,
+      SO2: 0,
+      PM25: 0,
+      PM10: 0,
+      AQI_CO: 0,
+      AQI_O3: 0,
+      AQI_NO2: 0,
+      AQI_SO2: 0,
+      AQI_PM25: 0,
+      AQI_PM10: 0,
+    }
+  ];
 
   /**
    * Key check
@@ -110,6 +174,9 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
   /**----*/
   isSearched: boolean = false;
+  dataStatus: number = 0; // 0: noData or failed, 1: Loading data is ongoing, 2: data is completely loaded
+  isShrToHav: boolean = false;
+  isMarkerClicked: boolean = false;
 
 
   constructor(
@@ -126,19 +193,46 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     this.nations1 = HEADER.NATIONS[1];
     this.nations2 = HEADER.NATIONS[2];
     this.nations3 = HEADER.NATIONS[3];
+
+    this.timeSet.min.push(0);
+    for (var i = 0; i < 12; i++) {
+      this.timeSet.hour.push(i + 1);
+      this.timeSet.min.push(i + 1);
+    }
+    for (var i = 12; i < 59; i++) {
+      this.timeSet.min.push(i + 1);
+    }
+
+    this.enteredStartHour = 12;
+    this.enteredStartMin = 0;
+    this.enteredStartMode = 0; // 0 or 12
+    this.enteredEndHour = 11;
+    this.enteredEndMin = 59;
+    this.enteredEndMode = 12; // 0 or 12
+
+    if (this.storageService.get('shrToHav')) {
+
+      this.isShrToHav = true;
+      this.storageService.remove('shrToHav');
+    }
   }
 
   // Functions list //
 
+
   /**
-   * HTTP request data
+   * When the search button is clicked,
    */
-  reqData(cb) {
+  clickSearch() {
+    this.isSearched = true;
+    this.isMarkerClicked = false;
+    this.dataStatus = 1; // 1: Loading data is ongoing 
+    
     var payload = {
       nsc: Number(this.storageService.fnGetNumberOfSignedInCompletions()),
       ownershipCode: "1",
-      sTs: Math.floor(new Date(this.startDate.value).getTime() / 1000),
-      eTs: Math.floor(new Date(new Date(this.endDate.value).setHours(23, 59, 59, 59)).getTime() / 1000),
+      sTs: Math.floor(new Date(this.startDate.value).setHours(this.hourCalc(this.enteredStartHour, this.enteredStartMode), this.enteredStartMin) / 1000),
+      eTs: Math.floor(new Date(this.endDate.value).setHours(this.hourCalc(this.enteredEndHour, this.enteredEndMode), this.enteredEndMin) / 1000),
       // Number of HAV Fragments Required for Retransmission, (if it is 0, =>) List of Unsuccessful HAV Fragment Sequence Numbers
       nat: "Q30",
       state: "Q99",
@@ -146,88 +240,39 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     }
 
     this.dmService.fnHav(payload, (result) => {
-      if (result == null) cb(null);
+      if (result == null) {
+        this.dataStatus = 0;  // 0: noData or failed
+        return;
+      }
 
       else if (result.payload.historicalAirQualityDataListEncodings.length != 0) {
-        var tlvData = this.dataService.rspHistoricalAirDataParsing(result.payload.historicalAirQualityDataListEncodings);
-        var tspBasedData = {};
-
-        //console.log(tlvData);
-
-        /** Data parsing for "this.airData" */
-        for (var i = 0; i < tlvData.length; i++) {
-
-          var currentTsp: number = new Date(tlvData[i].timestamp).getTime();
-          tspBasedData[currentTsp.toString()] = {};
-
-          if (!this.dataService.checkValueExist(currentTsp.toString(), this.timeLists)) {
-            /** Data parsing for "this.timeLists" */
-            this.timeLists.push(currentTsp.toString());
-
-            /** Data parsing for "this.firstKeys" */
-            this.firstKeys[currentTsp.toString()] = tlvData[i].mac;
-          }
-
-          /** Data parsing for "this.airDataForChart" */
-          this.airDataForCharts[tlvData[i].mac] = [];
-        }
-
-        for (var i = 0; i < tlvData.length; i++) {
-          var currentTsp: number = new Date(tlvData[i].timestamp).getTime();
-          tspBasedData[currentTsp.toString()][tlvData[i].mac] = tlvData[i];
-
-          this.airDataForCharts[tlvData[i].mac].push(tlvData[i]);
-        }
-
-        console.log('airDataForCharts => ', this.airDataForCharts);
-        console.log('selected Mac => ', this.selectedMac);
-
-        this.timeLists.sort();
-        this.timeSliderMax = this.timeLists.length - 1;
-
-        cb(tspBasedData);
+        this.dataStatus = 2;  // 2: data is completely loaded
+        this.havRspAirdata = result.payload.historicalAirQualityDataListEncodings;
+        console.log('havRspAirdata => ', this.havRspAirdata);
+        this.mapInit();
       }
       else {
-        cb(null);
+        this.dataStatus = 0;  // 0: noData or failed
       }
 
     });
   }
 
-  /**
-   * When the search button is clicked,
-   */
-  searchHistory() {
-    this.isSearched = true;
+  hourCalc(hour: number, mode: number): number { // mode: 0 -> AM / 12 -> PM
+    var result: number = 0;
 
-    this.reqData((result) => {
-      if (result != null) {
+    // If AM,
+    if (mode == 0) {
+      if (hour == 12) result = 0;
+      else result = hour;
+    }
+    // If PM,
+    else if (mode == 12) {
+      if (hour == 12) result = hour;
+      else result = hour + 12;
+    }
 
-        this.airData = result;
-
-        //console.log('parsed Data: ', this.airData);
-        //console.log('timeLists: ', this.timeLists);
-        //console.log('firstKeys: ', this.firstKeys);
-
-        this.previousTimeSliderValue = 0;
-
-        this.selectedTsp = this.timeLists[this.timeSliderValue];
-        this.selectedTime = this.dataService.formattingDate(new Date(Number(this.selectedTsp)));
-
-        this.selectedMac = this.firstKeys[this.selectedTsp];
-        this.selectedAirdata = this.airData[this.selectedTsp][this.selectedMac];
-        //console.log('selectedTime => ', this.selectedTime, ' selectedMac => ', this.selectedMac);
-        //console.log('selectedAirdata => ', this.selectedAirdata);
-
-
-        this.mapInit();
-
-      }
-      else {
-        console.log('No selected data');
-        this.selectedTime = "No selected data";
-      }
-    });
+    return result;
   }
 
 
@@ -236,52 +281,49 @@ export class AirSensorHistoryContentsComponent implements OnInit {
    * When the time slider is changed,
    */
   timeSliderChanged() {
-    //console.log(this.timeSliderValue);
+    this.circle.setMap(null);
+    console.log('Slider is Changed! => ', this.timeSliderValue);
+    this.selectedTime = this.dataService.formattingDate(new Date(Number(this.timeListForSelectedMarker[this.timeSliderValue])));
+    // Set currently selected air data
+    this.selectedAirdata = this.parsedAirdata[this.clickedMarkerMacAddress]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]];
+    console.log('timeSliderChanged: selectedAirdata => ', this.selectedAirdata);
 
-    this.selectedTsp = this.timeLists[this.timeSliderValue];
-    this.selectedTime = this.dataService.formattingDate(new Date(Number(this.selectedTsp)));
-    this.selectedAirdata = this.airData[this.selectedTsp][this.selectedMac];
+    this.changeMarkerBasedInAqi(this.clickedMarkerMacAddress);
 
-    //console.log('selectedTime => ', this.selectedTime);
-
-    this.keyCheck(() => {
-      // In case of existed Keys,
-      for (var i = 0; i < this.existedKeys.length; i++) {
-        this.updateMarker(this.existedKeys[i]);
-      }
-
-      // In case of new Keys,
-      for (var i = 0; i < this.newKeys.length; i++) {
-        this.addEachMarker(this.newKeys[i]);
-      }
-
-      // In case of removed Keys,
-      for (var i = 0; i < this.removedKeys.length; i++) {
-        this.removeMarkerOnMap(this.removedKeys[i]);
-      }
-    });
-
-
-    this.previousTimeSliderValue = this.timeSliderValue;
   }
+
 
   /**
    * When the chart is clicked
    */
-  chartClicked(event) {
+  chartClicked(index: number) {
+    console.log('Chart is clicked! => ', index);
+    this.timeSliderValue = index;
+    // Set currently selected air data
+    this.selectedAirdata = this.parsedAirdata[this.clickedMarkerMacAddress]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]];
+    console.log('chartClicked: selectedAirdata => ', this.selectedAirdata);
 
-    console.log('chart click event function:air-sensor-history-contents.component => ', event);
-
-    this.timeSliderValue = event;
-    this.timeSliderChanged();
-
+    this.selectedTime = this.dataService.formattingDate(new Date(Number(this.timeListForSelectedMarker[this.timeSliderValue])));
   }
+
 
   /**
    * Map initialization
    */
   mapInit() {
 
+    // Set google map options
+    var mapProp = {
+      center: new google.maps.LatLng(
+        Number(this.havRspAirdata[0].lat),
+        Number(this.havRspAirdata[0].lng)
+      ),
+      zoom: 10,
+      draggableCursor: '',
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    // Get current Address for setting the place holder of nation field
     this.dataService.getCurrentAddress((currentAddress) => {
 
       console.log('currentAddress => ', currentAddress);
@@ -296,345 +338,253 @@ export class AirSensorHistoryContentsComponent implements OnInit {
       if (this.nations3[currentNationShortname] != null) {
         this.enteredNationCode = this.nations3[currentNationShortname][1];
       }
-      console.log('currentAddress => ', currentAddress);
-      var mapProp = {
-        center: new google.maps.LatLng(
-          Number(this.airData[this.timeLists[0]][this.firstKeys[this.timeLists[0]]].latitude),
-          Number(this.airData[this.timeLists[0]][this.firstKeys[this.timeLists[0]]].longitude)
-        ),
-        zoom: 17,
-        draggableCursor: '',
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
 
+      // initialize the google maps
       this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
       this.autocomplete = new google.maps.places.Autocomplete(document.getElementById(`autocomplete`), {
         types: [`address`],
         componentRestrictions: [currentNationShortname],
       });
 
-      /**
-       * Event Listener for Autocomplete
-       */
-      google.maps.event.addListener(this.autocomplete, 'place_changed', () => {
-        var place = this.autocomplete.getPlace();
 
-        console.log('place changed event => ', place);
-
-        if (!place.geometry) {
-          alert("No details available for input: '" + place.name + "'");
-          return;
-        }
-
-        if (place.geometry.viewport) {
-          this.map.fitBounds(place.geometry.viewport);
-        }
-        else {
-          this.map.setCenter(place.geometry.location);
-          this.map.setZoom(17);
-        }
-      });
-
-
-      /**
-       * Marker & Info window
-       */
-      this.markers = {};
-      this.infoWindow = new google.maps.InfoWindow();
-      this.addNewMarkers(this.airData[this.timeLists[0]]);
+      this.addAllSensorMarkers();
     });
-
   }
+
 
   //==============================================================
   /**
    * @param data: array data
    * add markers when the maps is initialized.
    */
-  addNewMarkers(data: any) {
+  addAllSensorMarkers() {
+    for (var i = 0; i < this.havRspAirdata.length; i++) {
 
-    this.data = [];
-    //console.log('addNewMarkers', data);
-    for (var key in data) {
+
+      var key = this.havRspAirdata[i].wmac;
 
       var marker = new google.maps.Marker({
         map: this.map,
-        position: { lat: data[key].latitude, lng: data[key].longitude },
+        position: { lat: Number(this.havRspAirdata[i].lat), lng: Number(this.havRspAirdata[i].lng) },
 
         icon: {
           anchor: new google.maps.Point(40, 40),
           labelOrigin: new google.maps.Point(40, 40),
           origin: new google.maps.Point(0, 0),
           scaledSize: new google.maps.Size(80, 80),
-          url: this.getAqiIcon(this.aqiAvg(data[key]))
+          url: 'assets/map/marker/sensor.svg'
         },
 
         label: {
-          color: this.getAqiFontColor(this.aqiAvg(data[key])),
-          fontSize: '13px',
+          color: '#ffffff',
+          fontSize: '20px',
           fontWeight: '400',
-          text: this.aqiAvg(data[key]).toString(),
-        },
-
-        data: data[key]
-
-      });
-
-      var circle = new google.maps.Circle({
-        strokeColor: this.getAqiCircleColor(this.aqiAvg(data[key])),
-        strokeOpacity: 0.8,
-        strokeWeight: 1,
-        fillColor: this.getAqiCircleColor(this.aqiAvg(data[key])),
-        fillOpacity: 0.35,
-        map: this.map,
-        center: { lat: data[key].latitude, lng: data[key].longitude },
-        radius: 500
+          text: "~:" + key.substring(10),
+        }
       });
 
       this.markers[key] = marker;
-      this.circles[key] = circle;
 
-      this.addInfoWindow(key);
+      this.addMarkerClickedEvent(key);
     }
+    console.log('Markers => ', this.markers);
   }
 
-  /**
-   * @param data: array data
-   * add markers
-   */
-  addEachMarker(key) {
-
-
-    var marker = new google.maps.Marker({
-      map: this.map,
-      position: { lat: this.airData[this.selectedTsp][key].latitude, lng: this.airData[this.selectedTsp][key].longitude },
-
-      icon: {
-        anchor: new google.maps.Point(40, 40),
-        labelOrigin: new google.maps.Point(40, 40),
-        origin: new google.maps.Point(0, 0),
-        scaledSize: new google.maps.Size(80, 80),
-        url: this.getAqiIcon(this.aqiAvg(this.airData[this.selectedTsp][key]))
-      },
-
-      label: {
-        color: this.getAqiFontColor(this.aqiAvg(this.airData[this.selectedTsp][key])),
-        fontSize: '13px',
-        fontWeight: '400',
-        text: this.aqiAvg(this.airData[this.selectedTsp][key]).toString(),
-      },
-
-      data: this.airData[this.selectedTsp][key]
-
+  turningMarkerToOriginal(key) {
+    this.markers[key].setIcon({
+      anchor: new google.maps.Point(40, 40),
+      labelOrigin: new google.maps.Point(40, 40),
+      origin: new google.maps.Point(0, 0),
+      scaledSize: new google.maps.Size(80, 80),
+      url: 'assets/map/marker/sensor.svg'
     });
-
-    this.markers[key] = marker;
-    this.addInfoWindow(key);
-
+    this.markers[key].setLabel(
+      {
+        color: '#ffffff',
+        fontSize: '20px',
+        fontWeight: '400',
+        text: "~:" + key.substring(10),
+      }
+    );
   }
 
+
+
   /**
-   * check keys
+   * Add each marker click listener with infowindows
    */
-  keyCheck(cb) {
-
-    var previousSelectedTsp = this.timeLists[this.previousTimeSliderValue];
-
-    this.data = this.airData[this.selectedTsp];
-
-    this.removedKeys = [];
-    this.newKeys = [];
-    this.existedKeys = [];
-
-    for (var key in this.markers) {
-
-      // if existed key
-      if (this.airData[previousSelectedTsp][key] != null && this.airData[this.selectedTsp][key] != null) {
-        this.existedKeys.push(key);
-      }
-      // if removed key
-      else if (this.airData[this.selectedTsp][key] != null) {
-        this.removedKeys.push(key);
-      }
-      // if new key
-      else if (this.airData[this.selectedTsp][key] != null) {
-        this.newKeys.push(key);
-      }
-    }
-
-    cb(null);
-  }
-
-  /**
-    * update markers (if the key is existed)
-    */
-  updateMarker(key) {
-
-    var isChanged: boolean = false;
-
-    // Comparing both of data
-    for (var key_ in this.markers[key]['data']) {
-      if (this.data[key][key_] != this.markers[key]['data'][key_]) {
-        isChanged = true;
-      }
-    }
-
-    if (isChanged) {
-
-      this.markers[key].setIcon(
-        {
-          anchor: new google.maps.Point(40, 40),
-          labelOrigin: new google.maps.Point(40, 40),
-          origin: new google.maps.Point(0, 0),
-          scaledSize: new google.maps.Size(80, 80),
-          url: this.getAqiIcon(this.aqiAvg(this.data[key]))
-        }
-      );
-
-      this.markers[key].setLabel(
-        {
-          color: this.getAqiFontColor(this.aqiAvg(this.data[key])),
-          fontSize: '13px',
-          fontWeight: '400',
-          text: this.aqiAvg(this.data[key]).toString(),
-        }
-      );
-
-      this.circles[key].setOptions({
-        strokeColor: this.getAqiCircleColor(this.aqiAvg(this.data[key])),
-        strokeOpacity: 0.8,
-        strokeWeight: 1,
-        fillColor: this.getAqiCircleColor(this.aqiAvg(this.data[key])),
-        fillOpacity: 0.35,
-        map: this.map,
-        center: { lat: this.data[key].latitude, lng: this.data[key].longitude },
-        radius: 500
-      });
-
-      this.markers[key]['data'] = this.data[key];
-
-      this.addInfoWindow(key);
-
-      if (key === this.clickedMarker) {
-        this.getInfoWindowContents(this.markers[key]['data'], (contents) => {
-          this.infoWindow.close();
-          this.infoWindow.setContent(contents);
-          this.infoWindow.open(this.map, this.markers[this.clickedMarker]);
-        });
-      }
-
-    }
-  }
-
-  /**
-   * add each listener for infoWindow
-   */
-  addInfoWindow(key) {
+  addMarkerClickedEvent(key) {
 
     google.maps.event.clearListeners(this.markers[key], 'click');
 
     google.maps.event.addListener(this.markers[key], 'click', () => {
+      console.log('click!!! => ', this.markers[key]);
+      this.isMarkerClicked = true;
 
-      this.getInfoWindowContents(this.markers[key]['data'], (contents) => {
-        this.infoWindow.close(); // Close previously opened infowindow
-        this.infoWindow.setContent(contents);
-        this.infoWindow.open(this.map, this.markers[key]);
-        this.clickedMarker = this.markers[key]['data']['mac'];
+      // If it is not the first marker click,
+      if (this.clickedMarkerMacAddress != '') {
+        this.turningMarkerToOriginal(this.clickedMarkerMacAddress);
+      }
 
-        //console.log('click:', this.clickedMarker);
+      // Update clicked Marker MAC Address
+      this.clickedMarkerMacAddress = key;
 
-        // Update the selected Mac value & selected Air data
-        this.selectedMac = key;
-        this.selectedAirdata = this.airData[this.selectedTsp][this.selectedMac];
+      // If there is no parsed data yet,
+      if (!this.parsedAirdata[key]) {
 
-        console.log('Selected Mac => ', this.selectedMac);
+        // Figure out what it is
+        var clickedMarkerMacAddressIndex = 0;
+        for (var i = 0; i < this.havRspAirdata.length; i++) {
+          if (key == this.havRspAirdata[i].wmac) {
+            clickedMarkerMacAddressIndex = i;
+          }
+        }
 
-      });
+        // And parse it
+        this.parsedAirdata[key] = this.dataService.clickedHistoricalAirDataParsing(this.havRspAirdata[clickedMarkerMacAddressIndex]);
+      }
+
+      // Set values for amChart
+      this.amChartData = this.parsedAirdata[key]['airdataArray'];
+      console.log('amChartData => ', this.amChartData);
+
+      // Set some values about the time slider
+      this.timeListForSelectedMarker = this.parsedAirdata[key].timeList;
+      // console.log('timeList => ', this.timeListForSelectedMarker)
+      this.timeSliderMin = 0;
+      this.timeSliderMax = this.timeListForSelectedMarker.length - 1;
+      this.timeSliderValue = this.timeSliderMax;
+      this.selectedTime = this.dataService.formattingDate(new Date(Number(this.timeListForSelectedMarker[this.timeSliderValue])));
+
+      // Set currently selected air data
+      this.selectedAirdata = this.parsedAirdata[this.clickedMarkerMacAddress]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]];
+      console.log('marker Clicked: selectedAirdata => ', this.selectedAirdata);
+
+
+      // If there is previous circle,
+      if (this.circle != null) {
+        // Remove it
+        this.removeCircle();
+      }
+
+      // And make a new circle for AQI
+      this.createCircle(key);
+
+      // Also, change the marker which is clicked to show AQI data
+      this.changeMarkerBasedInAqi(key);
+
+      // And Set the infowindow
+      this.infoWindow.close(); // Close previously opened infowindow
+      this.infoWindow.setContent(`<strong>Clicked</strong>`);
+      this.infoWindow.open(this.map, this.markers[key]);
     });
 
-    // Open the infowindow of firstKey
-    if (key == this.firstKeys[this.timeLists[0]]) {
-      this.getInfoWindowContents(this.markers[key]['data'], (contents) => {
-        this.infoWindow.close(); // Close previously opened infowindow
-        this.infoWindow.setContent(contents);
-        this.infoWindow.open(this.map, this.markers[key]);
-      });
+    google.maps.event.addListener(this.infoWindow, 'closeclick', () => {
+
+      this.turningMarkerToOriginal(this.clickedMarkerMacAddress);
+      this.removeCircle();
+      this.circle = null;
+
+      this.isMarkerClicked = false;
+      this.clickedMarkerMacAddress = '';
+      this.timeListForSelectedMarker = [];
+
+      this.map.setZoom(10);
+    });
+
+  }
+
+
+  createCircle(key) {
+    var latlng = { lat: this.parsedAirdata[key]['lat'], lng: this.parsedAirdata[key]['lng'] };
+    var aqiAvg: number = this.aqiAvg(this.parsedAirdata[key]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]]);
+
+    this.circle = new google.maps.Circle({
+      strokeColor: this.getAqiCircleColor(aqiAvg),
+      strokeOpacity: 0.8,
+      strokeWeight: 1,
+      fillColor: this.getAqiCircleColor(aqiAvg),
+      fillOpacity: 0.35,
+      map: this.map,
+      center: latlng,
+      radius: 500
+    });
+  }
+
+  updateCircle(key) {
+    var latlng = { lat: this.parsedAirdata[key]['lat'], lng: this.parsedAirdata[key]['lng'] };
+    var aqiAvg: number = this.aqiAvg(this.parsedAirdata[key]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]]);
+
+    this.circle.setOptions({
+      strokeColor: this.getAqiCircleColor(aqiAvg),
+      strokeOpacity: 0.8,
+      strokeWeight: 1,
+      fillColor: this.getAqiCircleColor(aqiAvg),
+      fillOpacity: 0.35,
+      map: this.map,
+      center: latlng,
+      radius: 500
+    });
+  }
+
+  removeCircle() {
+    this.circle.setMap(null);
+  }
+
+  changeMarkerBasedInAqi(key) {
+
+    var latlng = { lat: this.parsedAirdata[key]['lat'], lng: this.parsedAirdata[key]['lng'] };
+    var aqiAvg: number = this.aqiAvg(this.parsedAirdata[key]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]]);
+    console.log('aqiAvg => ', aqiAvg, this.parsedAirdata[key]);
+
+    this.markers[key].setIcon({
+      anchor: new google.maps.Point(20, 20),
+      labelOrigin: new google.maps.Point(20, 20),
+      origin: new google.maps.Point(0, 0),
+      scaledSize: new google.maps.Size(40, 40),
+      url: this.getAqiIcon(aqiAvg)
+    });
+
+    this.markers[key].setLabel(
+      {
+        color: this.getAqiFontColor(aqiAvg),
+        fontSize: '13px',
+        fontWeight: '400',
+        text: aqiAvg.toString(),
+      }
+    );
+
+    this.updateCircle(key);
+
+    this.map.setCenter(latlng);
+    this.map.setZoom(13);
+
+
+    this.addMarkerClickedEvent(key);
+  }
+
+
+  /** Date Select: Time */
+  timeSelectChanged() {
+    if (this.startDate.value == this.endDate.value) {
+      var startHour = this.enteredStartHour + this.enteredStartMode;
+      var endHour = this.enteredEndHour + this.enteredEndMode;
+
+      if (startHour > endHour) {
+        this.isIncorrectTimeSelection = true;
+      }
+      else if (startHour == endHour) {
+        if (this.enteredStartMin < this.enteredEndMin) {
+          this.isIncorrectTimeSelection = true;
+        }
+      }
+      else {
+        this.isIncorrectTimeSelection = false;
+      }
     }
-
   }
 
-  /**
-   * @param eachData : each data
-   * get infoWindow contents
-   */
-  getInfoWindowContents(eachData: any, cb) {
-    this.dmService.latlngToAddress(eachData.latitude, eachData.longitude, (address) => {
 
-      var locationName: string;
-      if (address.status == 'OK') { locationName = `<strong>${address.results[0].formatted_address}</strong>`; }
-      else { locationName = `<strong>lat</strong>&nbsp; ${eachData.latitude}<br><strong>lng</strong>&nbsp; ${eachData.longitude}`; }
-
-      var contents = `
-        <style>
-        table, th, td {
-          border: 0.1px solid #ababab;
-        }
-        th, td {
-          padding: 7px;
-        }
-        button {
-          margin-top: 10px;
-          width: auto;
-          border-radius: 100px;
-        }
-        </style>
-        <h6 style="margin-bottom:5px; line-height: 30px">${locationName}</h6>
-        <p>Wifi MAC address: ${this.dataService.rspToMacAddress(eachData.mac)}</p>
-        <table>
-            <tr>
-                <th>CO</th>
-                <th>O<sub>3</sub></th>
-                <th>NO<sub>2</sub></th>
-                <th>SO<sub>2</sub></th>
-                <th>PM2.5</th>
-                <th>PM10</th>
-                <th>Temp</th>
-            </tr>
-            <tr>
-                <td>${eachData.AQI_CO}</td>
-                <td>${eachData.AQI_O3}</td>
-                <td>${eachData.AQI_NO2}</td>
-                <td>${eachData.AQI_SO2}</td>
-                <td>${eachData.AQI_PM25}</td>
-                <td>${eachData.AQI_PM10}</td>
-                <td>${eachData.temperature}</td>
-            </tr>
-        </table>
-        `;
-      cb(contents);
-    });
-  }
-
-  clickbutton() {
-    alert("click button!");
-  }
-  /**
-   * @param marker : marker object
-   *  remove marker on the map
-   */
-  removeMarkerOnMap(key) {
-    this.markers[key].setMap(null);
-
-    delete this.markers[key];
-  }
-
-  /**
-   * copy json data
-   * @param data : data which you want to copy
-   */
-  JSON_copy(data: any): any {
-    return JSON.parse(JSON.stringify(data));
-  }
 
   /**
    * get AQI average

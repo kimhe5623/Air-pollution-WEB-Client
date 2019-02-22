@@ -8,13 +8,15 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
   templateUrl: './historical-air-chart.component.html',
   styleUrls: ['./historical-air-chart.component.css']
 })
-export class HistoricalAirChartComponent implements OnInit, DoCheck {
+export class HistoricalAirChartComponent implements DoCheck {
 
   @Input() data: any = [];
+  @Input() macAddress: string = '';
   @Input() centerIndex: number = -1;
   @Output() chartClick: EventEmitter<number> = new EventEmitter<number>();
 
   previousCenterIndex: number = -1;
+  previousMacAddress: string = '';
 
   checkbox: any = {
     all: true,
@@ -29,7 +31,7 @@ export class HistoricalAirChartComponent implements OnInit, DoCheck {
 
   differ: any;
 
-  private chart: am4charts.XYChart;
+  private chart: am4charts.XYChart = null;
   private dateX: am4charts.DateAxis;
 
   constructor(
@@ -40,11 +42,11 @@ export class HistoricalAirChartComponent implements OnInit, DoCheck {
   }
 
   ngDoCheck() {
-    const changes = this.differ.diff([this.data, this.centerIndex]);
+    const changes = this.differ.diff([this.data, this.centerIndex, this.macAddress]);
 
     if (changes) {
 
-      if (this.previousCenterIndex != this.centerIndex) {
+      if (this.chart != null && this.previousCenterIndex != this.centerIndex && this.previousMacAddress == this.macAddress) {
 
         this.previousCenterIndex = this.centerIndex;
 
@@ -68,10 +70,15 @@ export class HistoricalAirChartComponent implements OnInit, DoCheck {
         }
       }
 
-      else {
+      else if (this.chart == null || this.previousMacAddress != this.macAddress) {
         console.log('Entered chart data => ', this.data);
-        this.chartDestroy();
+        if(this.chart != null){
+          console.log('historical-air-chart.component:chartDestroy() => Destroy an existing chart');
+          this.chartDestroy();
+        }
+        console.log('historical-air-chart.component:chartInit() => Initialize a new chart');
         this.chartInit();
+        this.previousMacAddress = this.macAddress;
       }
     }
   }
@@ -188,16 +195,41 @@ export class HistoricalAirChartComponent implements OnInit, DoCheck {
     }
   }
 
-  ngOnInit() { }
-
-  ngAfterViewInit() {
-    console.log('Entered chart data => ', this.data);
+  // ngOnInit() { }
+  ngAfterViewInit(): void {
+    console.log('ngAfterViewInit: chartInit() => ', this.data);
     this.chartInit();
   }
 
+
   ngOnDestroy() {
     this.chartDestroy();
+    this.chart = null;
   }
+
+  // generatingData(): any{
+  //   var data = [];
+
+  //   for(var i=0; i< 5000; i++){
+  //     data.push({
+  //       timestamp: new Date(new Date().getTime()+1000*i),
+  //       temperature: Math.floor(Math.random() * 40) + 10,
+  //       CO: Math.floor(Math.random() * 500) + 0,
+  //       O3: Math.floor(Math.random() * 500) + 0,
+  //       NO2: Math.floor(Math.random() * 500) + 0,
+  //       SO2: Math.floor(Math.random() * 500) + 0,
+  //       PM25: Math.floor(Math.random() * 500) + 0,
+  //       PM10: Math.floor(Math.random() * 500) + 0,
+  //       AQI_CO: Math.floor(Math.random() * 500) + 0,
+  //       AQI_O3: Math.floor(Math.random() * 500) + 0,
+  //       AQI_NO2: Math.floor(Math.random() * 500) + 0,
+  //       AQI_SO2: Math.floor(Math.random() * 500) + 0,
+  //       AQI_PM25: Math.floor(Math.random() * 500) + 0,
+  //       AQI_PM10: Math.floor(Math.random() * 500) + 0,
+  //     })
+  //   }
+  //   return data;
+  // }
 
   chartInit() {
     this.zone.runOutsideAngular(() => {
@@ -207,6 +239,7 @@ export class HistoricalAirChartComponent implements OnInit, DoCheck {
       let chart = am4core.create("chartdiv3", am4charts.XYChart);
 
       chart.data = this.data;
+      // chart.data = this.generatingData();
 
       chart.paddingRight = 20;
 
@@ -342,7 +375,7 @@ export class HistoricalAirChartComponent implements OnInit, DoCheck {
       // Pre-zooming
       chart.events.on('inited', () => {
         if (chart.data.length > 20) {
-          dateX.zoomToDates(chart.data[0].timestamp, chart.data[20].timestamp);
+          dateX.zoomToDates(chart.data[this.data.length-21].timestamp, chart.data[this.data.length-1].timestamp);
         }
       });
 

@@ -1,7 +1,6 @@
 /** Sensor-association-dialog */
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { HEADER } from 'src/app/header';
 import { FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -17,15 +16,15 @@ export class ShrToHavDialog {
     public dialogRef: MatDialogRef<ShrToHavDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {
-    this.startDateForm = new FormControl(new Date().toISOString(), [Validators.required]);
-    this.endDateForm = new FormControl(new Date().toISOString(), [Validators.required]);
+    this.startDateForm = new FormControl(this.data.startDate, [Validators.required]);
+    this.endDateForm = new FormControl(this.data.endDate, [Validators.required]);
   }
 
 
   fnBtnClick(isCanceled: boolean) {
     this.data.isCanceled = isCanceled;
     this.data.startDate = this.startDateForm.value;
-    this.data.endDate = this.endDateForm.value;
+    this.data.endDate = new Date(new Date(this.endDateForm.value).setHours(23,59,59,99));
   }
 
   onNoClick(): void {
