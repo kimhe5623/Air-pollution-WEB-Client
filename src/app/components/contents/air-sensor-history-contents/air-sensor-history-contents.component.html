@@ -92,7 +92,7 @@
             <span style="font-size: 1.3rem;margin-right:auto">{{ selectedTime }}</span>
           </div>
           <div class="col" style="text-align: right">
-            <mat-slider style="margin-left: auto" class="slider" [max]="timeSliderMax" [min]="timeSliderMin"
+            <mat-slider *ngIf="isMarkerClicked" style="margin-left: auto" class="slider" [max]="timeSliderMax" [min]="timeSliderMin"
               [(ngModel)]="timeSliderValue" (ngModelChange)="timeSliderChanged()"></mat-slider>
           </div>
         </div>
