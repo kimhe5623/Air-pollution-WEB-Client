@@ -22,7 +22,7 @@ export class SignUpComponent implements OnInit {
       firstname: ['', Validators.required],
       lastname: ['', Validators.required],
       email: ['', [Validators.required, Validators.pattern("^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$")]],
-      password: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9!@.#$%^&*?_~]{6,16}$")]],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(16), Validators.pattern("^(?=.*[0-9])(?=.*[!@.#$%^&*?_~])(?=.*[a-zA-Z])([a-zA-Z0-9!@.#$%^&*?_~]+)$")]],
       birthdate: ['', Validators.required],
       gender: ['', [Validators.required]]
     });
@@ -41,7 +41,9 @@ export class SignUpComponent implements OnInit {
   }
   getPasswordErrorMessage() {
     return this.signupForm.get('password').hasError('required') ? 'The field is required' :
-      this.signupForm.get('password').hasError('pattern') ? 'Password must contain at least one special character' : '';
+      this.signupForm.get('password').hasError('minlength') ? 'Password must consist of over 6 characters' :
+      this.signupForm.get('password').hasError('maxlength') ? 'Password must consist of within 16 characters' :
+      this.signupForm.get('password').hasError('pattern') ? 'Password must contain at least one special character and number' : '';
   }
   getEmailErrorMessage() {
     return this.signupForm.get('email').hasError('required') ? 'The field is required' :

@@ -4,6 +4,7 @@ import { UserManagementService } from 'src/app/services/httpRequest/user-managem
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
 import { HEADER } from 'src/app/header';
+import { AuthorizationService } from 'src/app/services/authorization.service';
 
 @Component({
   selector: 'app-user-change-password-contents',
@@ -19,16 +20,17 @@ export class UserChangePasswordContentsComponent implements OnInit {
   constructor(
     private umService: UserManagementService,
     private router: Router,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private authService: AuthorizationService
   ) {
     this.currentPassword = new FormControl('', Validators.required);
-    this.newPassword = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9!@.#$%^&*?_~]{6,16}$")]);
+    this.newPassword = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(16), Validators.pattern("^(?=.*[0-9])(?=.*[!@.#$%^&*?_~])(?=.*[a-zA-Z])([a-zA-Z0-9!@.#$%^&*?_~]+)$")]);
   }
 
   ngOnInit() {
     this.initData();
   }
-  initData(){
+  initData() {
     this.hide = true;
     this.errorhide = true;
     this.currentPassword.setValue(null);
@@ -40,7 +42,9 @@ export class UserChangePasswordContentsComponent implements OnInit {
   }
   getNewPasswordErrorMessage() {
     return this.newPassword.hasError('required') ? 'The field is required' :
-      this.newPassword.hasError('pattern') ? 'Password must contain at least one special character' : '';
+      this.newPassword.hasError('minlength') ? 'Password must consist of over 6 characters' :
+      this.newPassword.hasError('maxlength') ? 'Password must consist of within 16 characters' :
+      this.newPassword.hasError('pattern') ? 'Password must contain at least one special character and number' : '';
   }
 
   fnOnSubmitUpcForm() {
@@ -59,7 +63,12 @@ export class UserChangePasswordContentsComponent implements OnInit {
   }
 
   clickDeregister() {
-    this.router.navigate([HEADER.ROUTER_PATHS.COMMON_USER_DEREGISTER_ACCOUNT], { skipLocationChange: true });
+    if (this.authService.isAdministor(this.storageService.fnGetUserSequenceNumber())) {
+      this.router.navigate([HEADER.ROUTER_PATHS.ADMIN_DEREGISTER_ACCOUNT], { skipLocationChange: true });
+    }
+    else {
+      this.router.navigate([HEADER.ROUTER_PATHS.COMMON_USER_DEREGISTER_ACCOUNT], { skipLocationChange: true });
+    }
   }
 
 }

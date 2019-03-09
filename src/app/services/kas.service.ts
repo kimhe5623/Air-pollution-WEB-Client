@@ -5,6 +5,7 @@ import { StorageService } from './storage.service';
 import { DataMonitoringService } from './httpRequest/data-monitoring.service';
 import { HEADER } from 'src/app/header';
 import { SignoutService } from './signout.service';
+import { StateMachineManagementService } from './state-machine-management.service';
 
 
 @Injectable({
@@ -17,6 +18,7 @@ export class KasService {
     private signoutService: SignoutService,
     private storageService: StorageService,
     private dialog: MatDialog,
+    private stateService: StateMachineManagementService
   ) { }
 
   private interval: any;
@@ -43,7 +45,7 @@ export class KasService {
         //console.log("KAS service => ", this.val, ' sec');
 
         if (this.val >= HEADER.TIMER.T552/1000 - 180) { // 180 == 60 * 3  => 3 minutes 
-
+ 
           if (!this.dialogOpen) {
             this.openKasDialog();
             this.dialogOpen = true;
@@ -55,6 +57,7 @@ export class KasService {
             this.storageService.set('kas_val', this.val);
             this.inInterval = false;
 
+            this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T552');
             this.dialog.closeAll();
           }
 

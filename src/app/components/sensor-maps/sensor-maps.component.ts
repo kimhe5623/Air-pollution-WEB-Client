@@ -86,6 +86,10 @@ export class SensorMapsComponent implements OnInit {
           this.enteredNationCode = this.nations3[currentNationShortname][1];
           this.currentGeometry.nation = this.enteredNationCode;
         }
+
+        this.currentGeometry.location = currentAddress.currentLatlng;
+        this.currentGeometry.address = currentAddress.address.results[0].formatted_address;
+
         console.log('currentAddress => ', currentAddress);
         //console.log('this.sensorData: ', this.sensorData);
         /**
@@ -96,7 +100,7 @@ export class SensorMapsComponent implements OnInit {
             currentAddress.currentLatlng.latitude,
             currentAddress.currentLatlng.longitude
           ),
-          zoom: 17,
+          zoom: 10,
           draggableCursor: '',
           mapTypeId: google.maps.MapTypeId.ROADMAP
         };
@@ -129,7 +133,7 @@ export class SensorMapsComponent implements OnInit {
           }
 
           this.currentGeometry.nation = this.enteredNationCode;
-          this.currentGeometry.address = this.enteredAddress;
+          this.currentGeometry.address = place.formatted_address;
 
           if (place.geometry.viewport) {
 
@@ -148,9 +152,9 @@ export class SensorMapsComponent implements OnInit {
 
             this.map.setCenter(place.geometry.location);
             console.log('location => ', place.geometry.location);
-            this.map.setZoom(17);
+            this.map.setZoom(13);
           }
-          console.log('current')
+          console.log('currentGeometry => ', this.currentGeometry);
         });
 
 
@@ -240,9 +244,16 @@ export class SensorMapsComponent implements OnInit {
         this.infoWindow.open(this.map, this.markers[key]);
         this.clickedMarker = key;
 
+        this.map.setCenter(new google.maps.LatLng(this.markers[this.clickedMarker].data.latitude, this.markers[this.clickedMarker].data.longitude));
+        this.map.setZoom(13);
+
         //console.log('clicked:', key);
 
       });
+    });
+
+    google.maps.event.addListener(this.infoWindow, 'closeclick', () => {
+      this.map.setZoom(10);
     });
 
   }
@@ -326,6 +337,8 @@ export class SensorMapsComponent implements OnInit {
 
   /** SHR to HAV */
   showShrToHavDialog() {
+    this.infoWindow.close();
+
     // Authorization check
     if (!this.authService.isUserLoggedIn()) {
       this.router.navigate([HEADER.ROUTER_PATHS.SIGN_IN]);
@@ -334,13 +347,13 @@ export class SensorMapsComponent implements OnInit {
       // If OK, Open a date input dialog
       const dialogRef = this.dialog.open(ShrToHavDialog, {
         width: 'auto', height: 'auto',
-        data: { startDate: new Date(new Date().setHours(0, 0, 0, 0)), endDate: new Date(new Date().setHours(23, 59, 59, 99)), isCanceled: true }
+        data: { startTmsp: 0, endTmsp: 0, isCanceled: true }
       });
 
       // After selecting date, HAV
       dialogRef.afterClosed().subscribe(result => {
         if (result != null && !result.isCanceled) {
-          this.storageService.set('shrToHav', { startDate: result.startDate, endDate: result.endDate, currentGeometry: this.currentGeometry });
+          this.storageService.set('shrToHav', { startTmsp: result.startTmsp, endTmsp: result.endTmsp, currentGeometry: this.currentGeometry });
 
           if (this.authService.isAdministor(this.storageService.fnGetUserSequenceNumber())) {
             this.router.navigate([HEADER.ROUTER_PATHS.ADMIN_AIR_HISTORY]);

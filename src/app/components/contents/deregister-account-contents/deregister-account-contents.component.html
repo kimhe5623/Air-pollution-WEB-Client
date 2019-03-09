@@ -3,7 +3,7 @@
     <mat-card class="card">
       <form class="example-form form" (ngSubmit)="fnOnSubmitUdrForm()">
         <mat-form-field class="example-full-width block">
-          <input matInput placeholder="Current password" [formControl]="currentPassword">
+          <input matInput type="password" placeholder="Current password" [formControl]="currentPassword">
           <mat-error *ngIf="currentPassword.invalid && !errorhide">{{getCurrentPasswordErrorMessage()}}</mat-error>
         </mat-form-field>
         <button type="submit" class="btn waves-light error buttonStyle" 

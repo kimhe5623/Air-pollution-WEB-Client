@@ -31,11 +31,11 @@ export class StorageService {
 
   //-- State machine management --//
   fnSetCurrentState(enteredState: number) {
-    this.set('state', enteredState);
+    this.set('csm', enteredState);
   }
 
   fnGetCurrentState(): number {
-    return Number(this.get('state'));
+    return Number(this.get('csm'));
   }
 
   //-- USN managment --//

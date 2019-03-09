@@ -184,8 +184,8 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     private dmService: DataMonitoringService,
     private storageService: StorageService
   ) {
-    this.startDate = new FormControl(new Date().toISOString(), [Validators.required]);
-    this.endDate = new FormControl(new Date().toISOString(), [Validators.required]);
+    this.startDate = new FormControl(null, [Validators.required]);
+    this.endDate = new FormControl(null, [Validators.required]);
   }
 
   ngOnInit() {
@@ -194,26 +194,54 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     this.nations2 = HEADER.NATIONS[2];
     this.nations3 = HEADER.NATIONS[3];
 
-    this.timeSet.min.push(0);
-    for (var i = 0; i < 12; i++) {
+    /** Time selection values set */
+    this.timeSet.hour.push(12);
+    for (var i = 0; i < 11; i++) {
       this.timeSet.hour.push(i + 1);
       this.timeSet.min.push(i + 1);
     }
-    for (var i = 12; i < 59; i++) {
+    for (var i = 11; i < 59; i++) {
       this.timeSet.min.push(i + 1);
     }
+    this.timeSet.min.push(0);
 
-    this.enteredStartHour = 12;
-    this.enteredStartMin = 0;
-    this.enteredStartMode = 0; // 0 or 12
-    this.enteredEndHour = 11;
-    this.enteredEndMin = 59;
-    this.enteredEndMode = 12; // 0 or 12
+    console.log('shrToHav => ', this.storageService.get('shrToHav'));
 
     if (this.storageService.get('shrToHav')) {
 
       this.isShrToHav = true;
+
+      var startD: Date = new Date(Number(this.storageService.get('shrToHav').startTmsp) * 1000);
+      var endD: Date = new Date(Number(this.storageService.get('shrToHav').endTmsp) * 1000);
+
+      this.startDate.setValue(startD);
+      this.endDate.setValue(endD);
+
+      this.enteredStartMin = startD.getMinutes();
+
+      var modeHour: any = this.dataService.hourCalcToAmPm(startD.getHours());
+      this.enteredStartHour = modeHour.hour;
+      this.enteredStartMode = modeHour.mode; // 0 or 12
+
+      this.enteredEndMin = endD.getMinutes();
+
+      var modeHour = this.dataService.hourCalcToAmPm(endD.getHours());
+      this.enteredEndHour = modeHour.hour;
+      this.enteredEndMode = modeHour.mode; // 0 or 12
+
+      this.clickSearch(this.storageService.get('shrToHav'));
       this.storageService.remove('shrToHav');
+    }
+    else {
+      this.startDate.setValue(new Date());
+      this.endDate.setValue(new Date());
+
+      this.enteredStartHour = 12;
+      this.enteredStartMin = 0;
+      this.enteredStartMode = 0; // 0 or 12
+      this.enteredEndHour = 11;
+      this.enteredEndMin = 59;
+      this.enteredEndMode = 12; // 0 or 12
     }
   }
 
@@ -223,16 +251,28 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   /**
    * When the search button is clicked,
    */
-  clickSearch() {
+  clickSearch(shrToHavData?: any) {
     this.isSearched = true;
     this.isMarkerClicked = false;
     this.dataStatus = 1; // 1: Loading data is ongoing 
-    
+
+    var startTmsp: number = 0;
+    var endTmsp: number = 0;
+
+    if (this.isShrToHav) {
+      startTmsp = shrToHavData.startTmsp;
+      endTmsp = shrToHavData.endTmsp;
+    }
+    else {
+      startTmsp = Math.floor(new Date(this.startDate.value).setHours(this.dataService.hourCalcTo24(this.enteredStartHour, this.enteredStartMode), this.enteredStartMin) / 1000);
+      endTmsp = Math.floor(new Date(this.endDate.value).setHours(this.dataService.hourCalcTo24(this.enteredEndHour, this.enteredEndMode), this.enteredEndMin) / 1000);
+    }
+
     var payload = {
       nsc: Number(this.storageService.fnGetNumberOfSignedInCompletions()),
       ownershipCode: "1",
-      sTs: Math.floor(new Date(this.startDate.value).setHours(this.hourCalc(this.enteredStartHour, this.enteredStartMode), this.enteredStartMin) / 1000),
-      eTs: Math.floor(new Date(this.endDate.value).setHours(this.hourCalc(this.enteredEndHour, this.enteredEndMode), this.enteredEndMin) / 1000),
+      sTs: startTmsp,
+      eTs: endTmsp,
       // Number of HAV Fragments Required for Retransmission, (if it is 0, =>) List of Unsuccessful HAV Fragment Sequence Numbers
       nat: "Q30",
       state: "Q99",
@@ -249,7 +289,12 @@ export class AirSensorHistoryContentsComponent implements OnInit {
         this.dataStatus = 2;  // 2: data is completely loaded
         this.havRspAirdata = result.payload.historicalAirQualityDataListEncodings;
         console.log('havRspAirdata => ', this.havRspAirdata);
-        this.mapInit();
+
+        if (this.isShrToHav) {
+          this.mapInit(shrToHavData);
+        }
+        else this.mapInit();
+
       }
       else {
         this.dataStatus = 0;  // 0: noData or failed
@@ -257,25 +302,6 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
     });
   }
-
-  hourCalc(hour: number, mode: number): number { // mode: 0 -> AM / 12 -> PM
-    var result: number = 0;
-
-    // If AM,
-    if (mode == 0) {
-      if (hour == 12) result = 0;
-      else result = hour;
-    }
-    // If PM,
-    else if (mode == 12) {
-      if (hour == 12) result = hour;
-      else result = hour + 12;
-    }
-
-    return result;
-  }
-
-
 
   /**
    * When the time slider is changed,
@@ -310,45 +336,84 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   /**
    * Map initialization
    */
-  mapInit() {
+  mapInit(shrToHavData?: any) {
+
+    var initLatlng: google.maps.LatLng;
+    var initNationCode: string;
+    var initZoom: number;
+
+    if (this.isShrToHav) {
+      initLatlng = new google.maps.LatLng(Number(shrToHavData.currentGeometry.location.lat), Number(shrToHavData.currentGeometry.location.lng));
+      initNationCode = shrToHavData.currentGeometry.nation;
+      initZoom = 13;
+
+      this.enteredNationCode = initNationCode;
+      this.enteredAddress = shrToHavData.currentGeometry.address;
+    }
+    else {
+      initLatlng = new google.maps.LatLng(Number(this.havRspAirdata[0].lat), Number(this.havRspAirdata[0].lng));
+      initZoom = 10;
+
+      // Get current Address for setting the place holder of nation field
+      this.dataService.getCurrentAddress((currentAddress) => {
+
+        console.log('currentAddress => ', currentAddress);
+
+        for (var i = 0; i < currentAddress.address.results[5].address_components.length; i++) {
+          if (currentAddress.address.results[5].address_components[i].types[0] == 'country') {
+            var currentNationShortname = currentAddress.address.results[5].address_components[i].short_name;
+          }
+        }
+
+        console.log('nations3 => ', this.nations3[currentNationShortname]);
+        if (this.nations3[currentNationShortname] != null) {
+          this.enteredNationCode = this.nations3[currentNationShortname][1];
+        }
+
+        initNationCode = currentNationShortname;
+      });
+    }
 
     // Set google map options
     var mapProp = {
-      center: new google.maps.LatLng(
-        Number(this.havRspAirdata[0].lat),
-        Number(this.havRspAirdata[0].lng)
-      ),
-      zoom: 10,
+      center: initLatlng,
+      zoom: initZoom,
       draggableCursor: '',
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
-    // Get current Address for setting the place holder of nation field
-    this.dataService.getCurrentAddress((currentAddress) => {
-
-      console.log('currentAddress => ', currentAddress);
-
-      for (var i = 0; i < currentAddress.address.results[5].address_components.length; i++) {
-        if (currentAddress.address.results[5].address_components[i].types[0] == 'country') {
-          var currentNationShortname = currentAddress.address.results[5].address_components[i].short_name;
-        }
-      }
-
-      console.log('nations3 => ', this.nations3[currentNationShortname]);
-      if (this.nations3[currentNationShortname] != null) {
-        this.enteredNationCode = this.nations3[currentNationShortname][1];
-      }
-
-      // initialize the google maps
-      this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
-      this.autocomplete = new google.maps.places.Autocomplete(document.getElementById(`autocomplete`), {
-        types: [`address`],
-        componentRestrictions: [currentNationShortname],
-      });
-
-
-      this.addAllSensorMarkers();
+    // initialize the google maps
+    this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+    this.autocomplete = new google.maps.places.Autocomplete(document.getElementById(`autocomplete`), {
+      types: [`address`],
+      componentRestrictions: [initNationCode],
     });
+
+    /**
+ * Event Listener for Autocomplete
+ */
+    google.maps.event.addListener(this.autocomplete, 'place_changed', () => {
+      var place = this.autocomplete.getPlace();
+
+      console.log('place changed event => ', place);
+
+      if (!place || !place.geometry) {
+        alert("No details available for input: '" + place.name + "'");
+        return;
+      }
+
+      if (place.geometry.viewport) {
+        this.map.fitBounds(place.geometry.viewport);
+        console.log('viewport => ', place.geometry.viewport);
+      }
+      else {
+        this.map.setCenter(place.geometry.location);
+        console.log('location => ', place.geometry.location);
+        this.map.setZoom(13);
+      }
+    });
+
+    this.addAllSensorMarkers();
   }
 
 
@@ -497,13 +562,13 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
   createCircle(key) {
     var latlng = { lat: this.parsedAirdata[key]['lat'], lng: this.parsedAirdata[key]['lng'] };
-    var aqiAvg: number = this.aqiAvg(this.parsedAirdata[key]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]]);
+    var aqiMax: number = this.aqiMax(this.parsedAirdata[key]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]]);
 
     this.circle = new google.maps.Circle({
-      strokeColor: this.getAqiCircleColor(aqiAvg),
+      strokeColor: this.getAqiCircleColor(aqiMax),
       strokeOpacity: 0.8,
       strokeWeight: 1,
-      fillColor: this.getAqiCircleColor(aqiAvg),
+      fillColor: this.getAqiCircleColor(aqiMax),
       fillOpacity: 0.35,
       map: this.map,
       center: latlng,
@@ -513,13 +578,13 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
   updateCircle(key) {
     var latlng = { lat: this.parsedAirdata[key]['lat'], lng: this.parsedAirdata[key]['lng'] };
-    var aqiAvg: number = this.aqiAvg(this.parsedAirdata[key]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]]);
+    var aqiMax: number = this.aqiMax(this.parsedAirdata[key]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]]);
 
     this.circle.setOptions({
-      strokeColor: this.getAqiCircleColor(aqiAvg),
+      strokeColor: this.getAqiCircleColor(aqiMax),
       strokeOpacity: 0.8,
       strokeWeight: 1,
-      fillColor: this.getAqiCircleColor(aqiAvg),
+      fillColor: this.getAqiCircleColor(aqiMax),
       fillOpacity: 0.35,
       map: this.map,
       center: latlng,
@@ -534,23 +599,23 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   changeMarkerBasedInAqi(key) {
 
     var latlng = { lat: this.parsedAirdata[key]['lat'], lng: this.parsedAirdata[key]['lng'] };
-    var aqiAvg: number = this.aqiAvg(this.parsedAirdata[key]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]]);
-    console.log('aqiAvg => ', aqiAvg, this.parsedAirdata[key]);
+    var aqiMax: number = this.aqiMax(this.parsedAirdata[key]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]]);
+    console.log('aqiMax => ', aqiMax, this.parsedAirdata[key]);
 
     this.markers[key].setIcon({
       anchor: new google.maps.Point(20, 20),
       labelOrigin: new google.maps.Point(20, 20),
       origin: new google.maps.Point(0, 0),
       scaledSize: new google.maps.Size(40, 40),
-      url: this.getAqiIcon(aqiAvg)
+      url: this.getAqiIcon(aqiMax)
     });
 
     this.markers[key].setLabel(
       {
-        color: this.getAqiFontColor(aqiAvg),
+        color: this.getAqiFontColor(aqiMax),
         fontSize: '13px',
         fontWeight: '400',
-        text: aqiAvg.toString(),
+        text: aqiMax.toString(),
       }
     );
 
@@ -585,19 +650,29 @@ export class AirSensorHistoryContentsComponent implements OnInit {
   }
 
 
-
   /**
-   * get AQI average
+   * get Max AQI
    * @param eachData: each data
    */
-  aqiAvg(eachData: any): number {
-    if (eachData != null) {
-      var sum: number = eachData.AQI_CO + eachData.AQI_NO2 + eachData.AQI_O3
-        + eachData.AQI_SO2 + eachData.AQI_PM10 + eachData.AQI_PM25;
+  aqiMax(eachData: any): number {
+    //console.log("In aqiMax(), Entered data => ", eachData);
+    
+    var max = 0;
+
+    for (var key in eachData) {
+
+      if(key.split('_')[0] == 'AQI'){
+
+        if (max < eachData[key] && eachData[key] > -1 && eachData[key] < 501)
+        
+          max = eachData[key];
+        
+      }
     }
 
-    return Math.floor(sum / 6);
+    return max;
   }
+
 
   /**
    * get AQI Icon

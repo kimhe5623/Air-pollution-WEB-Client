@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HEADER } from 'src/app/header';
+import { StateMachineManagementService } from './state-machine-management.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MsgService {
 
-  constructor() { }
+  constructor(
+    private stateService: StateMachineManagementService
+  ) { }
 
   /** MsgPacking (if EP is tci, EP == null) */
   fnPackingMsg(payload: any, msgType: number, EP: number): any {
@@ -30,6 +33,10 @@ export class MsgService {
   fnVerifyMsgHeader(rspMsg: any, msgType: number, EP: string): boolean {
     if (rspMsg.header.endpointId != EP) {
       console.log("Invalid endpointId");
+      return HEADER.RES_FAILD;
+    }
+    else if(!this.stateService.fnStateOfUsnCheck(msgType)) {
+      console.log("Invalid currentState");
       return HEADER.RES_FAILD;
     }
     else if (rspMsg.header.msgType != msgType) {

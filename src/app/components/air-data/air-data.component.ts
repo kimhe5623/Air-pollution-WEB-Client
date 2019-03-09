@@ -117,7 +117,7 @@ export class AirDataComponent implements OnInit, DoCheck {
       //console.log('NgDoCheck this.aqi_data => ', this.aqi_data);
       //console.log('NgDoCheck this.air_data => ', this.air_data);
 
-      this.shown_aqi = this.dataService.minDev('CO', this.aqi_data);
+      this.shown_aqi = this.dataService.aqiMax(this.aqi_data);
       this.hover(this.shown_aqi['key']);
       this.dominent = this.shown_aqi.key;
 

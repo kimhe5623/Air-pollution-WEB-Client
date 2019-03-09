@@ -7,6 +7,7 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import { HEADER } from 'src/app/header';
 import { AuthorizationService } from 'src/app/services/authorization.service';
+import { StateMachineManagementService } from 'src/app/services/state-machine-management.service';
 declare var google;
 
 @Component({
@@ -113,7 +114,8 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     private dmService: DataMonitoringService,
     private storageService: StorageService,
     private authService: AuthorizationService,
-    private zone: NgZone
+    private zone: NgZone,
+    private stateService: StateMachineManagementService
   ) { }
 
   ngOnInit() {
@@ -140,11 +142,13 @@ export class AirMapsComponent implements OnInit, OnDestroy {
        * Update markers
        */
 
-      // every 5 seconds
+      // every 10 seconds
       this.interval = setInterval(() => {
         if (this.inInterval) {
           //console.log('air-maps.component subscribe');
           this.updateMarkers();
+
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T553');
         }
       }, HEADER.TIMER.T553);
 
@@ -155,8 +159,8 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
     this.dataService.getCurrentAddress((currentAddress) => {
 
-      for(var i=0; i<currentAddress.address.results[5].address_components.length; i++){
-        if(currentAddress.address.results[5].address_components[i].types[0] == 'country'){
+      for (var i = 0; i < currentAddress.address.results[5].address_components.length; i++) {
+        if (currentAddress.address.results[5].address_components[i].types[0] == 'country') {
           var currentNationShortname = currentAddress.address.results[5].address_components[i].short_name;
         }
       }
@@ -175,7 +179,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
             currentAddress.currentLatlng.latitude,
             currentAddress.currentLatlng.longitude
           ),
-          zoom: 17,
+          zoom: 10,
           draggableCursor: '',
           mapTypeId: google.maps.MapTypeId.ROADMAP
         };
@@ -205,7 +209,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
           }
           else {
             this.map.setCenter(place.geometry.location);
-            this.map.setZoom(17);
+            this.map.setZoom(13);
           }
         });
 
@@ -309,8 +313,9 @@ export class AirMapsComponent implements OnInit, OnDestroy {
    */
   addNewMarkers(data: any) {
 
-    //console.log('addNewMarkers', data);
     for (var key in data) {
+
+      var aqiMaxValue: number = this.aqiMax(data[key]);
 
       var marker = new google.maps.Marker({
         map: this.map,
@@ -321,14 +326,14 @@ export class AirMapsComponent implements OnInit, OnDestroy {
           labelOrigin: new google.maps.Point(20, 20),
           origin: new google.maps.Point(0, 0),
           scaledSize: new google.maps.Size(40, 40),
-          url: this.getAqiIcon(this.aqiAvg(data[key]))
+          url: this.getAqiIcon(aqiMaxValue)
         },
 
         label: {
-          color: this.getAqiFontColor(this.aqiAvg(data[key])),
+          color: this.getAqiFontColor(aqiMaxValue),
           fontSize: '13px',
           fontWeight: '400',
-          text: this.aqiAvg(data[key]).toString(),
+          text: aqiMaxValue.toString(),
         },
 
         data: data[key]
@@ -336,10 +341,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
       });
 
       var circle = new google.maps.Circle({
-        strokeColor: this.getAqiCircleColor(this.aqiAvg(data[key])),
+        strokeColor: this.getAqiCircleColor(aqiMaxValue),
         strokeOpacity: 0.8,
         strokeWeight: 1,
-        fillColor: this.getAqiCircleColor(this.aqiAvg(data[key])),
+        fillColor: this.getAqiCircleColor(aqiMaxValue),
         fillOpacity: 0.35,
         map: this.map,
         center: { lat: data[key].latitude, lng: data[key].longitude },
@@ -360,6 +365,8 @@ export class AirMapsComponent implements OnInit, OnDestroy {
  */
   addNewMarker(eachData: any) {
 
+    var aqiMaxValue = this.aqiMax(eachData);
+
     var marker = new google.maps.Marker({
       map: this.map,
       position: { lat: eachData.latitude, lng: eachData.longitude },
@@ -369,14 +376,14 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         labelOrigin: new google.maps.Point(20, 20),
         origin: new google.maps.Point(0, 0),
         scaledSize: new google.maps.Size(40, 40),
-        url: this.getAqiIcon(this.aqiAvg(eachData))
+        url: this.getAqiIcon(aqiMaxValue)
       },
 
       label: {
-        color: this.getAqiFontColor(this.aqiAvg(eachData)),
+        color: this.getAqiFontColor(aqiMaxValue),
         fontSize: '13px',
         fontWeight: '400',
-        text: this.aqiAvg(eachData).toString(),
+        text: aqiMaxValue.toString(),
       },
 
       data: eachData
@@ -384,10 +391,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     });
 
     var circle = new google.maps.Circle({
-      strokeColor: this.getAqiCircleColor(this.aqiAvg(eachData)),
+      strokeColor: this.getAqiCircleColor(aqiMaxValue),
       strokeOpacity: 0.8,
       strokeWeight: 1,
-      fillColor: this.getAqiCircleColor(this.aqiAvg(eachData)),
+      fillColor: this.getAqiCircleColor(aqiMaxValue),
       fillOpacity: 0.35,
       map: this.map,
       center: { lat: eachData.latitude, lng: eachData.longitude },
@@ -442,28 +449,30 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
           if (isChanged) {
 
+            var aqiMaxValue: number = this.aqiMax(this.data[key]);
+
             this.markers[key].setIcon(
               {
                 anchor: new google.maps.Point(20, 20),
                 labelOrigin: new google.maps.Point(20, 20),
                 origin: new google.maps.Point(0, 0),
                 scaledSize: new google.maps.Size(40, 40),
-                url: this.getAqiIcon(this.aqiAvg(this.data[key]))
+                url: this.getAqiIcon(aqiMaxValue)
               }
             );
             this.markers[key].setLabel(
               {
-                color: this.getAqiFontColor(this.aqiAvg(this.data[key])),
+                color: this.getAqiFontColor(aqiMaxValue),
                 fontSize: '13px',
                 fontWeight: '400',
-                text: this.aqiAvg(this.data[key]).toString(),
+                text: aqiMaxValue.toString(),
               }
             );
             this.circles[key].setOptions({
-              strokeColor: this.getAqiCircleColor(this.aqiAvg(this.data[key])),
+              strokeColor: this.getAqiCircleColor(aqiMaxValue),
               strokeOpacity: 0.8,
               strokeWeight: 1,
-              fillColor: this.getAqiCircleColor(this.aqiAvg(this.data[key])),
+              fillColor: this.getAqiCircleColor(aqiMaxValue),
               fillOpacity: 0.35,
               map: this.map,
               center: { lat: this.data[key].latitude, lng: this.data[key].longitude },
@@ -508,6 +517,9 @@ export class AirMapsComponent implements OnInit, OnDestroy {
       this.markers[key]['data'] = this.data[key];
       this.clickedData = this.markers[key]['data'];
 
+      this.map.setCenter(new google.maps.LatLng(this.clickedData.latitude, this.clickedData.longitude));
+      this.map.setZoom(13);
+
       this.dmService.latlngToAddress(this.clickedData.latitude, this.clickedData.longitude, (address) => {
 
         if (address.status == 'OK') {
@@ -526,6 +538,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
     google.maps.event.addListener(this.infoWindow, 'closeclick', () => {
       this.isClicked = false;
+      this.map.setZoom(10);
     })
 
   }
@@ -547,20 +560,25 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * get AQI average
+   * get Max AQI
    * @param eachData: each data
    */
-  aqiAvg(eachData: any): number {
-    //console.log("In aqiAvg(), Entered data => ", eachData);
-    var sum: number = 0;
+  aqiMax(eachData: any): number {
+    //console.log("In aqiMax(), Entered data => ", eachData);
+    //console.log('aqiMax(): eachData => ', eachData);
+    var max = eachData.AQI_CO;
 
-    if (eachData != HEADER.NULL_VALUE) {
-      sum = eachData.AQI_CO + eachData.AQI_NO2 + eachData.AQI_O3
-        + eachData.AQI_SO2 + eachData.AQI_PM10 + eachData.AQI_PM25;
+    for (var key in eachData) {
 
+      if(key.split('_')[0] == 'AQI'){
+
+        if (max < eachData[key])
+        max = eachData[key]
+
+      }
     }
 
-    return Math.floor(sum / 6);
+    return max;
   }
 
   /**
@@ -619,10 +637,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     }
   }
 
-/**
- * get AQI circle color
- * @param aqi : Air quality index
- */
+  /**
+   * get AQI circle color
+   * @param aqi : Air quality index
+   */
   getAqiCircleColor(aqi: number): string {
     if (aqi >= 0 && aqi <= 50) {
       return this.aqi_circle_color.good;
@@ -653,7 +671,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   markerClicked(key: string) {
 
     this.clickedMarker = key;
-    console.log('Clicked marker: markerClicked() => ', this.clickedMarker);
+    //console.log('Clicked marker: markerClicked() => ', this.clickedMarker);
 
     if (this.isClicked) {
       this.chartDestroy();
@@ -955,7 +973,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     });
   }
 
-  
+
   /** Nation */
   nationChanged(value) {
     console.log(value, this.nations2[value][1]);

@@ -6,6 +6,7 @@ import { MsgService } from '../msg.service';
 import { HEADER } from 'src/app/header';
 import { DisplayMessageService } from '../display-message.service';
 import { AuthorizationService } from '../authorization.service';
+import { StateMachineManagementService } from '../state-machine-management.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,9 @@ export class DataMonitoringService {
     private storageService: StorageService,
     private msgService: MsgService,
     private dispMsgService: DisplayMessageService,
-    private authService: AuthorizationService) { }
+    private authService: AuthorizationService,
+    private stateService: StateMachineManagementService
+    ) { }
 
   /**
    * Latlng to address
@@ -34,12 +37,17 @@ export class DataMonitoringService {
   /** RAV */
   fnRav(payload: any, cb) {
     var usn = 0x000000;
-    if (this.authService.isUserLoggedIn()) {
+    if (this.authService.isUserLoggedIn()) { // Logged in
       usn = this.storageService.fnGetUserSequenceNumber();
+    }
+    else { // Anonymous
+      this.storageService.fnSetCurrentState(HEADER.STATE_SWP.IDLE_STATE);
     }
 
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.RAV_REQ, usn);
-    // console.log("HTTP:RAV-REQ => ", reqMsg);
+    console.log("HTTP:RAV-REQ => ", reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.RAV_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
         
@@ -47,7 +55,7 @@ export class DataMonitoringService {
     // retry(HEADER.RETRIVE.R416))
 
       .subscribe((rspMsg: any) => {
-        // console.log("HTTP:RAV-RSP => ", rspMsg);
+        console.log("HTTP:RAV-RSP => ", rspMsg);
         cb(rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.RAV_RSP, reqMsg.header.endpointId)) {
           cb(HEADER.NULL_VALUE); return;
@@ -77,9 +85,13 @@ export class DataMonitoringService {
 
           cb(HEADER.NULL_VALUE); 
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.RAV_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T416')
         }
         else {
           console.log('Error which is -> ', err);
@@ -91,6 +103,8 @@ export class DataMonitoringService {
   fnRhv(payload: any, cb) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.RHV_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
     // console.log('RHV-REQ => ', reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.RHV_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
             
@@ -124,9 +138,13 @@ export class DataMonitoringService {
               cb(HEADER.NULL_VALUE); break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.RHV_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T417');
         }
         else {
           console.log('Error which is -> ', err);
@@ -137,7 +155,9 @@ export class DataMonitoringService {
   /** HAV */
   fnHav(payload: any, cb) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.HAV_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
-    //console.log("HAV-REQ => ", reqMsg);
+    console.log("HAV-REQ => ", reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.HAV_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
                 
@@ -182,9 +202,13 @@ export class DataMonitoringService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.HAV_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T418');
         }
         else {
           console.log('Error which is -> ', err);
@@ -204,6 +228,8 @@ export class DataMonitoringService {
       reqMsg = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SHR_REQ, 0);
     }
     //console.log('SHR-REQ => ', reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.SHR_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
                     
@@ -245,9 +271,13 @@ export class DataMonitoringService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.SHR_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T419');
         }
         else {
           console.log('Error which is -> ', err);
@@ -259,6 +289,8 @@ export class DataMonitoringService {
   fnHhv(payload: any, cb) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.HHV_REQ, this.storageService.fnGetUserSequenceNumber());
     console.log('HHV-REQ => ', reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.HHV_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
                         
@@ -300,9 +332,13 @@ export class DataMonitoringService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.HHV_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T420');
         }
         else {
           console.log('Error which is -> ', err);
@@ -314,6 +350,8 @@ export class DataMonitoringService {
   fnKas(payload: any, cb) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.KAS_REQ, this.storageService.fnGetUserSequenceNumber());
     console.log('KAS-REQ => ', reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.KAS_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
                             
@@ -349,9 +387,13 @@ export class DataMonitoringService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.KAS_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T421');
         }
         else {
           console.log('Error which is -> ', err);

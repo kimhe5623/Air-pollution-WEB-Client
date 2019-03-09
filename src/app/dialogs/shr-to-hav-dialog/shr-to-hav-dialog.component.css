@@ -8,3 +8,14 @@
     width: 10.1rem;
     font-size: 1rem;
 }
+
+/*******/
+.timeSelect {
+    display: inline-block;
+    width: 3rem;
+}
+
+.dateSelect {
+    display: inline-block;
+    width: 8rem;
+}

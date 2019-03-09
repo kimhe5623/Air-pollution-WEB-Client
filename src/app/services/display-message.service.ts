@@ -92,8 +92,8 @@ export class DisplayMessageService {
 
   fnDispSuccessString(st: SuccessType, data: string){
     switch(st){
-      case('VERIFICATION_CODE_SENDED'):
-        alert('Verification code is successfully sended to ' + data);
+      case('VERIFICATION_CODE_SENT'):
+        alert('Verification code is successfully sent to ' + data);
         break;
 
       case('SIGNUP_COMPLETED'):
@@ -109,7 +109,7 @@ export class DisplayMessageService {
         break;
 
       case('FPU_COMPLETED'):
-        alert('Temporary password was sended to your email');
+        alert('Temporary password was sent to your email');
         break;
       
       case('UDR_COMPLETED'):
@@ -141,4 +141,4 @@ export declare type ErrorType = 'EMPTY_VALUE_INVALID' | 'INVALID_FORMAT'
   
   | 'INCORRECT_HEADER' | 'TIMEOUT';
 
-export declare type SuccessType = 'VERIFICATION_CODE_SENDED' | 'SIGNUP_COMPLETED' | 'SIGNIN_COMPLETED' | 'PWCHANGE_COMPLETED' | 'FPU_COMPLETED' | 'UDR_COMPLETED' | 'SIGNOUT' | 'SENSOR_REG_COMPLETED' | 'SENSOR_DELETE_COMPLETED' | 'SENSOR_ASSOCIATION_COMPLETED';
+export declare type SuccessType = 'VERIFICATION_CODE_SENT' | 'SIGNUP_COMPLETED' | 'SIGNIN_COMPLETED' | 'PWCHANGE_COMPLETED' | 'FPU_COMPLETED' | 'UDR_COMPLETED' | 'SIGNOUT' | 'SENSOR_REG_COMPLETED' | 'SENSOR_DELETE_COMPLETED' | 'SENSOR_ASSOCIATION_COMPLETED';

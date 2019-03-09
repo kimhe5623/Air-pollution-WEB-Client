@@ -1,6 +1,8 @@
 <h1 mat-dialog-title>Historical air data</h1>
 <div mat-dialog-content class="dialog">
+
   <p>Choose a start date and end date you want to see for historical air data</p>
+
   <mat-form-field class="example-full-width">
     <input matInput [matDatepicker]="start" placeholder="Start date" [formControl]="startDateForm">
     <mat-datepicker-toggle matSuffix [for]="start">
@@ -9,6 +11,32 @@
     <mat-datepicker #start></mat-datepicker>
   </mat-form-field>
   &nbsp;
+  <mat-form-field class="timeSelect">
+    <mat-select [(ngModel)]="enteredStartHour" placeholder="HH" (ngModelChange)="timeSelectChanged()"
+      [ngModelOptions]="{standalone: true}">
+      <mat-option *ngFor="let hour of timeSet.hour" [value]="hour">{{ dataService.numberFormattingUnits2(hour) }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  :
+  <mat-form-field class="timeSelect">
+    <mat-select [(ngModel)]="enteredStartMin" placeholder="MM" (ngModelChange)="timeSelectChanged()"
+      [ngModelOptions]="{standalone: true}">
+      <mat-option *ngFor="let min of timeSet.min" [value]="min">{{ dataService.numberFormattingUnits2(min) }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  &nbsp;
+  <mat-form-field class="timeSelect" style="margin-right:1.5rem">
+    <mat-select [(ngModel)]="enteredStartMode" (ngModelChange)="timeSelectChanged()"
+      [ngModelOptions]="{standalone: true}">
+      <mat-option [value]="0">AM</mat-option>
+      <mat-option [value]="12">PM</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <br>
+
   <mat-form-field class="example-full-width">
     <input matInput [matDatepicker]="end" placeholder="End date" [formControl]="endDateForm">
     <mat-datepicker-toggle matSuffix [for]="end">
@@ -16,11 +44,38 @@
     </mat-datepicker-toggle>
     <mat-datepicker #end></mat-datepicker>
   </mat-form-field>
+  &nbsp;
+  <mat-form-field class="timeSelect">
+    <mat-select [(ngModel)]="enteredEndHour" placeholder="HH" (ngModelChange)="timeSelectChanged()"
+      [ngModelOptions]="{standalone: true}">
+      <mat-option *ngFor="let hour of timeSet.hour" [value]="hour">{{ dataService.numberFormattingUnits2(hour) }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  :
+  <mat-form-field class="timeSelect">
+    <mat-select [(ngModel)]="enteredEndMin" placeholder="MM" (ngModelChange)="timeSelectChanged()"
+      [ngModelOptions]="{standalone: true}">
+      <mat-option *ngFor="let min of timeSet.min" [value]="min">{{ dataService.numberFormattingUnits2(min) }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  &nbsp;
+  <mat-form-field class="timeSelect">
+    <mat-select [(ngModel)]="enteredEndMode" (ngModelChange)="timeSelectChanged()"
+      [ngModelOptions]="{standalone: true}">
+      <mat-option [value]="0">AM</mat-option>
+      <mat-option [value]="12">PM</mat-option>
+    </mat-select>
+  </mat-form-field>
+
 </div>
+
 <div mat-dialog-actions style="padding-left: 7rem">
   <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle cancel" (click)="fnBtnClick(true)"
     mdbWavesEffect>Cancel</button>
   <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-  <button mdbBtn [mat-dialog-close]="data" [disabled]="startDateForm.invalid || endDateForm.invalid || startDateForm.value > endDateForm.value"
+  <button mdbBtn [mat-dialog-close]="data"
+    [disabled]="startDateForm.invalid || endDateForm.invalid || startDateForm.value > endDateForm.value"
     class="waves-light btnStyle primary-variant" (click)="fnBtnClick(false)" mdbWavesEffect>Search</button>
 </div>

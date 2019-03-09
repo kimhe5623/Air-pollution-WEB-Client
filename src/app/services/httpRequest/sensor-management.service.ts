@@ -5,6 +5,7 @@ import { StorageService } from 'src/app/services/storage.service';
 import { HEADER } from 'src/app/header';
 import { MsgService } from '../msg.service';
 import { DisplayMessageService } from '../display-message.service';
+import { StateMachineManagementService } from '../state-machine-management.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,13 +16,17 @@ export class SensorManagementService {
     private http: HttpClient,
     private storageService: StorageService,
     private msgService: MsgService,
-    private dispMsgService: DisplayMessageService) { }
+    private dispMsgService: DisplayMessageService,
+    private stateService: StateMachineManagementService
+    ) { }
 
 
   /** fnAsr */
   fnAsr(payload: any, cb) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.ASR_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
     console.log('ASR-REQ => ', reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.ASR_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
 
@@ -67,9 +72,12 @@ export class SensorManagementService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.ASR_RSP, rspMsg.payload.resultCode, null);
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T409');
         }
         else {
           console.log('Error which is -> ', err);
@@ -80,8 +88,10 @@ export class SensorManagementService {
   /** ASD */
   fnAsd(payload: any) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.ASD_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
-
     console.log('ASD-REQ => ', reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.ASD_REQ, 0, 0, null);
+
     this.http.post(`/serverapi`, reqMsg)
 
       // .pipe(timeout(HEADER.TIMER.T410),
@@ -89,6 +99,7 @@ export class SensorManagementService {
 
       .subscribe((rspMsg: any) => {
         console.log('ASD-RSP => ', rspMsg);
+
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.ASD_RSP, reqMsg.header.endpointId)) {
           this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); 
           return;
@@ -130,9 +141,13 @@ export class SensorManagementService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.ASD_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T410');
         }
         else {
           console.log('Error which is -> ', err);
@@ -144,6 +159,8 @@ export class SensorManagementService {
   fnAsv(payload: any, cb) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.ASV_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
     console.log(reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.ASV_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
 
@@ -185,9 +202,13 @@ export class SensorManagementService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.ASV_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T411');
         }
         else {
           console.log('Error which is -> ', err);
@@ -200,6 +221,8 @@ export class SensorManagementService {
   fnSrg(payload: any, cb) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SRG_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
     console.log('SRG-REQ: ', reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.SRG_REQ, 0, 0, null);
     
     this.http.post(`/serverapi`, reqMsg)
 
@@ -238,9 +261,13 @@ export class SensorManagementService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.SRG_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T412');
         }
         else {
           console.log('Error which is -> ', err);
@@ -252,6 +279,8 @@ export class SensorManagementService {
   fnSas(payload: any, cb) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SAS_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
     console.log("SAS-REQ => ", reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.SAS_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
 
@@ -300,9 +329,13 @@ export class SensorManagementService {
 
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.SAS_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T413');
         }
         else {
           console.log('Error which is -> ', err);
@@ -314,6 +347,8 @@ export class SensorManagementService {
   fnSdd(payload: any) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SDD_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
     console.log("HTTP:SDD-REQ => ", reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.SDD_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
 
@@ -329,7 +364,7 @@ export class SensorManagementService {
         }
 
         else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SDD.OK) { // success
-          this.dispMsgService.fnDispSuccessString('SENSOR_ASSOCIATION_COMPLETED', reqMsg.payload.wmac);
+          this.dispMsgService.fnDispSuccessString('SENSOR_DELETE_COMPLETED', null);
         }
 
         else {
@@ -356,9 +391,13 @@ export class SensorManagementService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.SDD_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T414');
         }
         else {
           console.log('Error which is -> ', err);
@@ -371,6 +410,8 @@ export class SensorManagementService {
   fnSlv(payload: any, cb) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SLV_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
     console.log("HTTP:SLV-REQ => ", reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.SLV_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
 
@@ -408,9 +449,13 @@ export class SensorManagementService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.SLV_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T415');
         }
         else {
           console.log('Error which is -> ', err);

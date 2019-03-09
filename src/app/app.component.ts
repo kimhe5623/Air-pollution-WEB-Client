@@ -19,8 +19,6 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     console.log('kasService init()');
     this.kasService.init();
-
-    this.storageService.fnSetCurrentState(HEADER.STATE_SWP.IDLE_STATE);
   }
   
 }

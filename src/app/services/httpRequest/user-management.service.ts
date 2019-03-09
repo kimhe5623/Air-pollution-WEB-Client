@@ -8,6 +8,7 @@ import { MsgService } from '../msg.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { DisplayMessageService } from 'src/app/services/display-message.service';
 import { KasService } from '../kas.service';
+import { StateMachineManagementService } from '../state-machine-management.service';
 
 
 @Injectable({
@@ -22,7 +23,8 @@ export class UserManagementService {
     private msgService: MsgService,
     private authService: AuthorizationService,
     private kasService: KasService,
-    private dispMsgService: DisplayMessageService) { }
+    private dispMsgService: DisplayMessageService,
+    private stateService: StateMachineManagementService) { }
 
 
   /** fnSgu */
@@ -30,19 +32,22 @@ export class UserManagementService {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SGU_REQ, HEADER.NULL_VALUE);
     console.log("HTTP:SGU-REQ => ", reqMsg);
 
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.SGU_REQ, 0, 0, null);
+
     this.http.post(`/serverapi`, reqMsg)
 
       // .pipe(timeout(HEADER.TIMER.T401),
       //   retry(HEADER.RETRIVE.R401))
 
       .subscribe((rspMsg: any) => {
+
         console.log("HTTP:SGU-RSP => ", rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.SGU_RSP, reqMsg.header.endpointId)) {
           this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
         }
 
-        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SGU.OK) { // success
-          this.dispMsgService.fnDispSuccessString('VERIFICATION_CODE_SENDED', reqMsg.payload.userId);
+        else if (rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SGU.OK) { // success
+          this.dispMsgService.fnDispSuccessString('VERIFICATION_CODE_SENT', reqMsg.payload.userId);
           this.router.navigate([HEADER.ROUTER_PATHS.VERIFYING_UVC, rspMsg.header.endpointId, reqMsg.payload.userId, rspMsg.payload.vc], { skipLocationChange: true });
         }
 
@@ -62,9 +67,13 @@ export class UserManagementService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.SGU_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T401');
         }
         else {
           console.log('Error which is -> ', err);
@@ -77,6 +86,8 @@ export class UserManagementService {
   fnUvc(payload: any, EP: number) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.UVC_REQ, EP);
     console.log("HTTP:UVC-REQ => ", reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.UVC_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
 
@@ -116,9 +127,13 @@ export class UserManagementService {
 
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.UVC_RSP, rspMsg.payload.resultCode, null);
+        
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T402')
         }
         else {
           console.log('Error which is -> ', err);
@@ -131,6 +146,8 @@ export class UserManagementService {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SGI_REQ, HEADER.NULL_VALUE);
     console.log("HTTP:SGI-REQ => ", reqMsg);
 
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.SGI_REQ, 0, 0, null);
+
     this.http.post(`/serverapi`, reqMsg)
 
       // .pipe(timeout(HEADER.TIMER.T403))
@@ -139,10 +156,10 @@ export class UserManagementService {
       .subscribe((rspMsg: any) => {
         console.log("HTTP:SGI-RSP => ", rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.SGI_RSP, reqMsg.header.endpointId)) {
-          this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
+          this.dispMsgService.fnDispErrorString('INCORRECT_HEADER');
         }
 
-        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SGI.OK) { // success
+        else if (rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SGI.OK) { // success
           var userInfo = { usn: rspMsg.payload.usn, nsc: rspMsg.payload.nsc, email: reqMsg.payload.userID };
           this.storageService.set('userInfo', userInfo);
           this.dispMsgService.fnDispSuccessString('SIGNIN_COMPLETED', HEADER.NULL_VALUE);
@@ -177,9 +194,13 @@ export class UserManagementService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.SGI_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T403');
         }
         else {
           console.log('Error which is -> ', err);
@@ -192,6 +213,8 @@ export class UserManagementService {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SGO_NOT, Number(this.storageService.fnGetUserSequenceNumber()));
     console.log("HTTP:SGO-REQ => ", reqMsg);
 
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.SGO_NOT, 0, 0, null);
+
     this.http.post(`/serverapi`, reqMsg)
 
       // .pipe(timeout(HEADER.TIMER.T404),
@@ -203,7 +226,7 @@ export class UserManagementService {
           this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
         }
 
-        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SGO.OK) { // success
+        else if (rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SGO.OK) { // success
           console.log('SUCCESS: Sign out');
         }
 
@@ -223,9 +246,12 @@ export class UserManagementService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0,HEADER.MSGTYPE.SGO_ACK, rspMsg.payload.resultCode, null);
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T404');
         }
         else {
           console.log('Error which is -> ', err);
@@ -240,18 +266,22 @@ export class UserManagementService {
   /** fnUpc */
   fnUpc(payload: any) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.UPC_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
+    console.log("HTTP:UPC-REQ => ", reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.UPC_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
 
       // .pipe(timeout(HEADER.TIMER.T405),
       //   retry(HEADER.RETRIVE.R405))
-
       .subscribe((rspMsg: any) => {
+        console.log("HTTP:UPC-REQ => ", reqMsg);
+
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.UPC_RSP, reqMsg.header.endpointId)) {
           this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
         }
 
-        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_UPC.OK) { // success
+        else if (rspMsg.payload.resultCode == HEADER.RESCODE_SWP_UPC.OK) { // success
           this.dispMsgService.fnDispSuccessString('PWCHANGE_COMPLETED', HEADER.NULL_VALUE);
         }
 
@@ -275,9 +305,13 @@ export class UserManagementService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.UPC_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T405');
         }
         else {
           console.log('Error which is -> ', err);
@@ -287,7 +321,11 @@ export class UserManagementService {
 
   /** fnFpu */
   fnFpu(payload: any) {
+
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.FPU_REQ, HEADER.NULL_VALUE);
+    console.log("HTTP:FPU-REQ => ", reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.FPU_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
 
@@ -295,11 +333,14 @@ export class UserManagementService {
       //   retry(HEADER.RETRIVE.R406))
 
       .subscribe((rspMsg: any) => {
+        console.log("HTTP:FPU-REQ => ", reqMsg);
+
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.FPU_RSP, reqMsg.header.endpointId)) {
           this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
         }
 
-        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_FPU.OK) { // success
+        else if (rspMsg.payload.resultCode == HEADER.RESCODE_SWP_FPU.OK) { // success
+          this.dispMsgService.fnDispSuccessString('FPU_COMPLETED', null);
           this.router.navigate([HEADER.ROUTER_PATHS.SIGN_IN]);
         }
 
@@ -323,9 +364,13 @@ export class UserManagementService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.FPU_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T406');
         }
         else {
           console.log('Error which is -> ', err);
@@ -335,7 +380,11 @@ export class UserManagementService {
 
   /** fnUdr */
   fnUdr(payload: any) {
+
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.UDR_REQ, this.storageService.fnGetUserSequenceNumber());
+    console.log('HTTP:UDR-REQ => ', reqMsg);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.UDR_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
 
@@ -343,11 +392,13 @@ export class UserManagementService {
       //   retry(HEADER.RETRIVE.R407))
 
       .subscribe((rspMsg: any) => {
+        console.log('HTTP:UDR-RSP => ', rspMsg);
+
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.UDR_RSP, reqMsg.header.endpointId)) {
           this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
         }
 
-        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_UDR.OK) { // success
+        else if (rspMsg.payload.resultCode == HEADER.RESCODE_SWP_UDR.OK) { // success
           this.dispMsgService.fnDispSuccessString('UDR_COMPLETED', HEADER.NULL_VALUE);
           this.storageService.clear('all');
           this.router.navigate([HEADER.ROUTER_PATHS.MAIN_PAGE]);
@@ -373,9 +424,13 @@ export class UserManagementService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.UDR_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T407');
         }
         else {
           console.log('Error which is -> ', err);
@@ -390,6 +445,8 @@ export class UserManagementService {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.AUV_REQ, this.storageService.fnGetUserSequenceNumber());
     console.log("AUV-REQ => ", reqMsg);
 
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.AUV_REQ, 0, 0, null);
+
     this.http.post(`/serverapi`, reqMsg)
 
       // .pipe(timeout(HEADER.TIMER.T408),
@@ -402,7 +459,7 @@ export class UserManagementService {
           cb(HEADER.NULL_VALUE); return;
         }
 
-        else if(rspMsg.payload.resultCode == HEADER.RESCODE_SWP_AUV.OK) { // success
+        else if (rspMsg.payload.resultCode == HEADER.RESCODE_SWP_AUV.OK) { // success
           cb(rspMsg);
         }
 
@@ -427,9 +484,13 @@ export class UserManagementService {
               break;
           }
         }
+
+        this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.AUV_RSP, rspMsg.payload.resultCode, null);
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T408');
         }
         else {
           console.log('Error which is -> ', err);

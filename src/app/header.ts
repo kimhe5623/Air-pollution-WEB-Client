@@ -27,6 +27,7 @@ export class HEADER {
         SHR_REQ: 137, SHR_RSP: 138,
         HHV_REQ: 139, HHV_RSP: 140,
         KAS_REQ: 141, KAS_RSP: 142,
+
     }
 
     // Timer (ms)
@@ -170,7 +171,7 @@ export class HEADER {
         OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3,
     }
 
-    // State
+    // State machines
     public static readonly STATE_SWP: any = {
         IDLE_STATE: 0, USER_DUPLICATE_REQUESTED_STATE: 1, HALF_USN_ALLOCATE_STATE: 2, HALF_USN_INFORMED_STATE: 3, USN_INFORMED_STATE: 4, HALF_IDLE_STATE: 5
     }
@@ -181,7 +182,7 @@ export class HEADER {
     public static readonly ROUTER_PATHS = {
         SIGN_UP: '/signup', SIGN_IN: '/signin', VERIFYING_UVC: '/signup-code', FORGOT_PW: '/forgot-pw',
         COMMON_USER_DASHBOARD: '/dashboard', COMMON_USER_CHANGE_PW: '/dashboard/changepw', COMMON_USER_DEREGISTER_ACCOUNT: '/dashboard/deregister-account', COMMON_USER_SENSOR_LIST: '/dashboard/sensor-list', COMMON_USER_PERSONAL_SENSOR_MANAGEMENT: 'dashboard/personal-sensor-management', COMMON_USER_AIR_HISTORY: '/dashboard/air-history', COMMON_USER_HEART_HISTORY: '/dashboard/heart-history', COMMON_USER_SENSOR_HISTORY: 'dashboard/sensor-history',
-        ADMIN_DASHBOARD: '/administrator', ADMIN_CHANGE_PW: '/administrator/changepw', ADMIN_SENSOR_LIST: '/administrator/sensor-list', ADMIN_PERSONAL_SENSOR_MANAGEMENT: '/administrator/personal-sensor-management', ADMIN_AIR_HISTORY: '/administrator/air-history', ADMIN_HEART_HISTORY: '/administrator/heart-history', ADMIN_ALL_SENSORS_MANAGEMENT: '/administrator/admin-sensor-management', ADMIN_ALL_USERS_MANAGEMENT: '/administrator/admin-user-management', ADMIN_SENSOR_HISTORY: 'administrator/sensor-history',
+        ADMIN_DASHBOARD: '/administrator', ADMIN_CHANGE_PW: '/administrator/changepw', ADMIN_DEREGISTER_ACCOUNT: '/administrator/deregister-account', ADMIN_SENSOR_LIST: '/administrator/sensor-list', ADMIN_PERSONAL_SENSOR_MANAGEMENT: '/administrator/personal-sensor-management', ADMIN_AIR_HISTORY: '/administrator/air-history', ADMIN_HEART_HISTORY: '/administrator/heart-history', ADMIN_ALL_SENSORS_MANAGEMENT: '/administrator/admin-sensor-management', ADMIN_ALL_USERS_MANAGEMENT: '/administrator/admin-user-management', ADMIN_SENSOR_HISTORY: 'administrator/sensor-history',
         MAIN_PAGE: '/', MAIN_SOLUTIONS_PAGE: '/solutions', MAIN_TECHNOLOGY_PAGE: '/technology', MAIN_INTRODUCTION_PAGE: '/introduction',
     };
 

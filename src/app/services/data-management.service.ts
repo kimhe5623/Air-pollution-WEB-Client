@@ -15,10 +15,37 @@ export class DataManagementService {
     private dispMsgService: DisplayMessageService,
   ) { }
 
+  hourCalcTo24(hour: number, mode: number): number { // mode: 0 -> AM / 12 -> PM
+    // If AM,
+    if (mode == 0) {
+      if (hour == 12) return 0; // 12 AM -> 0
+      else return hour; // 1~11 AM -> 1~11
+    }
+    // If PM,
+    else if (mode == 12) {
+      if (hour == 12) return hour;  // 12PM -> 12
+      else return (hour + 12);  // 1~11 PM -> 13~23
+    }
+
+    else return -1;
+
+  }
+
+  /** 24H to AM/PM */
+  hourCalcToAmPm(hh: number): any {
+
+    if (hh == 0) return ({mode: 0, hour: 12}); // 00 -> 12 AM
+    else if (hh == 12) return ({mode: 12, hour: 12}); // 12 -> 12 PM
+    else if (hh > 0 && hh < 12) return ({mode: 0, hour: hh}); // 1 ~ 11 -> 1 ~ 11 AM
+    else if (hh > 12 && hh < 24) return ({mode: 12, hour: hh-12}); // 13 ~ 23 -> 1 ~ 11 PM
+    else return ({mode: -1, hour: -1}); // Unknown range
+
+  }
+
   /** Number Formatting 0 -> 00, 1 -> 01 */
-  numberFormattingUnits2(num: number): string{
-    if(num < 100){
-      if(num < 10){
+  numberFormattingUnits2(num: number): string {
+    if (num < 100) {
+      if (num < 10) {
         return '0' + num.toString();
       }
       else {
@@ -376,6 +403,25 @@ export class DataManagementService {
     return { idx: minidx, value: min };
   }
 
+  /** return MAX AQI key and value at air-data.component */
+  aqiMax(eachData: any): any {
+    //console.log("In aqiMax(), Entered data => ", eachData);
+    
+    var maxData = 0;
+    var maxKey = 'CO'
+
+    for(var key in eachData) {
+
+      if(maxData < eachData[key] && eachData[key] > -1 && eachData[key] < 501) {
+        
+        maxData = eachData[key]
+        maxKey = key;
+
+      }
+    }
+
+    return { key: maxKey, value: maxData };
+  }
   /**
    * return minimum deviation key and value
    */

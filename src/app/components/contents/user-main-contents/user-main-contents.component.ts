@@ -6,6 +6,7 @@ import { DataManagementService } from 'src/app/services/data-management.service'
 import { HEADER } from 'src/app/header';
 import { StorageService } from 'src/app/services/storage.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
+import { StateMachineManagementService } from 'src/app/services/state-machine-management.service';
 
 @Component({
   selector: 'app-user-main-contents',
@@ -143,7 +144,8 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
     private dataService: DataManagementService,
     private storageService: StorageService,
     private router: Router,
-    private authService: AuthorizationService
+    private authService: AuthorizationService,
+    private stateService: StateMachineManagementService
   ) { }
 
   ngOnInit() {
@@ -158,6 +160,7 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
     this.interval = setInterval(() => {
       if(this.inInterval){
         this.fnSetCurrentHeartdata();
+        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T554');
       }
     }, HEADER.TIMER.T554);
   }

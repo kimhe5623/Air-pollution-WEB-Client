@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HEADER } from 'src/app/header';
 import { UserManagementService } from 'src/app/services/httpRequest/user-management.service';
 import { DisplayMessageService } from 'src/app/services/display-message.service';
+import { StateMachineManagementService } from 'src/app/services/state-machine-management.service';
 
 @Component({
   selector: 'app-signup-verification-code',
@@ -27,6 +28,7 @@ export class SignupVerificationCodeComponent implements OnInit, OnDestroy {
     private router: Router,
     private umService: UserManagementService,
     private dispMsgService: DisplayMessageService,
+    private stateService: StateMachineManagementService
   ) {
     this.route.params.subscribe(params => {
       this.tci = Number(params['tci']);
@@ -56,6 +58,7 @@ export class SignupVerificationCodeComponent implements OnInit, OnDestroy {
 
   fnTimeout() {
       this.dispMsgService.fnDispErrorString('TIMEOUT');
+      this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T551');
       this.router.navigate([HEADER.ROUTER_PATHS.SIGN_UP]);
   }
 
