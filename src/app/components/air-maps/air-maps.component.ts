@@ -480,7 +480,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
             });
 
             this.markers[key]['data'] = this.data[key];
-            this.clickedData = this.markers[key]['data'];
 
             this.dmService.latlngToAddress(this.clickedData.latitude, this.clickedData.longitude, (address) => {
 
