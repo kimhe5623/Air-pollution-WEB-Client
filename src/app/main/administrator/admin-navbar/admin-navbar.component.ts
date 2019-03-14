@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
 import { UserManagementService } from '../../../services/httpRequest/user-management.service';
 import { HEADER } from 'src/app/header';
+import { SignoutService } from 'src/app/services/signout.service';
 
 @Component({
   selector: 'app-admin-navbar',
@@ -29,7 +30,9 @@ export class AdminNavbarComponent implements OnInit {
   constructor(
     private router: Router,
     private storageService: StorageService,
-    private umService: UserManagementService, ) { }
+    private umService: UserManagementService,
+    private signoutService: SignoutService
+     ) { }
 
   ngOnInit() {
     this.setMenu(this.storageService.get('menuNum'));
@@ -116,12 +119,7 @@ export class AdminNavbarComponent implements OnInit {
         break;
 
       case (9): // => sign out
-
-        /** HTTP NOTIFICATION */
-        var payload: any = {
-          nsc: this.storageService.fnGetNumberOfSignedInCompletions()
-        };
-        this.umService.fnSgo(payload);
+        this.signoutService.run();
         break;
 
       case (10):

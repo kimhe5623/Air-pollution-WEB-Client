@@ -51,8 +51,8 @@ export class DataMonitoringService {
 
     this.http.post(`/serverapi`, reqMsg)
         
-    // .pipe(timeout(HEADER.TIMER.T416),
-    // retry(HEADER.RETRIVE.R416))
+    .pipe(timeout(HEADER.TIMER.T416),
+      retry(HEADER.RETRIVE.R416))
 
       .subscribe((rspMsg: any) => {
         console.log("HTTP:RAV-RSP => ", rspMsg);
@@ -102,14 +102,14 @@ export class DataMonitoringService {
   /** RHV */
   fnRhv(payload: any, cb) {
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.RHV_REQ, Number(this.storageService.fnGetUserSequenceNumber()));
-    // console.log('RHV-REQ => ', reqMsg);
+    // console.log('HTTP:RHV-REQ => ', reqMsg);
 
     this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.RHV_REQ, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
             
-    // .pipe(timeout(HEADER.TIMER.T417),
-    // retry(HEADER.RETRIVE.R417))
+    .pipe(timeout(HEADER.TIMER.T417),
+      retry(HEADER.RETRIVE.R417))
 
       .subscribe((rspMsg: any) => {
         // console.log('RHV-RSP => ', rspMsg);
@@ -161,8 +161,8 @@ export class DataMonitoringService {
 
     this.http.post(`/serverapi`, reqMsg)
                 
-    // .pipe(timeout(HEADER.TIMER.T418),
-    // retry(HEADER.RETRIVE.R418))
+    .pipe(timeout(HEADER.TIMER.T418),
+      retry(HEADER.RETRIVE.R418))
 
       .subscribe((rspMsg: any) => {
         console.log("HAV-RSP => ", rspMsg);
@@ -233,8 +233,8 @@ export class DataMonitoringService {
 
     this.http.post(`/serverapi`, reqMsg)
                     
-    // .pipe(timeout(HEADER.TIMER.T419),
-    // retry(HEADER.RETRIVE.R419))
+    .pipe(timeout(HEADER.TIMER.T419),
+      retry(HEADER.RETRIVE.R419))
 
       .subscribe((rspMsg: any) => {
         //console.log('SHR-RSP => ', rspMsg);
@@ -294,8 +294,8 @@ export class DataMonitoringService {
 
     this.http.post(`/serverapi`, reqMsg)
                         
-    // .pipe(timeout(HEADER.TIMER.T420),
-    // retry(HEADER.RETRIVE.R420))
+    .pipe(timeout(HEADER.TIMER.T420),
+      retry(HEADER.RETRIVE.R420))
 
       .subscribe((rspMsg: any) => {
         console.log('HHV-RSP => ', rspMsg);
@@ -355,8 +355,8 @@ export class DataMonitoringService {
 
     this.http.post(`/serverapi`, reqMsg)
                             
-    // .pipe(timeout(HEADER.TIMER.T421),
-    // retry(HEADER.RETRIVE.R421))
+    .pipe(timeout(HEADER.TIMER.T421),
+      retry(HEADER.RETRIVE.R421))
 
       .subscribe((rspMsg: any) => {
         console.log('KAS-RSP => ', rspMsg);

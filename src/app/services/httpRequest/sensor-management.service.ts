@@ -30,8 +30,8 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T409),
-      //   retry(HEADER.RETRIVE.R409))
+      .pipe(timeout(HEADER.TIMER.T409),
+        retry(HEADER.RETRIVE.R409))
 
       .subscribe((rspMsg: any) => {
         console.log('ASR-RSP => ', rspMsg);
@@ -94,8 +94,8 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T410),
-      //   retry(HEADER.RETRIVE.R410))
+      .pipe(timeout(HEADER.TIMER.T410),
+        retry(HEADER.RETRIVE.R410))
 
       .subscribe((rspMsg: any) => {
         console.log('ASD-RSP => ', rspMsg);
@@ -164,8 +164,8 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T411),
-      //   retry(HEADER.RETRIVE.R411))
+      .pipe(timeout(HEADER.TIMER.T411),
+        retry(HEADER.RETRIVE.R411))
 
       .subscribe((rspMsg: any) => {
 
@@ -226,8 +226,8 @@ export class SensorManagementService {
     
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T412),
-      //   retry(HEADER.RETRIVE.R412))
+      .pipe(timeout(HEADER.TIMER.T412),
+        retry(HEADER.RETRIVE.R412))
 
       .subscribe((rspMsg: any) => {
         console.log('SRG-RES: ', rspMsg);
@@ -284,8 +284,8 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T413),
-      //   retry(HEADER.RETRIVE.R413))
+      .pipe(timeout(HEADER.TIMER.T413),
+        retry(HEADER.RETRIVE.R413))
 
       .subscribe((rspMsg: any) => {
         console.log("SAS-RSP => ", rspMsg);
@@ -352,8 +352,8 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T414),
-      //   retry(HEADER.RETRIVE.R414))
+      .pipe(timeout(HEADER.TIMER.T414),
+        retry(HEADER.RETRIVE.R414))
 
       .subscribe((rspMsg: any) => {
         console.log("HTTP:SDD-RSP => ", rspMsg);
@@ -415,8 +415,8 @@ export class SensorManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T415),
-      //   retry(HEADER.RETRIVE.R415))
+      .pipe(timeout(HEADER.TIMER.T415),
+        retry(HEADER.RETRIVE.R415))
 
       .subscribe((rspMsg: any) => {
         console.log("HTTP:SLV:RSP => ", rspMsg);

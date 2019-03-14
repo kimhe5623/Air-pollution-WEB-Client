@@ -48,7 +48,7 @@ export class HEADER {
          * T551: 300,000 ms
          * T552: 30,000,000 ms
          */
-        T551: 300000, T552: 1803000,
+        T551: 300000, T552: 3600000,
         T553: 10000, T554: 10000,
     }
 
@@ -177,6 +177,7 @@ export class HEADER {
     }
 
     public static CURRENT_STATE: number = 0;
+    public static KAS_IN_INTERVAL: boolean = false;
 
     // Routes
     public static readonly ROUTER_PATHS = {

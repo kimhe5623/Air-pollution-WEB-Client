@@ -22,7 +22,6 @@ export class KasService {
   ) { }
 
   private interval: any;
-  private inInterval: boolean = false;
   private val: number;
 
   private dialogOpen: boolean = false;
@@ -30,39 +29,41 @@ export class KasService {
   init() {
     this.dialogOpen = false;
 
-    if(this.storageService.get('userInfo')){
+    if (this.storageService.get('userInfo')) {
       this.val = Number(this.storageService.get('kas_val'));
-      this.inInterval = true;
+      HEADER.KAS_IN_INTERVAL = true;
     }
 
     this.interval = setInterval(() => {
 
-      if (this.inInterval) {
+      if (HEADER.KAS_IN_INTERVAL) {
 
         this.val++;
         this.storageService.set('kas_val', this.val);
-        
-        //console.log("KAS service => ", this.val, ' sec');
 
-        if (this.val >= HEADER.TIMER.T552/1000 - 180) { // 180 == 60 * 3  => 3 minutes 
- 
-          if (!this.dialogOpen) {
-            this.openKasDialog();
-            this.dialogOpen = true;
-          }
+        // console.log("KAS service => ", HEADER.TIMER.T552 / 1000 - this.val, ' sec left');
 
-          if (this.val >= 20) { // When timeout,
-            clearInterval(this.interval);
-            this.val = 0;
-            this.storageService.set('kas_val', this.val);
-            this.inInterval = false;
+        // Open KAS dialog
+        if (this.val >= HEADER.TIMER.T552 / 1000 - 180 && !this.dialogOpen) { // 180 == 60 * 3  => 3 minutes 
+          this.openKasDialog();
+          this.dialogOpen = true;
+        }
 
-            this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T552');
-            this.dialog.closeAll();
-          }
+
+        // Time out
+        if (this.val >= HEADER.TIMER.T552 / 1000) {
+          clearInterval(this.interval);
+          this.val = 0;
+          this.storageService.set('kas_val', this.val);
+          HEADER.KAS_IN_INTERVAL = false;
+
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T552');
+          this.dialog.closeAll();
 
           this.signoutService.run();
         }
+
+
       }
     }, 1000);
 
@@ -72,7 +73,7 @@ export class KasService {
    * Start Timer
    */
   startTimer() {
-    this.inInterval = true;
+    HEADER.KAS_IN_INTERVAL = true;
     this.dialogOpen = false;
     this.val = 0;
     this.storageService.set('kas_val', this.val);

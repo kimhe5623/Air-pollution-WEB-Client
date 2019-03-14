@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
 import { UserManagementService } from '../../../services/httpRequest/user-management.service';
 import { HEADER } from 'src/app/header';
+import { SignoutService } from 'src/app/services/signout.service';
 
 @Component({
   selector: 'app-dashboard-navbar',
@@ -27,7 +28,8 @@ export class DashboardNavbarComponent implements OnInit {
   constructor(
     private router: Router,
     private storageService: StorageService,
-    private umService: UserManagementService) { }
+    private umService: UserManagementService,
+    private signoutService: SignoutService) { }
 
   ngOnInit() {
     this.setMenu(this.storageService.get('menuNum'));
@@ -100,14 +102,7 @@ export class DashboardNavbarComponent implements OnInit {
 
 
       case (7): // => sign out
-        alert('sign out!');
-
-        /** HTTP NOTIFICATION */
-        var payload: any = {
-          nsc: this.storageService.get('nsc')
-        };
-        this.umService.fnSgo(payload);
-
+        this.signoutService.run();
         break;
       
       case(8):

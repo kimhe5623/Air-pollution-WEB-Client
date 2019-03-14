@@ -36,8 +36,8 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T401),
-      //   retry(HEADER.RETRIVE.R401))
+      .pipe(timeout(HEADER.TIMER.T401),
+        retry(HEADER.RETRIVE.R401))
 
       .subscribe((rspMsg: any) => {
 
@@ -91,8 +91,8 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T402),
-      //   retry(HEADER.RETRIVE.R402))
+      .pipe(timeout(HEADER.TIMER.T402),
+        retry(HEADER.RETRIVE.R402))
 
       .subscribe((rspMsg: any) => {
         console.log("HTTP:UVC-RSP => ", rspMsg);
@@ -150,8 +150,8 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T403))
-      //   retry(HEADER.RETRIVE.R403))
+      .pipe(timeout(HEADER.TIMER.T403),
+        retry(HEADER.RETRIVE.R403))
 
       .subscribe((rspMsg: any) => {
         console.log("HTTP:SGI-RSP => ", rspMsg);
@@ -200,67 +200,12 @@ export class UserManagementService {
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
-          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T403');
+          //this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T403');
         }
         else {
           console.log('Error which is -> ', err);
         }
       });
-  }
-
-  /** fnSgo */
-  fnSgo(payload: any) {
-    var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SGO_NOT, Number(this.storageService.fnGetUserSequenceNumber()));
-    console.log("HTTP:SGO-REQ => ", reqMsg);
-
-    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.SGO_NOT, 0, 0, null);
-
-    this.http.post(`/serverapi`, reqMsg)
-
-      // .pipe(timeout(HEADER.TIMER.T404),
-      //   retry(HEADER.RETRIVE.R404))
-
-      .subscribe((rspMsg: any) => {
-        console.log("HTTP:SGO-RSP => ", rspMsg);
-        if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.SGO_RSP, reqMsg.header.endpointId)) {
-          this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
-        }
-
-        else if (rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SGO.OK) { // success
-          console.log('SUCCESS: Sign out');
-        }
-
-        else {
-          switch (rspMsg.payload.resultCode) {
-
-            case (HEADER.RESCODE_SWP_SGO.OTHER): // warning-other
-              console.log("WARNING: Unknown warning");
-              break;
-
-            case (HEADER.RESCODE_SWP_SGO.UNALLOCATED_USER_SEQUENCE_NUMBER): // warning-unallocated user sequence number
-              console.log("WARNING: Unallocated user sequence number");
-              break;
-
-            case (HEADER.RESCODE_SWP_SGO.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // warning-incorrect number of signed-in completions
-              console.log("WARNING: Incorrect number of signed-in completions");
-              break;
-          }
-        }
-
-        this.stateService.fnStateOfUsnTransitChange(0,HEADER.MSGTYPE.SGO_ACK, rspMsg.payload.resultCode, null);
-      }, (err) => {
-        if (err.timeout) {
-          console.log('In timeout error which is -> ', err);
-          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T404');
-        }
-        else {
-          console.log('Error which is -> ', err);
-        }
-      });
-
-    this.storageService.clear('all');
-    this.dispMsgService.fnDispSuccessString('SIGNOUT', HEADER.NULL_VALUE);
-    this.router.navigate([HEADER.ROUTER_PATHS.MAIN_PAGE]);
   }
 
   /** fnUpc */
@@ -272,8 +217,8 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T405),
-      //   retry(HEADER.RETRIVE.R405))
+      .pipe(timeout(HEADER.TIMER.T405),
+        retry(HEADER.RETRIVE.R405))
       .subscribe((rspMsg: any) => {
         console.log("HTTP:UPC-REQ => ", reqMsg);
 
@@ -329,8 +274,8 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T406),
-      //   retry(HEADER.RETRIVE.R406))
+      .pipe(timeout(HEADER.TIMER.T406),
+        retry(HEADER.RETRIVE.R406))
 
       .subscribe((rspMsg: any) => {
         console.log("HTTP:FPU-REQ => ", reqMsg);
@@ -388,8 +333,8 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T407),
-      //   retry(HEADER.RETRIVE.R407))
+      .pipe(timeout(HEADER.TIMER.T407),
+        retry(HEADER.RETRIVE.R407))
 
       .subscribe((rspMsg: any) => {
         console.log('HTTP:UDR-RSP => ', rspMsg);
@@ -449,8 +394,8 @@ export class UserManagementService {
 
     this.http.post(`/serverapi`, reqMsg)
 
-      // .pipe(timeout(HEADER.TIMER.T408),
-      //   retry(HEADER.RETRIVE.R408))
+      .pipe(timeout(HEADER.TIMER.T408),
+        retry(HEADER.RETRIVE.R408))
 
       .subscribe((rspMsg: any) => {
         console.log("AUV-RSP => ", rspMsg);
@@ -480,8 +425,7 @@ export class UserManagementService {
 
             case (HEADER.RESCODE_SWP_AUV.UNAUTHORIZED_USER_SEQUENCE_NUMBER): // reject-unauthorized user sequence number
               this.dispMsgService.fnDispErrorString('UNAUTHORIZED_USER_SEQUENCE_NUMBER');
-              this.fnSgo({ nsc: this.storageService.fnGetNumberOfSignedInCompletions() });
-              break;
+              cb(HEADER.NULL_VALUE); break;
           }
         }
 

@@ -20,11 +20,11 @@ export class SignoutService {
     private router: Router
   ) { }
 
-  run(){
+  run() {
     var payload = {
       nsc: this.storageService.fnGetNumberOfSignedInCompletions()
     }
-    
+
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SGO_NOT, Number(this.storageService.fnGetUserSequenceNumber()));
     console.log("HTTP:SGO-REQ => ", reqMsg);
 
@@ -36,7 +36,7 @@ export class SignoutService {
       .subscribe((rspMsg: any) => {
         console.log("HTTP:SGO-RSP => ", rspMsg);
         if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.SGO_RSP, reqMsg.header.endpointId)) {
-          this.dispMsgService.fnDispErrorString('INCORRECT_HEADER'); return;
+          console.log('INCORRECT_HEADER'); return;
         }
 
         else {
@@ -60,6 +60,7 @@ export class SignoutService {
               break;
           }
         }
+
       }, (err) => {
         if (err.timeout) {
           console.log('In timeout error which is -> ', err);
@@ -68,9 +69,10 @@ export class SignoutService {
           console.log('Error which is -> ', err);
         }
       });
-
-    this.storageService.clear('all');
-    this.dispMsgService.fnDispSuccessString('SIGNOUT', HEADER.NULL_VALUE);
-    this.router.navigate([HEADER.ROUTER_PATHS.MAIN_PAGE]);
+      
+      HEADER.KAS_IN_INTERVAL = false;
+      this.storageService.clear('all');
+      this.dispMsgService.fnDispSuccessString('SIGNOUT', HEADER.NULL_VALUE);
+      this.router.navigate([HEADER.ROUTER_PATHS.MAIN_PAGE]);
   }
 }
