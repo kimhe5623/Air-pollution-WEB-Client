@@ -6,6 +6,7 @@ import { MsgService } from './msg.service';
 import { HttpClient } from '@angular/common/http';
 import { timeout, retry } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { StateMachineManagementService } from './state-machine-management.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class SignoutService {
     private msgService: MsgService,
     private dispMsgService: DisplayMessageService,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private stateService: StateMachineManagementService
   ) { }
 
   run() {
@@ -26,7 +28,9 @@ export class SignoutService {
     }
 
     var reqMsg: any = this.msgService.fnPackingMsg(payload, HEADER.MSGTYPE.SGO_NOT, Number(this.storageService.fnGetUserSequenceNumber()));
-    console.log("HTTP:SGO-REQ => ", reqMsg);
+    this.dispMsgService.printLog(['SENT', 'MSG', 'SWP:SGO-NOT']);
+
+    this.stateService.fnStateOfUsnTransitChange(HEADER.MSGTYPE.SGO_NOT, 0, 0, null);
 
     this.http.post(`/serverapi`, reqMsg)
 
@@ -34,45 +38,46 @@ export class SignoutService {
         retry(HEADER.RETRIVE.R404))
 
       .subscribe((rspMsg: any) => {
-        console.log("HTTP:SGO-RSP => ", rspMsg);
-        if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.SGO_RSP, reqMsg.header.endpointId)) {
-          console.log('INCORRECT_HEADER'); return;
+        this.dispMsgService.printLog(['RCVD', 'MSG', 'SWP:SGO-ACK']);
+
+        if (!this.msgService.fnVerifyMsgHeader(rspMsg, HEADER.MSGTYPE.SGO_ACK, reqMsg.header.endpointId)) {
+          this.dispMsgService.fnDispErrorString('INCORRECT_HEADER');
         }
-
         else {
-          switch (rspMsg.payload.resultCode) {
-            // OK: 0, OTHER: 1, UNALLOCATED_USER_SEQUENCE_NUMBER: 2, INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS: 3,
+          this.dispMsgService.printLog(['UNPK', 'PYLD', 'SWP:SGO-ACK', 'resultCode: '+rspMsg.payload.resultCode.toString()]);
+          this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.SGO_ACK, rspMsg.payload.resultCode, null);
 
-            case (HEADER.RESCODE_SWP_SGO.OK): // success
-              console.log('SUCCESS: Sign out');
-              break;
-
-            case (HEADER.RESCODE_SWP_SGO.OTHER): // warning-other
-              console.log("WARNING: Unknown warning");
-              break;
-
-            case (HEADER.RESCODE_SWP_SGO.UNALLOCATED_USER_SEQUENCE_NUMBER): // warning-unallocated user sequence number
-              console.log("WARNING: Unallocated user sequence number");
-              break;
-
-            case (HEADER.RESCODE_SWP_SGO.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // warning-incorrect number of signed-in completions
-              console.log("WARNING: Incorrect number of signed-in completions");
-              break;
+          if (rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SGO.OK) { // Succes
+            this.dispMsgService.printLog(['UNPK', 'MSG', 'SWP:SGO-ACK', 'SUCCESS: Sign out']);
+          }
+          else {
+            switch (rspMsg.payload.resultCode) {
+              case (HEADER.RESCODE_SWP_SGO.OTHER): // warning-other
+                this.dispMsgService.printLog(['UNPK', 'MSG', 'SWP:SGO-ACK', 'WARNING: Unknown warning']);
+                break;
+              case (HEADER.RESCODE_SWP_SGO.UNALLOCATED_USER_SEQUENCE_NUMBER): // warning-unallocated user sequence number
+                this.dispMsgService.printLog(['UNPK', 'MSG', 'SWP:SGO-ACK', 'WARNING: Unallocated user sequence number']);
+                break;
+              case (HEADER.RESCODE_SWP_SGO.INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS): // warning-incorrect number of signed-in completions
+                this.dispMsgService.printLog(['UNPK', 'MSG', 'SWP:SGO-ACK', 'WARNING: Incorrect number of signed-in completions']);
+                break;
+            }
           }
         }
+        HEADER.KAS_IN_INTERVAL = false;
+        this.storageService.clear('all');
+        this.dispMsgService.fnDispSuccessString('SIGNOUT', HEADER.NULL_VALUE);
+        this.router.navigate([HEADER.ROUTER_PATHS.MAIN_PAGE]);
 
       }, (err) => {
         if (err.timeout) {
-          console.log('In timeout error which is -> ', err);
+          this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
+          this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T404');
         }
         else {
-          console.log('Error which is -> ', err);
+          this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
       });
-      
-      HEADER.KAS_IN_INTERVAL = false;
-      this.storageService.clear('all');
-      this.dispMsgService.fnDispSuccessString('SIGNOUT', HEADER.NULL_VALUE);
-      this.router.navigate([HEADER.ROUTER_PATHS.MAIN_PAGE]);
   }
 }

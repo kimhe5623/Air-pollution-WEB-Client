@@ -9,7 +9,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
   templateUrl: './historical-heart-chart.component.html',
   styleUrls: ['./historical-heart-chart.component.css']
 })
-export class HistoricalHeartChartComponent implements OnInit, DoCheck {
+export class HistoricalHeartChartComponent implements DoCheck {
 
   @Input() data: any = [];
   @Output() chartClick: EventEmitter<number> = new EventEmitter<number>();
@@ -27,20 +27,14 @@ export class HistoricalHeartChartComponent implements OnInit, DoCheck {
       this.differ = this.differs.find([]).create();
     }
 
-
-  ngOnInit() { }
-
   ngAfterViewInit() {
-
     this.chartInit();
-
   }
 
   ngDoCheck() {
     const changes = this.differ.diff(this.data);
 
     if (changes) {
-      console.log('Entered chart data => ', this.data);
       this.chartDestroy();
       this.chartInit();
     }
@@ -81,7 +75,6 @@ export class HistoricalHeartChartComponent implements OnInit, DoCheck {
       series_hr.stroke = new am4core.Color({ r: 233, g: 146, b: 146, a: 1 });
       series_hr.segments.template.interactionsEnabled = true;
       series_hr.segments.template.events.on("hit", (ev) => {
-        console.log('Heart rate => ', ev);
         this.indexEmit(ev.target.dataItem.component.tooltipDataItem.index);
       }, this);
 
@@ -111,7 +104,6 @@ export class HistoricalHeartChartComponent implements OnInit, DoCheck {
       
 
       this.chart = chart;
-      console.log('this.chart => ', this.chart);
 
     });
   }
@@ -133,7 +125,6 @@ export class HistoricalHeartChartComponent implements OnInit, DoCheck {
     var endIndex: number = this.chart.data.length - 1;
     var distance: number = endIndex - index;
 
-    console.log(index);
     this.chartClick.emit(index);
 
     if(this.chart.data.length > 20){

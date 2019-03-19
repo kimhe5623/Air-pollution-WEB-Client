@@ -83,13 +83,10 @@ export class DataManagementService {
    * @param rsp 
    */
   rspRealtimeAirDataParsing(rsp: any): any {
-
-    //console.log("Entered realtime air rsp data => ", rsp);
     var result: any = [];
 
     for (var i = 0; i < rsp.length; i++) {
       var splitedData = rsp[i].split(',');
-      //console.log('Splited! =>', splitedData);
 
       result.push({
         mac: splitedData[0],
@@ -112,7 +109,6 @@ export class DataManagementService {
       });
     }
 
-    //console.log("Returned realtime parsed data => ", result)
     return result;
   }
 
@@ -131,8 +127,6 @@ export class DataManagementService {
       airdataArray: []
     }
 
-    console.log("clickedHistoricalData => ", clickedHistoricalData);
-
     result.wmac = clickedHistoricalData.wmac;
     result.lat = Number(clickedHistoricalData.lat);
     result.lng = Number(clickedHistoricalData.lng);
@@ -140,7 +134,6 @@ export class DataManagementService {
     for (var i = 0; i < clickedHistoricalData.commonDataTierTuple.length; i++) {
 
       var splitedData = clickedHistoricalData.commonDataTierTuple[i].split(',');
-      //console.log('Splited! =>', splitedData);
       var timestamp = String(Number(splitedData[0]) * 1000);
 
       result.timeList.push(timestamp);
@@ -180,7 +173,6 @@ export class DataManagementService {
       });
     }
 
-    //console.log("Returned historical parsed data => ", result);
     return result;
   }
 
@@ -189,8 +181,6 @@ export class DataManagementService {
    * @param rsp 
    */
   rspHistoricalAirDataParsing(rsp: any): any {
-
-    //console.log("Entered historical air rsp data => ", rsp);
     var result: any = [];
 
     for (var i = 0; i < rsp.length; i++) {
@@ -198,7 +188,6 @@ export class DataManagementService {
       for (var j = 0; j < rsp[i].commonDataTierTuple.length; j++) {
 
         var splitedData = rsp[i].commonDataTierTuple[j].split(',');
-        //console.log('Splited! =>', splitedData);
 
         result.push({
           mac: rsp[i].wmac,
@@ -222,8 +211,6 @@ export class DataManagementService {
       }
     }
 
-
-    //console.log("Returned historical parsed data => ", result);
     return result;
   }
 
@@ -232,13 +219,10 @@ export class DataManagementService {
    * @param rsp 
    */
   rspHistoricalHeartDataParsing(rsp: any): any {
-
-    // console.log("Entered historical heart rsp data => ", rsp);
     var result: any = [];
 
     for (var i = 0; i < rsp.length; i++) {
       var splitedData = rsp[i].split(',');
-      // console.log('Splited! =>', splitedData);
 
       result.push({
         timestamp: new Date(Number(splitedData[0]) * 1000),
@@ -248,7 +232,6 @@ export class DataManagementService {
       });
     }
 
-    // console.log("Returned historical heart parsed data => ", result);
     return result;
   }
 
@@ -257,12 +240,9 @@ export class DataManagementService {
    * @param rsp 
    */
   rspHistoricalSensorRecordDataParsing(rsp: any): any {
-
-    console.log("Entered historical sensor record rsp data => ", rsp);
     var result: any = [];
 
     for (var i = 0; i < rsp.length; i++) {
-      // console.log('Splited! =>', splitedData);
 
       result.push({
         mac: rsp[i][0],
@@ -275,7 +255,6 @@ export class DataManagementService {
       });
     }
 
-    // console.log("Returned historical sensor record parsed data => ", result);
     return result;
   }
 
@@ -405,8 +384,6 @@ export class DataManagementService {
 
   /** return MAX AQI key and value at air-data.component */
   aqiMax(eachData: any): any {
-    //console.log("In aqiMax(), Entered data => ", eachData);
-    
     var maxData = 0;
     var maxKey = 'CO'
 
@@ -474,7 +451,6 @@ export class DataManagementService {
    * get Chart data 
    */
   getChartData(data: any): any {
-    // console.log('getChartData Input: ', data);
     var chartData: any = {};
 
     for (var key in data[0]) {
@@ -488,7 +464,6 @@ export class DataManagementService {
       }
     }
 
-    // console.log('getChartData Output: ', chartData);
     return chartData;
   }
 

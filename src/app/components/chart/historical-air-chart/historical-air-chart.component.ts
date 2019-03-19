@@ -53,30 +53,22 @@ export class HistoricalAirChartComponent implements DoCheck {
         var endIndex: number = this.chart.data.length - 1;
         var distance: number = endIndex - this.centerIndex;
 
-        console.log('Entered center index => ', this.centerIndex);
-
         if (this.centerIndex != -1 && this.chart.data.length > 20) {
 
-          if (this.centerIndex < 10) {
+          if (this.centerIndex < 10)
             this.dateX.zoomToDates(this.chart.data[0].timestamp, this.chart.data[10 + (10 - this.centerIndex)].timestamp);
-          }
-          else if (this.centerIndex > endIndex - 10) {
+          else if (this.centerIndex > endIndex - 10)
             this.dateX.zoomToDates(this.chart.data[this.centerIndex - (10 + (10 - distance))].timestamp, this.chart.data[endIndex].timestamp);
-          }
-          else {
+          else
             this.dateX.zoomToDates(this.chart.data[this.centerIndex - 10].timestamp, this.chart.data[this.centerIndex + 10].timestamp);
-          }
 
         }
       }
 
       else if (this.chart == null || this.previousMacAddress != this.macAddress) {
-        console.log('Entered chart data => ', this.data);
         if(this.chart != null){
-          console.log('historical-air-chart.component:chartDestroy() => Destroy an existing chart');
           this.chartDestroy();
         }
-        console.log('historical-air-chart.component:chartInit() => Initialize a new chart');
         this.chartInit();
         this.previousMacAddress = this.macAddress;
       }
@@ -94,8 +86,7 @@ export class HistoricalAirChartComponent implements DoCheck {
    * When the checkbox is changed,
    */
   checkboxChanged(ct: checkType) {
-    console.log(this.chart);
-
+    
     switch (ct) {
 
       case ('all'):
@@ -195,9 +186,7 @@ export class HistoricalAirChartComponent implements DoCheck {
     }
   }
 
-  // ngOnInit() { }
   ngAfterViewInit(): void {
-    console.log('ngAfterViewInit: chartInit() => ', this.data);
     this.chartInit();
   }
 
@@ -272,11 +261,8 @@ export class HistoricalAirChartComponent implements DoCheck {
       series_Temp.fill = new am4core.Color({ r: 255, g: 230, b: 136, a: 1 });
       series_Temp.stroke = new am4core.Color({ r: 255, g: 230, b: 136, a: 1 });
       series_Temp.columns.template.events.on("hit", (ev) => {
-        console.log('Temp => ', ev)
         this.indexEmit(ev.target.dataItem.index);
       }, this);
-
-      //console.log('series_Temp => ', series_Temp);
 
       // AQI - CO
       var series_CO = chart.series.push(new am4charts.LineSeries());
@@ -289,7 +275,6 @@ export class HistoricalAirChartComponent implements DoCheck {
       series_CO.fill = new am4core.Color({ r: 233, g: 146, b: 146, a: 1 });
       series_CO.stroke = new am4core.Color({ r: 233, g: 146, b: 146, a: 1 });
       series_CO.segments.template.events.on("hit", (ev) => {
-        console.log('CO => ', ev)
         this.indexEmit(ev.target.dataItem.component.tooltipDataItem.index);
       }, this);
 
@@ -305,7 +290,6 @@ export class HistoricalAirChartComponent implements DoCheck {
       series_O3.fill = new am4core.Color({ r: 224, g: 146, b: 233, a: 1 });
       series_O3.stroke = new am4core.Color({ r: 224, g: 146, b: 233, a: 1 });
       series_O3.segments.template.events.on("hit", (ev) => {
-        console.log('O3 => ', ev)
         this.indexEmit(ev.target.dataItem.component.tooltipDataItem.index);
       }, this);
 
@@ -320,7 +304,6 @@ export class HistoricalAirChartComponent implements DoCheck {
       series_NO2.fill = new am4core.Color({ r: 144, g: 162, b: 217, a: 1 });
       series_NO2.stroke = new am4core.Color({ r: 144, g: 162, b: 217, a: 1 });
       series_NO2.segments.template.events.on("hit", (ev) => {
-        console.log('NO2 => ', ev)
         this.indexEmit(ev.target.dataItem.component.tooltipDataItem.index);
       }, this);
 
@@ -335,7 +318,6 @@ export class HistoricalAirChartComponent implements DoCheck {
       series_SO2.fill = new am4core.Color({ r: 144, g: 203, b: 217, a: 1 });
       series_SO2.stroke = new am4core.Color({ r: 144, g: 203, b: 217, a: 1 });
       series_SO2.segments.template.events.on("hit", (ev) => {
-        console.log('SO2 => ', ev)
         this.indexEmit(ev.target.dataItem.component.tooltipDataItem.index);
       }, this);
 
@@ -350,7 +332,6 @@ export class HistoricalAirChartComponent implements DoCheck {
       series_PM25.fill = new am4core.Color({ r: 159, g: 213, b: 178, a: 1 });
       series_PM25.stroke = new am4core.Color({ r: 159, g: 213, b: 178, a: 1 });
       series_PM25.segments.template.events.on("hit", (ev) => {
-        console.log('PM2.5 => ', ev)
         this.indexEmit(ev.target.dataItem.component.tooltipDataItem.index);
       }, this);
 
@@ -365,7 +346,6 @@ export class HistoricalAirChartComponent implements DoCheck {
       series_PM10.fill = new am4core.Color({ r: 231, g: 188, b: 166, a: 1 });
       series_PM10.stroke = new am4core.Color({ r: 231, g: 188, b: 166, a: 1 });
       series_PM10.segments.template.events.on("hit", (ev) => {
-        console.log('PM10 => ', ev)
         this.indexEmit(ev.target.dataItem.component.tooltipDataItem.index);
       }, this);
 
@@ -412,20 +392,16 @@ export class HistoricalAirChartComponent implements DoCheck {
     var endIndex: number = this.chart.data.length - 1;
     var distance: number = endIndex - index;
 
-    console.log(index);
     this.chartClick.emit(index);
 
     if (this.chart.data.length > 20) {
 
-      if (index < 10) {
+      if (index < 10)
         this.dateX.zoomToDates(this.chart.data[0].timestamp, this.chart.data[10 + (10 - index)].timestamp);
-      }
-      else if (index > endIndex - 10) {
+      else if (index > endIndex - 10)
         this.dateX.zoomToDates(this.chart.data[index - (10 + (10 - distance))].timestamp, this.chart.data[endIndex].timestamp);
-      }
-      else {
+      else
         this.dateX.zoomToDates(this.chart.data[index - 10].timestamp, this.chart.data[index + 10].timestamp);
-      }
 
     }
   }

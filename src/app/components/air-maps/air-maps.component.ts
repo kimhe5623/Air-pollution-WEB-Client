@@ -121,7 +121,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.inInterval = HEADER.RES_SUCCESS;
     this.isLoggedIn = this.authService.isUserLoggedIn();
-    //console.log("air-maps.component ngOnInit()");
 
     this.nations0 = HEADER.NATIONS[0]
     this.nations1 = HEADER.NATIONS[1];
@@ -131,8 +130,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
     this.reqData((result) => {
       if (result != HEADER.NULL_VALUE) {
         this.data = result.data;
-
-        console.log('air-maps.component: data => ', this.data);
 
         this.mapInit(result);
 
@@ -145,7 +142,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
       // every 10 seconds
       this.interval = setInterval(() => {
         if (this.inInterval) {
-          //console.log('air-maps.component subscribe');
           this.updateMarkers();
 
           this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T553');
@@ -165,11 +161,9 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         }
       }
 
-      console.log('nations3 => ', this.nations3[currentNationShortname]);
       if (this.nations3[currentNationShortname] != null) {
         this.enteredNationCode = this.nations3[currentNationShortname][1];
       }
-      console.log('currentAddress => ', currentAddress);
       /**
        * Google maps initialization
        */
@@ -197,8 +191,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         google.maps.event.addListener(this.autocomplete, 'place_changed', () => {
           var place = this.autocomplete.getPlace();
 
-          console.log('place changed event => ', place);
-
           if (!place || !place.geometry) {
             alert("No details available for input: '" + place.name + "'");
             return;
@@ -224,14 +216,11 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         this.clickedMarker = result.firstKey;
         this.addNewMarkers(this.data);
         this.addparsedDataWithFirstkey();
-        console.log('clicked Marker: mapInit() => ', this.clickedMarker);
       }
     });
-    //console.log("mapInit() in air-maps.component, this.map => ", this.map);
   }
 
   ngOnDestroy() {
-    //console.log('air-maps.component ngOnDestroy()');
 
     clearInterval(this.interval);
     this.inInterval = HEADER.RES_FAILD;
@@ -278,7 +267,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
       }
 
       this.dmService.fnRav(payload, (result) => {
-        //console.log('air-maps.component - RAV callback => ', result);
         if (result == HEADER.NULL_VALUE || result.payload.resultCode != HEADER.RESCODE_SWP_RAV.OK) { this.noSensor = true; cb(HEADER.NULL_VALUE); }
         else if (result.payload.realtimeAirQualityDataList.length == 0) { this.noSensor = true; cb(HEADER.NULL_VALUE); }
 
@@ -289,7 +277,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
           // Add firstkey with parsedData //
 
-          //console.log("parsed data =>", parsedData);
           var parsedDataWithFirstkey = { 'firstKey': '', 'data': {} };
 
           parsedDataWithFirstkey['firstKey'] = parsedData[0].mac;
@@ -297,8 +284,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
             parsedDataWithFirstkey['data'][parsedData[i].mac] = parsedData[i];
           }
 
-
-          //console.log('parsed data with firstkey: ', parsedDataWithFirstkey);
           cb(parsedDataWithFirstkey);
         }
       });
@@ -436,7 +421,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
           var isChanged: boolean = HEADER.RES_FAILD;
 
           // Comparing both of data
-          //console.log("this.data => ", this.data, " this.markers => ", this.markers);
           for (var key_ in this.markers[key]['data']) {
             if (this.data[key] == HEADER.NULL_VALUE) { // When new marker is entered
               this.addNewMarkers(key);
@@ -485,7 +469,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
               if (address.status == 'OK') {
                 this.clickedLocation = address.results[0].formatted_address;
-                console.log('clickedLocation => ', this.clickedLocation);
               }
               else {
                 this.clickedLocation = `latitude: ${this.clickedData.latitude} longitude: ${this.clickedData.longitude}`;
@@ -511,7 +494,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
       this.clickedMarker = this.markers[key]['data']['mac'];
       this.markerClicked(key);
-      console.log('air-maps.component click:', this.clickedMarker);
 
       this.markers[key]['data'] = this.data[key];
       this.clickedData = this.markers[key]['data'];
@@ -523,7 +505,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
         if (address.status == 'OK') {
           this.clickedLocation = address.results[0].formatted_address;
-          console.log('clickedLocation => ', this.clickedLocation);
         }
         else {
           this.clickedLocation = `latitude: ${this.clickedData.latitude} longitude: ${this.clickedData.longitude}`;
@@ -563,8 +544,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
    * @param eachData: each data
    */
   aqiMax(eachData: any): number {
-    //console.log("In aqiMax(), Entered data => ", eachData);
-    //console.log('aqiMax(): eachData => ', eachData);
     var max = eachData.AQI_CO;
 
     for (var key in eachData) {
@@ -670,7 +649,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   markerClicked(key: string) {
 
     this.clickedMarker = key;
-    //console.log('Clicked marker: markerClicked() => ', this.clickedMarker);
 
     if (this.isClicked) {
       this.chartDestroy();
@@ -779,7 +757,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
               series.fill = new am4core.Color({ r: 255, g: 230, b: 136, a: 1 });
               series.stroke = new am4core.Color({ r: 255, g: 230, b: 136, a: 1 });
 
-              //console.log('series_Temp => ', series);
               break;
 
             case ('co'): // AQI - CO
@@ -904,21 +881,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
             range_hazardous.contents.strokeOpacity = 30;
 
             range_hazardous.contents.fill = am4core.color('ffffff');
-
-
-
-            //console.log(key, "series After range setting => ", series);
-
           }
-
 
           // Add cursor
           this.chart[key].cursor = new am4charts.XYCursor();
-
-
-          this.chart[key].events.on("doublehit", (ev) => {
-            console.log(ev);
-          });
         }
       }
     });
@@ -957,8 +923,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
 
       this.chart[key].validateData();
-
-      //console.log(key, ' => ', this.chart[key].data);
     }
   }
 
@@ -975,8 +939,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
   /** Nation */
   nationChanged(value) {
-    console.log(value, this.nations2[value][1]);
-
     this.autocomplete.setComponentRestrictions({ 'country': [this.nations2[value][1]] });
   }
 }

@@ -93,7 +93,6 @@ export class AdminSensorManagementContentsComponent implements OnInit {
 
     this.smService.fnAsv(payload, (result) => {
 
-      console.log('ASV-RSP => ', result);
       if (result != HEADER.NULL_VALUE) {
 
         // flush buffer
@@ -118,7 +117,6 @@ export class AdminSensorManagementContentsComponent implements OnInit {
             userID: result.payload.selectedSensorInformationList[i]['regusn']
           });
         }
-        console.log('Parsed data => ', this.SENSOR_LIST);
       }
 
     });
@@ -215,7 +213,6 @@ export class AdminSensorManagementContentsComponent implements OnInit {
 
   selected() {
     this.selectedSensor = this.selection.selected;
-    console.log('Selected! => ', this.selectedSensor);
   }
   //------------------------------------
 
@@ -260,7 +257,6 @@ export class AdminSensorManagementContentsComponent implements OnInit {
             //userId: 'hyon5623@gmail.com',
             drgcd: result.reasonCode,
           }
-          console.log(i);
           this.smService.fnAsd(payload);
         }
         this.fnInitData();

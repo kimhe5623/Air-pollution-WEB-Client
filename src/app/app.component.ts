@@ -13,11 +13,9 @@ export class AppComponent implements OnInit {
   title = 'app';
   constructor(
     public kasService: KasService,
-    private storageService: StorageService
   ) {}
 
   ngOnInit() {
-    console.log('kasService init()');
     this.kasService.init();
   }
   

@@ -87,6 +87,10 @@ export class DisplayMessageService {
         alert('Time out!');
         break;
 
+      case ('CONNECTION_ERR'):
+        alert('Unable to connect');
+        break;
+
     }
   }
 
@@ -132,6 +136,20 @@ export class DisplayMessageService {
         alert("Sensor "+ data +" is successfully associated");
     }
   }
+
+  printLog(contents: Array<string>){
+    var msg: string = "| SV | "
+    for(var i=0; i<contents.length; i++){
+      msg = msg.concat(contents[i]);
+      
+
+      if(i < contents.length-1){
+        msg = msg.concat(' | ');
+      }
+    }
+    console.log(msg);
+  }
+
 }
 
 export declare type ErrorType = 'EMPTY_VALUE_INVALID' | 'INVALID_FORMAT'
@@ -139,6 +157,6 @@ export declare type ErrorType = 'EMPTY_VALUE_INVALID' | 'INVALID_FORMAT'
   // Result code error
   | 'OTHER' | 'CONFLICT_OF_TEMPORARY_CLIENT_ID' | 'DUPLICATE_OF_USER_ID' | 'NOT_EXIST_TEMPORARY_CLIENT_ID' | 'INCORRECT_AUTHENTICATION_CODE' | 'NOT_EXIST_USER_ID' | 'INCORRECT_CURRENT_USER_PASSWORD' | 'UNALLOCATED_USER_SEQUENCE_NUMBER' | 'INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS' | 'INCORRECT_USER_INFORMATION' | 'UNAUTHORIZED_USER_SEQUENCE_NUMBER' | 'NOT_EXIST_WIFI_MAC_ADDRESS' | 'NOT_ASSOCIATED_WITH_USER_ID' | 'ALREADY_ASSOCIATED' | 'NOT_EXIST_SENSORS'
   
-  | 'INCORRECT_HEADER' | 'TIMEOUT';
+  | 'INCORRECT_HEADER' | 'TIMEOUT' | 'CONNECTION_ERR';
 
 export declare type SuccessType = 'VERIFICATION_CODE_SENT' | 'SIGNUP_COMPLETED' | 'SIGNIN_COMPLETED' | 'PWCHANGE_COMPLETED' | 'FPU_COMPLETED' | 'UDR_COMPLETED' | 'SIGNOUT' | 'SENSOR_REG_COMPLETED' | 'SENSOR_DELETE_COMPLETED' | 'SENSOR_ASSOCIATION_COMPLETED';

@@ -109,13 +109,10 @@ export class AirDataComponent implements OnInit, DoCheck {
     const changes = this.differ.diff(this.data);
 
     if (changes) {
-      console.log('NgDoCheck this.data => ', this.data);
       for (var key in this.air_type) {
         this.aqi_data[key] = this.data['AQI_' + key];
         this.air_data[key] = this.data[key];
       }
-      //console.log('NgDoCheck this.aqi_data => ', this.aqi_data);
-      //console.log('NgDoCheck this.air_data => ', this.air_data);
 
       this.shown_aqi = this.dataService.aqiMax(this.aqi_data);
       this.hover(this.shown_aqi['key']);
@@ -125,8 +122,6 @@ export class AirDataComponent implements OnInit, DoCheck {
   }
 
   ngOnInit() {
-    //console.log(">>air-data component");
-    console.log('Entered data:', this.data);
 
     // Style setting
     this.aqi_style['width'] = `${this.radius}px`;
@@ -165,14 +160,11 @@ export class AirDataComponent implements OnInit, DoCheck {
     // Data setting
     this.shown_aqi = { key: airtype, value: this.aqi_data[airtype] };
     this.current_description = this.description[this.getCurrentDescription(this.shown_aqi['value'])];
-    //console.log('hover!', airtype, ' this.aqi_data => ',this.aqi_data , ' this.shown_aqi => ', this.shown_aqi);
 
     // Style setting
     for (var key in this.each_air_data_style) {
       this.each_air_data_style[key] = this.JSON_copy(this.airdata_style);
     }
-
-    //console.log('hover: ', this.shown_aqi);
 
     this.aqi_style['border'] = "solid 12px "+ this.current_description[1];
     this.each_air_data_style[airtype]['border'] = "solid 5px " +

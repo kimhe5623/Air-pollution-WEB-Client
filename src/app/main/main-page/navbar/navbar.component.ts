@@ -63,8 +63,6 @@ export class NavbarComponent implements OnInit {
       case (4): // => sign in
         this.storageService.set('menuNum', 0);
 
-        console.log('userInfo => ', this.storageService.get('userInfo'));
-
         if(this.storageService.get('userInfo') != null){
           if(this.storageService.fnGetUserSequenceNumber() > 1000){
             this.router.navigate(['/dashboard']);

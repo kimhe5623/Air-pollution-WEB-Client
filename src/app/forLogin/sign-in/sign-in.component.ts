@@ -8,7 +8,7 @@ import { HEADER } from 'src/app/header';
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.css']
 })
-export class SignInComponent implements OnInit, OnDestroy {
+export class SignInComponent {
 
   hide: boolean = true;
   errorhide: boolean = true;
@@ -24,14 +24,6 @@ export class SignInComponent implements OnInit, OnDestroy {
     })
   }
 
-  ngOnInit() {
-    console.log('sign-in.component ngOnInit()');
-  }
-
-  ngOnDestroy(){
-    console.log('sign-in.component ngOnDestroy()');
-  }
-
   getPasswordErrorMessage() {
     return 'The field is required'
   }
@@ -44,8 +36,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   onSubmitSigninForm() {
     this.errorhide = false;
 
-    if (this.signinForm.invalid) console.log('Input again');
-    else {
+    if (!this.signinForm.invalid) {
       var payload: any = {
         userId: this.signinForm.value.email,
         userPw: this.signinForm.value.password,

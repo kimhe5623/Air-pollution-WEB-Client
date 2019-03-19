@@ -14,12 +14,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor() { }
 
   ngOnInit() {
-    console.log('home.component ngOnInit()');
     this.airmapDisplay = true;
   }
 
   ngOnDestroy(){
-    console.log('home.component ngOnDestroy()');
     this.airmapDisplay = false;
   }
 

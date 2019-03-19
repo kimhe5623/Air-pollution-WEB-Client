@@ -30,7 +30,6 @@ export class AdminNavbarComponent implements OnInit {
   constructor(
     private router: Router,
     private storageService: StorageService,
-    private umService: UserManagementService,
     private signoutService: SignoutService
      ) { }
 

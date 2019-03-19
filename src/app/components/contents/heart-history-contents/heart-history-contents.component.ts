@@ -16,6 +16,7 @@ export class HeartHistoryContentsComponent implements OnInit {
   endDate: FormControl;
 
   isSearched: boolean;
+  dataStatus: number;
 
   numOfData: number = 0;
   heartHistoryData: any = [];
@@ -49,13 +50,13 @@ export class HeartHistoryContentsComponent implements OnInit {
 
   ngOnInit() {
     this.isSearched = false;
+    this.dataStatus = 0;
   }
 
   /** 
    * Request data  
    */
   reqData(tlv: any, cb) {
-    console.log('startDate: ', this.startDate.value, ' endDate: ', this.endDate.value);
     var payload = {
       nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
       sTs: Math.floor(new Date(this.startDate.value).getTime()/1000),
@@ -65,16 +66,21 @@ export class HeartHistoryContentsComponent implements OnInit {
       city:"Q16552"
     };
 
-    if (tlv != null) payload['tlv'] = tlv
+    if (tlv != null) payload['tlv'] = tlv;
 
     this.dmService.fnHhv(payload, (rspMsg) => {
-
-      this.heartHistoryData = this.dataService.rspHistoricalHeartDataParsing(rspMsg.payload.historicalHeartQualityDataListEncodings);
-      this.numOfData = this.heartHistoryData.length;
-      console.log(this.numOfData);
-
+      if(rspMsg == null) {
+        this.dataStatus = 0;  // 0: failed
+      }
+      else if(rspMsg.payload.historicalHeartQualityDataListEncodings.length != 0) {
+        this.dataStatus = 2;  // 2: data is completely loaded
+        this.heartHistoryData = this.dataService.rspHistoricalHeartDataParsing(rspMsg.payload.historicalHeartQualityDataListEncodings);
+        this.numOfData = this.heartHistoryData.length;
+      }
+      else {
+        this.dataStatus = 0;  // 0: noData
+      }
       cb(null);
-
     });
   }
 
@@ -83,6 +89,7 @@ export class HeartHistoryContentsComponent implements OnInit {
    */
   searchHistory() {
     this.isSearched = true;
+    this.dataStatus = 1;  // 1: Loading data is ongoing 
     this.reqData(null, () => {
       
       if(this.numOfData > 0){
@@ -166,9 +173,6 @@ export class HeartHistoryContentsComponent implements OnInit {
    * change marker
    */
   changeMarkerTo(idx: number) {
-
-    console.log('clicked Data=>', this.heartHistoryData[idx]);
-
     this.infoWindow.close();
     this.heartMarker.setLabel({
       color: '#ffffff',
@@ -177,8 +181,6 @@ export class HeartHistoryContentsComponent implements OnInit {
       text: this.heartHistoryData[idx].heartrate.toString(),
     });
     this.heartMarker.setPosition(this.clickedLocation);
-
-
     this.setInfoWindow(idx);
   }
 
@@ -187,18 +189,13 @@ export class HeartHistoryContentsComponent implements OnInit {
    * add infowindow
    */
   setInfoWindow(idx: number) {
-
     google.maps.event.clearListeners(this.heartMarker, 'click');
-
     google.maps.event.addListener(this.heartMarker, 'click', () => {
-
-      console.log('heartMarkerdata=>', this.heartHistoryData[idx]);
       this.getInfoWindowContents(this.heartHistoryData[idx], (contents) => {
         this.infoWindow.close(); // Close previously opened infowindow
         this.infoWindow.setContent(contents);
-        this.infoWindow.open(this.map, this.heartMarker);
+        this.infoWindow.open(this.map, this.heartMarker); 
       });
-
     });
   }
 
@@ -207,9 +204,7 @@ export class HeartHistoryContentsComponent implements OnInit {
   * get infoWindow contents
   */
   getInfoWindowContents(eachData: any, cb) {
-
       var locationName: string = locationName = `<strong>lat</strong>&nbsp; ${eachData.latitude}<br><strong>lng</strong>&nbsp; ${eachData.longitude}`;
-
       var contents = `
         <style>
         table, th, td {
@@ -224,7 +219,6 @@ export class HeartHistoryContentsComponent implements OnInit {
         <h4 style="text-align:center"><strong>${eachData.heartrate}</strong> <sub>bpm</sub></h4>
          `;
       cb(contents);
-
   }
-
+  
 }

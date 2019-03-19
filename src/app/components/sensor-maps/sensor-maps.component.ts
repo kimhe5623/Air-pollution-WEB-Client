@@ -72,16 +72,12 @@ export class SensorMapsComponent implements OnInit {
 
         this.currentGeometry.location = new google.maps.LatLng({ lat: currentAddress.currentLatlng.latitude, lng: currentAddress.currentLatlng.longitude });
 
-        console.log('currentGeometry => ', this.currentGeometry);
-        // console.log('currentAddress => ', currentAddress);
-
         for (var i = 0; i < currentAddress.address.results[5].address_components.length; i++) {
           if (currentAddress.address.results[5].address_components[i].types[0] == 'country') {
             var currentNationShortname = currentAddress.address.results[5].address_components[i].short_name;
           }
         }
 
-        console.log('nations3 => ', this.nations3[currentNationShortname]);
         if (this.nations3[currentNationShortname] != null) {
           this.enteredNationCode = this.nations3[currentNationShortname][1];
           this.currentGeometry.nation = this.enteredNationCode;
@@ -90,8 +86,6 @@ export class SensorMapsComponent implements OnInit {
         this.currentGeometry.location = currentAddress.currentLatlng;
         this.currentGeometry.address = currentAddress.address.results[0].formatted_address;
 
-        console.log('currentAddress => ', currentAddress);
-        //console.log('this.sensorData: ', this.sensorData);
         /**
          * Google maps initialization
          */
@@ -123,25 +117,20 @@ export class SensorMapsComponent implements OnInit {
          * Event Listener for Autocomplete
          */
         google.maps.event.addListener(this.autocomplete, 'place_changed', () => {
-          var place = this.autocomplete.getPlace();
 
-          console.log('place changed event => ', place);
+          var place = this.autocomplete.getPlace();
 
           if (!place || !place.geometry) {
             alert("No details available for input: '" + place.name + "'");
             return;
           }
-
           this.currentGeometry.nation = this.enteredNationCode;
           this.currentGeometry.address = place.formatted_address;
 
           if (place.geometry.viewport) {
-
             this.currentGeometry.viewport = place.geometry.viewport;
             this.currentGeometry.location = place.geometry.location;
-
             this.map.fitBounds(place.geometry.viewport);
-            console.log('viewport => ', place.geometry.viewport);
           }
           else {
 
@@ -149,23 +138,17 @@ export class SensorMapsComponent implements OnInit {
               delete this.currentGeometry.viewport;
             }
             this.currentGeometry.location = place.geometry.location;
-
             this.map.setCenter(place.geometry.location);
-            console.log('location => ', place.geometry.location);
             this.map.setZoom(13);
           }
-          console.log('currentGeometry => ', this.currentGeometry);
         });
-
 
         /**
          * Marker & Info window
          */
         this.infoWindow = new google.maps.InfoWindow();
         this.addNewMarkers();
-
       });
-
     });
   }
 
@@ -195,7 +178,6 @@ export class SensorMapsComponent implements OnInit {
         for (var i = 0; i < tlvData.length; i++) {
           parsedData['data'][tlvData[i].mac] = tlvData[i];
         }
-        //console.log('parsedrData: ', parsedData);
 
         cb(parsedData);
       }
@@ -231,11 +213,7 @@ export class SensorMapsComponent implements OnInit {
    * add All listener for infoWindow
    */
   addInfoWindow(key) {
-
-    //console.log('addListener =>', this.markers[key]['data']);
-
     google.maps.event.clearListeners(this.markers[key], 'click');
-
     google.maps.event.addListener(this.markers[key], 'click', () => {
 
       this.getInfoWindowContents(this.markers[key]['data'], (contents) => {
@@ -246,12 +224,8 @@ export class SensorMapsComponent implements OnInit {
 
         this.map.setCenter(new google.maps.LatLng(this.markers[this.clickedMarker].data.latitude, this.markers[this.clickedMarker].data.longitude));
         this.map.setZoom(13);
-
-        //console.log('clicked:', key);
-
       });
     });
-
     google.maps.event.addListener(this.infoWindow, 'closeclick', () => {
       this.map.setZoom(10);
     });
@@ -330,8 +304,6 @@ export class SensorMapsComponent implements OnInit {
 
   /** Nation */
   nationChanged(value) {
-    console.log(value, this.nations2[value][1]);
-
     this.autocomplete.setComponentRestrictions({ 'country': [this.nations2[value][1]] });
   }
 

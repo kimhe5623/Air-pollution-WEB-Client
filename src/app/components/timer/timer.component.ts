@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { DisplayMessageService } from 'src/app/services/display-message.service';
 
 @Component({
   selector: 'app-timer',
@@ -19,11 +20,15 @@ export class TimerComponent implements OnInit, OnDestroy {
   private interval: any;
   private inInterval: boolean;
 
-  constructor() {
+  constructor(
+    private dispMsgService: DisplayMessageService
+  ) {
     this.timeout = new EventEmitter<boolean>();
   }
 
   ngOnInit() {
+    this.dispMsgService.printLog(['SET', 'TMER', '5 minutes']);
+
     this.val = 0;
     this.inInterval = true;
 

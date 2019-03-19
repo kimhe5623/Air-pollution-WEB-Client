@@ -205,12 +205,8 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     }
     this.timeSet.min.push(0);
 
-    console.log('shrToHav => ', this.storageService.get('shrToHav'));
-
     if (this.storageService.get('shrToHav')) {
-
       this.isShrToHav = true;
-
       var startD: Date = new Date(Number(this.storageService.get('shrToHav').startTmsp) * 1000);
       var endD: Date = new Date(Number(this.storageService.get('shrToHav').endTmsp) * 1000);
 
@@ -247,7 +243,6 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
   // Functions list //
 
-
   /**
    * When the search button is clicked,
    */
@@ -281,14 +276,13 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
     this.dmService.fnHav(payload, (result) => {
       if (result == null) {
-        this.dataStatus = 0;  // 0: noData or failed
+        this.dataStatus = 0;  // 0: failed
         return;
       }
 
       else if (result.payload.historicalAirQualityDataListEncodings.length != 0) {
         this.dataStatus = 2;  // 2: data is completely loaded
         this.havRspAirdata = result.payload.historicalAirQualityDataListEncodings;
-        console.log('havRspAirdata => ', this.havRspAirdata);
 
         if (this.isShrToHav) {
           this.mapInit(shrToHavData);
@@ -297,7 +291,7 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
       }
       else {
-        this.dataStatus = 0;  // 0: noData or failed
+        this.dataStatus = 0;  // 0: noData
       }
 
     });
@@ -308,14 +302,11 @@ export class AirSensorHistoryContentsComponent implements OnInit {
    */
   timeSliderChanged() {
     this.circle.setMap(null);
-    console.log('Slider is Changed! => ', this.timeSliderValue);
     this.selectedTime = this.dataService.formattingDate(new Date(Number(this.timeListForSelectedMarker[this.timeSliderValue])));
     // Set currently selected air data
     this.selectedAirdata = this.parsedAirdata[this.clickedMarkerMacAddress]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]];
-    console.log('timeSliderChanged: selectedAirdata => ', this.selectedAirdata);
 
     this.changeMarkerBasedInAqi(this.clickedMarkerMacAddress);
-
   }
 
 
@@ -323,12 +314,8 @@ export class AirSensorHistoryContentsComponent implements OnInit {
    * When the chart is clicked
    */
   chartClicked(index: number) {
-    console.log('Chart is clicked! => ', index);
     this.timeSliderValue = index;
-    // Set currently selected air data
     this.selectedAirdata = this.parsedAirdata[this.clickedMarkerMacAddress]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]];
-    console.log('chartClicked: selectedAirdata => ', this.selectedAirdata);
-
     this.selectedTime = this.dataService.formattingDate(new Date(Number(this.timeListForSelectedMarker[this.timeSliderValue])));
   }
 
@@ -356,20 +343,14 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
       // Get current Address for setting the place holder of nation field
       this.dataService.getCurrentAddress((currentAddress) => {
-
-        console.log('currentAddress => ', currentAddress);
-
         for (var i = 0; i < currentAddress.address.results[5].address_components.length; i++) {
           if (currentAddress.address.results[5].address_components[i].types[0] == 'country') {
             var currentNationShortname = currentAddress.address.results[5].address_components[i].short_name;
           }
         }
-
-        console.log('nations3 => ', this.nations3[currentNationShortname]);
         if (this.nations3[currentNationShortname] != null) {
           this.enteredNationCode = this.nations3[currentNationShortname][1];
         }
-
         initNationCode = currentNationShortname;
       });
     }
@@ -395,8 +376,6 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     google.maps.event.addListener(this.autocomplete, 'place_changed', () => {
       var place = this.autocomplete.getPlace();
 
-      console.log('place changed event => ', place);
-
       if (!place || !place.geometry) {
         alert("No details available for input: '" + place.name + "'");
         return;
@@ -404,11 +383,9 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
       if (place.geometry.viewport) {
         this.map.fitBounds(place.geometry.viewport);
-        console.log('viewport => ', place.geometry.viewport);
       }
       else {
         this.map.setCenter(place.geometry.location);
-        console.log('location => ', place.geometry.location);
         this.map.setZoom(13);
       }
     });
@@ -431,7 +408,6 @@ export class AirSensorHistoryContentsComponent implements OnInit {
       var marker = new google.maps.Marker({
         map: this.map,
         position: { lat: Number(this.havRspAirdata[i].lat), lng: Number(this.havRspAirdata[i].lng) },
-
         icon: {
           anchor: new google.maps.Point(40, 40),
           labelOrigin: new google.maps.Point(40, 40),
@@ -439,7 +415,6 @@ export class AirSensorHistoryContentsComponent implements OnInit {
           scaledSize: new google.maps.Size(80, 80),
           url: 'assets/map/marker/sensor.svg'
         },
-
         label: {
           color: '#ffffff',
           fontSize: '20px',
@@ -447,12 +422,9 @@ export class AirSensorHistoryContentsComponent implements OnInit {
           text: "~:" + key.substring(10),
         }
       });
-
       this.markers[key] = marker;
-
       this.addMarkerClickedEvent(key);
     }
-    console.log('Markers => ', this.markers);
   }
 
   turningMarkerToOriginal(key) {
@@ -483,20 +455,17 @@ export class AirSensorHistoryContentsComponent implements OnInit {
     google.maps.event.clearListeners(this.markers[key], 'click');
 
     google.maps.event.addListener(this.markers[key], 'click', () => {
-      console.log('click!!! => ', this.markers[key]);
       this.isMarkerClicked = true;
 
       // If it is not the first marker click,
       if (this.clickedMarkerMacAddress != '') {
         this.turningMarkerToOriginal(this.clickedMarkerMacAddress);
       }
-
       // Update clicked Marker MAC Address
       this.clickedMarkerMacAddress = key;
 
       // If there is no parsed data yet,
       if (!this.parsedAirdata[key]) {
-
         // Figure out what it is
         var clickedMarkerMacAddressIndex = 0;
         for (var i = 0; i < this.havRspAirdata.length; i++) {
@@ -504,18 +473,15 @@ export class AirSensorHistoryContentsComponent implements OnInit {
             clickedMarkerMacAddressIndex = i;
           }
         }
-
         // And parse it
         this.parsedAirdata[key] = this.dataService.clickedHistoricalAirDataParsing(this.havRspAirdata[clickedMarkerMacAddressIndex]);
       }
 
       // Set values for amChart
       this.amChartData = this.parsedAirdata[key]['airdataArray'];
-      console.log('amChartData => ', this.amChartData);
 
       // Set some values about the time slider
       this.timeListForSelectedMarker = this.parsedAirdata[key].timeList;
-      // console.log('timeList => ', this.timeListForSelectedMarker)
       this.timeSliderMin = 0;
       this.timeSliderMax = this.timeListForSelectedMarker.length - 1;
       this.timeSliderValue = this.timeSliderMax;
@@ -523,8 +489,6 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
       // Set currently selected air data
       this.selectedAirdata = this.parsedAirdata[this.clickedMarkerMacAddress]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]];
-      console.log('marker Clicked: selectedAirdata => ', this.selectedAirdata);
-
 
       // If there is previous circle,
       if (this.circle != null) {
@@ -600,7 +564,6 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
     var latlng = { lat: this.parsedAirdata[key]['lat'], lng: this.parsedAirdata[key]['lng'] };
     var aqiMax: number = this.aqiMax(this.parsedAirdata[key]['airdataByTmsp'][this.timeListForSelectedMarker[this.timeSliderValue]]);
-    console.log('aqiMax => ', aqiMax, this.parsedAirdata[key]);
 
     this.markers[key].setIcon({
       anchor: new google.maps.Point(20, 20),
@@ -609,7 +572,6 @@ export class AirSensorHistoryContentsComponent implements OnInit {
       scaledSize: new google.maps.Size(40, 40),
       url: this.getAqiIcon(aqiMax)
     });
-
     this.markers[key].setLabel(
       {
         color: this.getAqiFontColor(aqiMax),
@@ -623,7 +585,6 @@ export class AirSensorHistoryContentsComponent implements OnInit {
 
     this.map.setCenter(latlng);
     this.map.setZoom(13);
-
 
     this.addMarkerClickedEvent(key);
   }
@@ -655,21 +616,13 @@ export class AirSensorHistoryContentsComponent implements OnInit {
    * @param eachData: each data
    */
   aqiMax(eachData: any): number {
-    //console.log("In aqiMax(), Entered data => ", eachData);
-    
     var max = 0;
-
     for (var key in eachData) {
-
       if(key.split('_')[0] == 'AQI'){
-
         if (max < eachData[key] && eachData[key] > -1 && eachData[key] < 501)
-        
           max = eachData[key];
-        
       }
     }
-
     return max;
   }
 

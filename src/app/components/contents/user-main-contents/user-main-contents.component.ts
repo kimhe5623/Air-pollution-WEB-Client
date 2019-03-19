@@ -166,7 +166,6 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log("user-main was destroyed");
     clearInterval(this.interval);
     this.inInterval = false;
   }
@@ -180,7 +179,6 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
     this.dmService.fnRhv(payload, (result) => {
       if (result != null) {
         this.currentHeartdata = result.payload;
-        //console.log(this.currentHeartdata);
       }
     });
   }
@@ -193,9 +191,7 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
 
       if (data != null) {
         this.nearestSensorMac = this.dataService.rspToMacAddress(data[0].mac);
-        // console.log('setNearestSensordata: ', data);
         this.dmService.latlngToAddress(data[0]['latitude'], data[0]['longitude'], (address)=>{
-          // console.log('nearestSensorAddress: ', address);
           this.nearestSensorAddress = address.results[0].formatted_address;
         });
 
@@ -219,7 +215,6 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
         for (var key in this.nearestSensordata) {
           this.currentAirdata[key] = this.nearestSensordata[key]['data'][this.num_of_data - 1];
         }
-        console.log(">>main component init");
 
         this.air_data = [];
         this.air_data.push({ data: this.nearestSensordata['AQI_CO']['data'], label: 'CO AQI' });
@@ -243,23 +238,14 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
     this.currentUnit = unit;
   }
 
-  markerChanged(e){
-    // console.log('user-main-contents.component markerChanged => ', e);
-  }
-  buttonClickTest(e){
-    // console.log('buttonClick event works!! buttonClickTest() =>', e);
-  }
-
   clickDetails(w: string){
     var isAdmin: boolean = this.authService.isAdministor(this.storageService.fnGetUserSequenceNumber());
     switch(w){
       case('heartrate'):
-
         if(isAdmin) {
           this.router.navigate(['/administrator/heart-history']);
         }
         else this.router.navigate(['/dashboard/heart-history']);
-
         break;
 
       case('airquality'):

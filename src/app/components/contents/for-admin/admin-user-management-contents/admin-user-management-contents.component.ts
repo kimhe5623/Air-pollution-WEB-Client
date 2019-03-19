@@ -74,11 +74,8 @@ export class AdminUserManagementContentsComponent implements OnInit {
         }
       }
 
-      console.log("USER LIST => ", this.USER_LIST);
       this.dataSource = new MatTableDataSource<PeriodicElement>(this.USER_LIST);
-      console.log(this.dataSource);
       this.dataSource.paginator = this.paginator;
-
     });
   }
 

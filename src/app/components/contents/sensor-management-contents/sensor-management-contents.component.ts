@@ -78,10 +78,8 @@ export class SensorManagementContentsComponent implements OnInit {
               city: result.payload.selectedSensorInformationList[i][8],
             });
           }
-          console.log("SENSOR LIST => ", this.SENSOR_LIST);
         }
       }
-      else alert('Failed');
     });
   }
 
@@ -135,10 +133,9 @@ export class SensorManagementContentsComponent implements OnInit {
         }
 
         this.smService.fnSas(payload, (success) => {
-          if (!success) {
-            alert('Failed!');
+          if (success) {
+            this.fnInitData();
           }
-          else this.fnInitData();
         });
       }
     });

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HEADER } from 'src/app/header';
 import { StateMachineManagementService } from './state-machine-management.service';
+import { DisplayMessageService } from './display-message.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,8 @@ import { StateMachineManagementService } from './state-machine-management.servic
 export class MsgService {
 
   constructor(
-    private stateService: StateMachineManagementService
+    private stateService: StateMachineManagementService,
+    private dispMsgService: DisplayMessageService
   ) { }
 
   /** MsgPacking (if EP is tci, EP == null) */
@@ -26,27 +28,38 @@ export class MsgService {
       },
       "payload": payload
     }
+
+    this.dispMsgService.printLog(['PACK', 'MSG', 'MsgType: '+msgType.toString()]);
     return packedMsg;
   }
 
   /** Header check */
   fnVerifyMsgHeader(rspMsg: any, msgType: number, EP: string): boolean {
+    var isCorrect: boolean;
+    var msg: string;
+
     if (rspMsg.header.endpointId != EP) {
-      console.log("Invalid endpointId");
-      return HEADER.RES_FAILD;
+      msg = "Invalid endpointId";
+      isCorrect = HEADER.RES_FAILD;
     }
     else if(!this.stateService.fnStateOfUsnCheck(msgType)) {
-      console.log("Invalid currentState");
-      return HEADER.RES_FAILD;
+      msg = "Invalid currentState";
+      isCorrect = HEADER.RES_FAILD;
     }
     else if (rspMsg.header.msgType != msgType) {
-      console.log("Invalid msgType");
-      return HEADER.RES_FAILD;
+      msg = "Invalid msgType";
+      isCorrect = HEADER.RES_FAILD;
     }
-    /*else if (rspMsg.header.msgLen != ~-encodeURI(JSON.stringify(rspMsg.payload)).split(/%..|./).length) {
-      console.log("Damaged message");
-      return HEADER.RES_FAILD;
-    }*/
-    else return HEADER.RES_SUCCESS;
+    // else if (rspMsg.header.msgLen != ~-encodeURI(JSON.stringify(rspMsg.payload)).split(/%..|./).length) 00000000000
+    //   isCorrect = HEADER.RES_FAILD;
+    // }
+    else {
+      msg = "OK"
+      isCorrect = HEADER.RES_SUCCESS;
+    }
+
+    this.dispMsgService.printLog(['VRFY', 'HDR', msg]);
+
+    return isCorrect;
   }
 }
