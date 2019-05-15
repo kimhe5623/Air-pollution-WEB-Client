@@ -4,7 +4,7 @@
 
 # Airound
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.7.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.7. / 
 node version: 8.16.0
 
 # Air-pollution-Web-Client
