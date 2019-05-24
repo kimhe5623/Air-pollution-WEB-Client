@@ -33,8 +33,8 @@
           <!-- Temperature Chart: Celsius -->
           <div style="display: block" *ngIf="currentUnit == 'C'">
             <canvas mdbChart [chartType]="chartType" [datasets]="temp_cels" [labels]="chartLabels"
-              [colors]="chartColors" [options]="chartOptions" [legend]="true" (chartHover)="chartHovered($event)"
-              (chartClick)="chartClicked($event)">
+              [colors]="chartColors" [options]="chartOptions" [legend]="true"
+              (chartClick)="tempChartClicked($event)">
             </canvas>
           </div>
           <!-- Temperature Chart: Fahrenheit -->
@@ -70,7 +70,8 @@
         <!-- AQI chart -->
         <div style="display: block; margin-top: 30px;">
           <canvas mdbChart [chartType]="chartType" [datasets]="air_data" [labels]="chartLabels"
-            [colors]="airChartColors" [options]="chartOptions" [legend]="true">
+            [colors]="airChartColors" [options]="chartOptions" [legend]="true"
+            (chartClick)="airQualityChartClicked($event)">
           </canvas>
         </div>
       </mat-card-content>

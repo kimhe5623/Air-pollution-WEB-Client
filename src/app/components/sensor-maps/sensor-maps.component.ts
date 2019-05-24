@@ -66,89 +66,91 @@ export class SensorMapsComponent implements OnInit {
     this.nations3 = HEADER.NATIONS[3];
 
     this.reqData((result) => {
-      this.sensorData = result.data;
+      if(result != null) {
+        this.sensorData = result.data;
 
-      this.dataService.getCurrentAddress((currentAddress) => {
-
-        this.currentGeometry.location = new google.maps.LatLng({ lat: currentAddress.currentLatlng.latitude, lng: currentAddress.currentLatlng.longitude });
-
-        for (var i = 0; i < currentAddress.address.results[5].address_components.length; i++) {
-          if (currentAddress.address.results[5].address_components[i].types[0] == 'country') {
-            var currentNationShortname = currentAddress.address.results[5].address_components[i].short_name;
-          }
-        }
-
-        if (this.nations3[currentNationShortname] != null) {
-          this.enteredNationCode = this.nations3[currentNationShortname][1];
-          this.currentGeometry.nation = this.enteredNationCode;
-        }
-
-        this.currentGeometry.location = currentAddress.currentLatlng;
-        this.currentGeometry.address = currentAddress.address.results[0].formatted_address;
-
-        /**
-         * Google maps initialization
-         */
-        var mapProp = {
-          center: new google.maps.LatLng(
-            currentAddress.currentLatlng.latitude,
-            currentAddress.currentLatlng.longitude
-          ),
-          zoom: 10,
-          draggableCursor: '',
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-
-        this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
-        this.autocomplete = new google.maps.places.Autocomplete(document.getElementById(`autocomplete`), {
-          types: [`address`],
-          componentRestrictions: [currentNationShortname],
-        });
-
-        /**
-         * Event Listener for Bounds changed
-         */
-        google.maps.event.addListener(this.map, 'bounds_changed', () => {
-          this.currentGeometry.viewport = this.map.getBounds();
-          this.currentGeometry.location = this.map.getCenter();
-        })
-
-        /**
-         * Event Listener for Autocomplete
-         */
-        google.maps.event.addListener(this.autocomplete, 'place_changed', () => {
-
-          var place = this.autocomplete.getPlace();
-
-          if (!place || !place.geometry) {
-            alert("No details available for input: '" + place.name + "'");
-            return;
-          }
-          this.currentGeometry.nation = this.enteredNationCode;
-          this.currentGeometry.address = place.formatted_address;
-
-          if (place.geometry.viewport) {
-            this.currentGeometry.viewport = place.geometry.viewport;
-            this.currentGeometry.location = place.geometry.location;
-            this.map.fitBounds(place.geometry.viewport);
-          }
-          else {
-
-            if (this.currentGeometry.viewport) {
-              delete this.currentGeometry.viewport;
+        this.dataService.getCurrentAddress((currentAddress) => {
+  
+          this.currentGeometry.location = new google.maps.LatLng({ lat: currentAddress.currentLatlng.latitude, lng: currentAddress.currentLatlng.longitude });
+  
+          for (var i = 0; i < currentAddress.address.results[5].address_components.length; i++) {
+            if (currentAddress.address.results[5].address_components[i].types[0] == 'country') {
+              var currentNationShortname = currentAddress.address.results[5].address_components[i].short_name;
             }
-            this.currentGeometry.location = place.geometry.location;
-            this.map.setCenter(place.geometry.location);
-            this.map.setZoom(13);
           }
+  
+          if (this.nations3[currentNationShortname] != null) {
+            this.enteredNationCode = this.nations3[currentNationShortname][1];
+            this.currentGeometry.nation = this.enteredNationCode;
+          }
+  
+          this.currentGeometry.location = currentAddress.currentLatlng;
+          this.currentGeometry.address = currentAddress.address.results[0].formatted_address;
+  
+          /**
+           * Google maps initialization
+           */
+          var mapProp = {
+            center: new google.maps.LatLng(
+              currentAddress.currentLatlng.latitude,
+              currentAddress.currentLatlng.longitude
+            ),
+            zoom: 10,
+            draggableCursor: '',
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+  
+          this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+          this.autocomplete = new google.maps.places.Autocomplete(document.getElementById(`autocomplete`), {
+            types: [`address`],
+            componentRestrictions: [currentNationShortname],
+          });
+  
+          /**
+           * Event Listener for Bounds changed
+           */
+          google.maps.event.addListener(this.map, 'bounds_changed', () => {
+            this.currentGeometry.viewport = this.map.getBounds();
+            this.currentGeometry.location = this.map.getCenter();
+          })
+  
+          /**
+           * Event Listener for Autocomplete
+           */
+          google.maps.event.addListener(this.autocomplete, 'place_changed', () => {
+  
+            var place = this.autocomplete.getPlace();
+  
+            if (!place || !place.geometry) {
+              alert("No details available for input: '" + place.name + "'");
+              return;
+            }
+            this.currentGeometry.nation = this.enteredNationCode;
+            this.currentGeometry.address = place.formatted_address;
+  
+            if (place.geometry.viewport) {
+              this.currentGeometry.viewport = place.geometry.viewport;
+              this.currentGeometry.location = place.geometry.location;
+              this.map.fitBounds(place.geometry.viewport);
+            }
+            else {
+  
+              if (this.currentGeometry.viewport) {
+                delete this.currentGeometry.viewport;
+              }
+              this.currentGeometry.location = place.geometry.location;
+              this.map.setCenter(place.geometry.location);
+              this.map.setZoom(13);
+            }
+          });
+  
+          /**
+           * Marker & Info window
+           */
+          this.infoWindow = new google.maps.InfoWindow();
+          this.addNewMarkers();
         });
-
-        /**
-         * Marker & Info window
-         */
-        this.infoWindow = new google.maps.InfoWindow();
-        this.addNewMarkers();
-      });
+      }
     });
   }
 

@@ -59,7 +59,7 @@ export class UserManagementService {
                 this.dispMsgService.fnDispErrorString('OTHER');
                 break;
               case (HEADER.RESCODE_SWP_SGU.CONFLICT_OF_TEMPORARY_CLIENT_ID): // reject-conflict of tci
-                this.dispMsgService.fnDispErrorString('CONFLICT_OF_TEMPORARY_CLIENT_ID');
+                this.fnSgu(payload);
                 break;
               case (HEADER.RESCODE_SWP_SGU.DUPLICATE_OF_USER_ID): // reject-duplicate of user ID
                 this.dispMsgService.fnDispErrorString('DUPLICATE_OF_USER_ID');
@@ -69,14 +69,14 @@ export class UserManagementService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T401');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T401');
       });
 
   }
@@ -126,14 +126,14 @@ export class UserManagementService {
 
         }        
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T402')
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T402')
       });
   }
 
@@ -176,7 +176,7 @@ export class UserManagementService {
                 this.dispMsgService.fnDispErrorString('OTHER');
                 break;
               case (HEADER.RESCODE_SWP_SGI.CONFLICT_OF_TEMPORARY_CLIENT_ID): // reject-conflict of Temporary Client ID
-                this.dispMsgService.fnDispErrorString('CONFLICT_OF_TEMPORARY_CLIENT_ID');
+                this.fnSgi(payload);
                 break;
               case (HEADER.RESCODE_SWP_SGI.NOT_EXIST_USER_ID): // reject-not exist user ID
                 this.dispMsgService.fnDispErrorString('NOT_EXIST_USER_ID');
@@ -189,14 +189,14 @@ export class UserManagementService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T403');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T403');
       });
   }
 
@@ -243,14 +243,14 @@ export class UserManagementService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T405');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T405');
       });
   }
 
@@ -287,7 +287,7 @@ export class UserManagementService {
                 this.dispMsgService.fnDispErrorString('OTHER');
                 break;
               case (HEADER.RESCODE_SWP_FPU.CONFLICT_OF_TEMPORARY_CLIENT_ID): // reject-conflict of tci
-                this.dispMsgService.fnDispErrorString('CONFLICT_OF_TEMPORARY_CLIENT_ID');
+                this.fnFpu(payload);
                 break;
               case (HEADER.RESCODE_SWP_FPU.INCORRECT_USER_INFORMATION): // reject-incorrect user information
                 this.dispMsgService.fnDispErrorString('INCORRECT_USER_INFORMATION');
@@ -300,14 +300,14 @@ export class UserManagementService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T406');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T406');
       });
   }
 
@@ -358,14 +358,14 @@ export class UserManagementService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T407');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T407');
       });
 
     return HEADER.RES_SUCCESS;
@@ -417,14 +417,14 @@ export class UserManagementService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T408');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T408');
       });
   }
 }

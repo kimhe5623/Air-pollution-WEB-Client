@@ -32,33 +32,39 @@ export class StateMachineManagementService {
     }
     else {
 
+      // IDLE STATE
+      if (rspMsgType == HEADER.MSGTYPE.FPU_RSP) {
+        correctState = HEADER.STATE_SWP.IDLE_STATE;
+        isCorrect = (currentState == correctState);
+      }
+
       // DEPENDS ON IF IT IS LOGGED IN OR NOT: IDLE STATE OR USN INFORMED STATE
-      if (rspMsgType == HEADER.MSGTYPE.RAV_RSP || rspMsgType == HEADER.MSGTYPE.SHR_RSP) {
+      else if (rspMsgType == HEADER.MSGTYPE.RAV_RSP || rspMsgType == HEADER.MSGTYPE.SHR_RSP) {
 
         if (this.authService.isUserLoggedIn()) {
           correctState = HEADER.STATE_SWP.USN_INFORMED_STATE;
-          isCorrect = (currentState == HEADER.STATE_SWP.USN_INFORMED_STATE);
+          isCorrect = (currentState == correctState);
         }
         else {
           correctState = HEADER.STATE_SWP.IDLE_STATE;
-          isCorrect = (currentState == HEADER.STATE_SWP.IDLE_STATE);
+          isCorrect = (currentState == correctState);
         }
 
       }
       // USER DUPLICATE REQUESTED STATE
       else if (rspMsgType == HEADER.MSGTYPE.SGU_RSP) {
         correctState = HEADER.STATE_SWP.USER_DUPLICATE_REQUESTED_STATE;
-        isCorrect = (currentState == HEADER.STATE_SWP.USER_DUPLICATE_REQUESTED_STATE);
+        isCorrect = (currentState == correctState);
       }
       // HALF USN ALLOCATED STATE
       else if (rspMsgType == HEADER.MSGTYPE.UVC_RSP) {
         correctState = HEADER.STATE_SWP.HALF_USN_ALLOCATED_STATE;
-        isCorrect = (currentState == HEADER.STATE_SWP.HALF_USN_ALLOCATED_STATE);
+        isCorrect = (currentState == correctState);
       }
       // HALF IDLE STATE
       else if (rspMsgType == HEADER.MSGTYPE.SGO_ACK || rspMsgType == HEADER.MSGTYPE.UDR_RSP) {
         correctState = HEADER.STATE_SWP.HALF_IDLE_STATE
-        isCorrect = (currentState == HEADER.STATE_SWP.HALF_IDLE_STATE);
+        isCorrect = (currentState == correctState);
       }
       // USN INFORMED STATE
       else if (rspMsgType == HEADER.MSGTYPE.UPC_RSP || rspMsgType == HEADER.MSGTYPE.AUV_RSP || rspMsgType == HEADER.MSGTYPE.ASR_RSP
@@ -67,12 +73,12 @@ export class StateMachineManagementService {
         || rspMsgType == HEADER.MSGTYPE.RHV_RSP || rspMsgType == HEADER.MSGTYPE.HAV_RSP || rspMsgType == HEADER.MSGTYPE.HHV_RSP
         || rspMsgType == HEADER.MSGTYPE.KAS_RSP) {
         correctState = HEADER.STATE_SWP.USN_INFORMED_STATE;
-        isCorrect = (currentState == HEADER.STATE_SWP.USN_INFORMED_STATE);
+        isCorrect = (currentState == correctState);
       }
       // HALF USN INFORMED STATE
       else if (rspMsgType == HEADER.MSGTYPE.SGI_RSP) {
         correctState = HEADER.STATE_SWP.HALF_USN_INFORMED_STATE;
-        isCorrect = (currentState == HEADER.STATE_SWP.HALF_USN_INFORMED_STATE);
+        isCorrect = (currentState == correctState);
       }
       else {
         isCorrect = HEADER.RES_FAILD;
@@ -82,7 +88,7 @@ export class StateMachineManagementService {
 
 
 
-    this.dispMsgService.printLog(['VRFY', 'HDR', 'STATE CHECK', isCorrect ? 'Available' : 'Unavailable', 'correctState: ' + this.stateToString(correctState)]);
+    this.dispMsgService.printLog(['VRFY', 'HDR', 'STATE CHECK','currentState: ' + this.stateToString(currentState), isCorrect ? 'Available' : 'Unavailable', 'correctState: ' + this.stateToString(correctState)]);
     return isCorrect;
   }
 
@@ -239,7 +245,7 @@ export class StateMachineManagementService {
         currentState = 0;
       }
 
-    }
+    } 
 
     else {
       currentState = 0;
@@ -247,6 +253,7 @@ export class StateMachineManagementService {
 
     this.dispMsgService.printLog([logState[0], logState[1], 'STATE CHANGE', 'resultCode: ' + resultCode, '(' + this.stateToString(this.storageService.fnGetCurrentState()) + ') -> (' + this.stateToString(currentState) + ')']);
     this.storageService.fnSetCurrentState(currentState);
+
   }
 
   stateToString(currentState: number): string {

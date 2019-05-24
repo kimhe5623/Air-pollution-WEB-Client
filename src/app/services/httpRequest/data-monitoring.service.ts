@@ -26,10 +26,15 @@ export class DataMonitoringService {
    * Latlng to address
    */
   latlngToAddress(lat: number, lng: number, cb) {
-    this.http.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${HEADER.GOOGLE_MAP_API_KEY}&sensor=false`)
+    if(lat == null || lng == null){
+      cb(null);
+    }
+    else {
+      this.http.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${HEADER.GOOGLE_MAP_API_KEY}&sensor=false`)
       .subscribe((result) => {
         cb(result);
       });
+    }
   }
 
 
@@ -83,14 +88,14 @@ export class DataMonitoringService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T416')
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T416')
       });
   }
 
@@ -136,14 +141,14 @@ export class DataMonitoringService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T417');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T417');
       });
   }
 
@@ -195,14 +200,14 @@ export class DataMonitoringService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T418');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T418');
       });
   }
 
@@ -258,14 +263,14 @@ export class DataMonitoringService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T419');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T419');
       });
   }
 
@@ -314,14 +319,14 @@ export class DataMonitoringService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T420');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T420');
       });
   }
 
@@ -367,14 +372,14 @@ export class DataMonitoringService {
           
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T421');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T421');
       });
   }
 }

@@ -158,7 +158,7 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
     // every 5 seconds
 
     this.interval = setInterval(() => {
-      if(this.inInterval){
+      if (this.inInterval) {
         this.fnSetCurrentHeartdata();
         this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T554');
       }
@@ -172,7 +172,7 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
 
 
   /**
-   * set current heart data
+   * Set current heart data
    */
   fnSetCurrentHeartdata() {
     var payload = { nsc: this.storageService.fnGetNumberOfSignedInCompletions() };
@@ -191,7 +191,7 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
 
       if (data != null) {
         this.nearestSensorMac = this.dataService.rspToMacAddress(data[0].mac);
-        this.dmService.latlngToAddress(data[0]['latitude'], data[0]['longitude'], (address)=>{
+        this.dmService.latlngToAddress(data[0]['latitude'], data[0]['longitude'], (address) => {
           this.nearestSensorAddress = address.results[0].formatted_address;
         });
 
@@ -204,12 +204,12 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
         }
 
         // Set temperature data
-        this.currentCelsius = this.nearestSensordata['temperature']['data'][this.num_of_data - 1];
-
         this.temp_cels = [{ data: this.nearestSensordata['temperature']['data'], label: 'Temp (ºC)' }];
         this.temp_fahr = [{ data: this.dataService.CelsiusToFahr(this.temp_cels[0].data), label: 'Temp (ºF)' }];
 
         this.num_of_data = this.temp_cels[0]['data'].length;
+
+        this.currentCelsius = this.nearestSensordata['temperature']['data'][this.num_of_data - 1];
 
         // Set Air data
         for (var key in this.nearestSensordata) {
@@ -238,18 +238,18 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
     this.currentUnit = unit;
   }
 
-  clickDetails(w: string){
+  clickDetails(w: string) {
     var isAdmin: boolean = this.authService.isAdministor(this.storageService.fnGetUserSequenceNumber());
-    switch(w){
-      case('heartrate'):
-        if(isAdmin) {
+    switch (w) {
+      case ('heartrate'):
+        if (isAdmin) {
           this.router.navigate(['/administrator/heart-history']);
         }
         else this.router.navigate(['/dashboard/heart-history']);
         break;
 
-      case('airquality'):
-        if(isAdmin){
+      case ('airquality'):
+        if (isAdmin) {
           this.router.navigate(['/administrator/air-history']);
         }
         else this.router.navigate(['/dashboard/air-history']);
@@ -257,4 +257,18 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
     }
   }
 
+  tempChartClicked(e) {
+    if(e.active.length != 0){
+      var clickedIndex = e.active[0]._index;
+      this.currentCelsius = this.nearestSensordata['temperature']['data'][clickedIndex];
+    }
+  }
+  airQualityChartClicked(e) {
+    if(e.active.length != 0){
+      var clickedIndex = e.active[0]._index; 
+      for (var key in this.nearestSensordata) {
+        this.currentAirdata[key] = this.nearestSensordata[key]['data'][clickedIndex];
+      }
+    }
+  }
 }

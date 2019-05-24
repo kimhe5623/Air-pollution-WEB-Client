@@ -44,7 +44,8 @@ export class KasService {
         // console.log("KAS service => ", HEADER.TIMER.T552 / 1000 - this.val, ' sec left');
 
         // Open KAS dialog
-        if (this.val >= HEADER.TIMER.T552 / 1000 - 180 && !this.dialogOpen) { // 180 == 60 * 3  => 3 minutes 
+        if (this.val >= HEADER.TIMER.T552 / 1000 - 30 && !this.dialogOpen) { // 180 == 60 * 3  => 3 minutes 
+        //if (this.val >= HEADER.TIMER.T552 / 1000 - 180 && !this.dialogOpen) { // 180 == 60 * 3  => 3 minutes 
           this.openKasDialog();
           this.dialogOpen = true;
         }
@@ -97,11 +98,8 @@ export class KasService {
         }
 
         this.dmService.fnKas(payload, (success) => {
-          if (!success) {
-            alert('Failed!');
-          }
-          else {  // restart timer
-            //clearInterval(this.interval);
+          if (success) {  // restart timer
+            clearInterval(this.interval);
             this.startTimer();
           }
         });

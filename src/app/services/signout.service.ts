@@ -70,7 +70,7 @@ export class SignoutService {
         this.router.navigate([HEADER.ROUTER_PATHS.MAIN_PAGE]);
 
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
           this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T404');

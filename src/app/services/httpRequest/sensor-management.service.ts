@@ -68,14 +68,14 @@ export class SensorManagementService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T409');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T409');
       });
   }
 
@@ -133,14 +133,14 @@ export class SensorManagementService {
         }
 
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T410');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T410');
       });
   }
 
@@ -190,14 +190,14 @@ export class SensorManagementService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T411');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T411');
       });
   }
 
@@ -246,14 +246,14 @@ export class SensorManagementService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T412');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T412');
       });
   }
 
@@ -298,8 +298,11 @@ export class SensorManagementService {
               case (HEADER.RESCODE_SWP_SAS.NOT_EXIST_WIFI_MAC_ADDRESS): // reject-not exist Wifi MAC address
                 this.dispMsgService.fnDispErrorString('NOT_EXIST_WIFI_MAC_ADDRESS');
                 break;
-              case (HEADER.RESCODE_SWP_SAS.ALREADY_ASSOCIATED): // reject-the requested WiFi MAC address was already associated with own user sequence number
-                this.dispMsgService.fnDispErrorString('ALREADY_ASSOCIATED');
+              case (HEADER.RESCODE_SWP_SAS.ALREADY_ASSOCIATED_WITH_USN): // reject-the requested WiFi MAC address was already associated with the user sequence number
+                this.dispMsgService.fnDispErrorString('ALREADY_ASSOCIATED_WITH_USN');
+                break;
+              case (HEADER.RESCODE_SWP_SAS.ALREADY_ASSOCIATED_WITH_OTHER): // reject-the requested WiFi MAC address was already associated with the user sequence number
+                this.dispMsgService.fnDispErrorString('ALREADY_ASSOCIATED_WITH_OTHER');
                 break;
             }
             cb(HEADER.RES_FAILD);
@@ -307,14 +310,14 @@ export class SensorManagementService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T413');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T413');
       });
   }
 
@@ -366,14 +369,14 @@ export class SensorManagementService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T414');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T414');
       });
   }
 
@@ -421,14 +424,14 @@ export class SensorManagementService {
 
         }
       }, (err) => {
-        if (err.timeout) {
+        if (err.timeout || err.status == 504) {
           this.dispMsgService.fnDispErrorString('CONNECTION_ERR');
           this.dispMsgService.printLog(['TMOT', 'CONN', 'ERR', JSON.stringify(err)]);
+          this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T415');
         }
         else {
           this.dispMsgService.printLog(['ERR', 'OTHR', JSON.stringify(err)]);
         }
-        this.stateService.fnStateOfUsnTransitChange(0, 0, 0, 'T415');
       });
   }
 }

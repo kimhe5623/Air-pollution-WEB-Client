@@ -466,12 +466,13 @@ export class AirMapsComponent implements OnInit, OnDestroy {
             this.markers[key]['data'] = this.data[key];
 
             this.dmService.latlngToAddress(this.clickedData.latitude, this.clickedData.longitude, (address) => {
-
-              if (address.status == 'OK') {
-                this.clickedLocation = address.results[0].formatted_address;
-              }
-              else {
-                this.clickedLocation = `latitude: ${this.clickedData.latitude} longitude: ${this.clickedData.longitude}`;
+              if (address != null) {
+                if (address.status == 'OK') {
+                  this.clickedLocation = address.results[0].formatted_address;
+                }
+                else {
+                  this.clickedLocation = `latitude: ${this.clickedData.latitude} longitude: ${this.clickedData.longitude}`;
+                }
               }
             });
 

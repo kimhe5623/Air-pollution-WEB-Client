@@ -50,9 +50,10 @@ export class MsgService {
       msg = "Invalid msgType";
       isCorrect = HEADER.RES_FAILD;
     }
-    // else if (rspMsg.header.msgLen != ~-encodeURI(JSON.stringify(rspMsg.payload)).split(/%..|./).length) 00000000000
-    //   isCorrect = HEADER.RES_FAILD;
-    // }
+    else if (rspMsg.header.msgLen != ~-encodeURI(JSON.stringify(rspMsg.payload)).split(/%..|./).length) {
+      msg = "Invalid msgLen";
+      isCorrect = HEADER.RES_FAILD;
+    }
     else {
       msg = "OK"
       isCorrect = HEADER.RES_SUCCESS;
