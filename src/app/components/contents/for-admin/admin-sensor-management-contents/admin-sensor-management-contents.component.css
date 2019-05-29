@@ -76,6 +76,9 @@
     font-size: 1.1rem;
     margin-right: 3rem;
 }
+.eachtitle.column-name {
+    font-weight: bold;
+}
 
 .contents {
     padding: 0.5rem 0.5rem;

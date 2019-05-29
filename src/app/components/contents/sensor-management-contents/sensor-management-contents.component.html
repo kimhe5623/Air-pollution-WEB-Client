@@ -12,8 +12,8 @@
             [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
         </span>
-        <span *ngFor="let column of displayedColumns; let idx=index" class="eachtitle" [ngStyle]="columnStyles[idx]">
-          <strong>{{column}}</strong>
+        <span *ngFor="let column of displayedColumns; let idx=index" class="eachtitle column-name" [ngStyle]="columnStyles[idx]">
+          {{column}}
         </span>
         <span style="width:10px"></span>
       </div>
