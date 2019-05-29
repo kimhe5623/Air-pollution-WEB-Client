@@ -18,10 +18,10 @@ export class SolutionsComponent implements OnInit {
   btnClick(n) {
     switch(n) {
       case(1):
-        this.notiService.info('the requested WiFi MAC address is not an associated with user ID', 700);
+        this.notiService.info('Anyone with access can view your invited visitors.');
         break;
       case(2):
-        this.notiService.succ('Incorrect authentication code under the verification code');
+        this.notiService.succ('Anyone with access can view your invited visitors.');
         break;
       case(3):
         this.notiService.err('Anyone with access can view your invited visitors.');
