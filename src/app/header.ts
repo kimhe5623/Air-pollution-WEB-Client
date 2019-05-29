@@ -176,6 +176,7 @@ export class HEADER {
         IDLE_STATE: 0, USER_DUPLICATE_REQUESTED_STATE: 1, HALF_USN_ALLOCATED_STATE: 2, HALF_USN_INFORMED_STATE: 3, USN_INFORMED_STATE: 4, HALF_IDLE_STATE: 5
     }
 
+    public static numOfNoti: number = 0;
     public static CURRENT_STATE: number = 0;
     public static KAS_IN_INTERVAL: boolean = false;
 

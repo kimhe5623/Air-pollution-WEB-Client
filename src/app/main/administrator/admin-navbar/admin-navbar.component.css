@@ -57,3 +57,11 @@
     color: var(--on-secondary);
     background-color: var(--secondary-variant);
 }
+
+.fixed-ontop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 900;
+}

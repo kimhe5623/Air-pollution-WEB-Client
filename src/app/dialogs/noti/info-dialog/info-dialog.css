@@ -1,0 +1,35 @@
+.grid-item {
+    height: 110px;
+    float: left;
+}
+
+.grid-item.status-color {
+    background-color: #438bf7;
+    width: 8px;
+}
+.grid-item.status-icon {
+    padding: 20px;
+    padding-top: 30px;
+    font-size: 2rem;
+}
+.grid-item.contents {
+    width: 85%;
+    float: left;
+}
+
+.item {
+    width: 100%;
+    height: 50%;
+    margin: 0;
+}
+.item.title {
+    padding-top: 25px;
+    font-weight: 800;
+    font-size: 1.4rem;
+}
+.item.contents {
+    padding-top: 3px;
+    color: #9e9e9e;
+    font-weight: 400;
+    font-size: 1.2rem;
+}

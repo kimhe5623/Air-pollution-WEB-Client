@@ -1,98 +1,101 @@
 import { Injectable } from '@angular/core';
+import { NotiService } from './noti.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DisplayMessageService {
 
-  constructor() { }
+  constructor(
+    private notiService: NotiService
+  ) { }
 
   fnDispErrorString(et: ErrorType) {
     switch (et) {
       case ('EMPTY_VALUE_INVALID'):
-        alert('Internal error: Empty value invalid');
+        this.notiService.err('Empty value invalid');
         break;
 
       case ('INVALID_FORMAT'):
-        alert('Internal error: Invalid format');
+        this.notiService.err('Invalid format');
         break;
 
 
       // Result code error
       case ('OTHER'):
-        alert('Internal error: Unknown error');
+        this.notiService.err('Unknown error');
         break;
 
       case ('CONFLICT_OF_TEMPORARY_CLIENT_ID'):
-        alert('Internal error: Conflict of TCI');
+        this.notiService.err('Conflict of TCI');
         break;
 
       case ('DUPLICATE_OF_USER_ID'):
-        alert('Internal error: Duplicate of userID');
+        this.notiService.warn('Duplicate of userID');
         break;
 
       case ('NOT_EXIST_TEMPORARY_CLIENT_ID'):
-        alert('Internal error: Not exist Temporary client ID');
+        this.notiService.err('Not exist Temporary client ID');
         break;
 
       case ('INCORRECT_AUTHENTICATION_CODE'):
-        alert('Internal error: Incorrect authentication code under the verification code');
+        this.notiService.err('Incorrect authentication code under the verification code', 700);
         break;
 
       case ('NOT_EXIST_USER_ID'):
-        alert('Internal error: Not exist user ID');
+        this.notiService.err('Not exist user ID');
         break;
 
       case ('INCORRECT_CURRENT_USER_PASSWORD'):
-        alert('Internal error: Incorrect password');
+        this.notiService.err('Incorrect password');
         break;
 
       case ('UNALLOCATED_USER_SEQUENCE_NUMBER'):
-        alert('Internal error: Unallocated user sequence number');
+        this.notiService.err('Unallocated user sequence number');
         break;
 
       case ('INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS'):
-        alert('Internal error: Incorrect number of signed-in completions');
+        this.notiService.err('Incorrect number of signed-in completions');
         break;
 
       case ('INCORRECT_USER_INFORMATION'):
-        alert('Internal error: Incorrect user information');
+        this.notiService.err('Incorrect user information');
         break;
 
       case ('UNAUTHORIZED_USER_SEQUENCE_NUMBER'):
-        alert('Internal error: Unauthorized user');
+        this.notiService.err('Unauthorized user');
         break;
 
       case ('NOT_EXIST_WIFI_MAC_ADDRESS'):
-        alert('Internal error: Not exist Wifi MAC address');
+        this.notiService.err('Not exist Wifi MAC address');
         break;
 
       case ('NOT_ASSOCIATED_WITH_USER_ID'):
-        alert('Internal error: the requested WiFi MAC address is not an associated with user ID');
+        this.notiService.err('the requested WiFi MAC address is not an associated with user ID', 700);
         break;
 
       case ('ALREADY_ASSOCIATED_WITH_USN'):
-        alert('Internal error: Already associated with the USN');
+        this.notiService.err('Already associated with the USN');
         break;
 
       case ('ALREADY_ASSOCIATED_WITH_OTHER'):
-        alert('Internal error: Already associated with the other');
+        this.notiService.err('Already associated with the other');
         break;
         
       case ('NOT_EXIST_SENSORS'):
-        alert('Internal error: Not exist under the spatial-temporal search condition');
+        this.notiService.err('Not exist under the spatial-temporal search condition',700);
         break;
 
       case ('INCORRECT_HEADER'):
-        alert('Internal error: Incorrect header');
+        this.notiService.err('Incorrect header');
         break;
 
       case ('TIMEOUT'):
-        alert('Time out!');
+        this.notiService.err('Time out!');
         break;
 
       case ('CONNECTION_ERR'):
-        alert('Unable to connect');
+        this.notiService.err('Unable to connect');
         break;
 
     }
@@ -101,43 +104,43 @@ export class DisplayMessageService {
   fnDispSuccessString(st: SuccessType, data: string){
     switch(st){
       case('VERIFICATION_CODE_SENT'):
-        alert('Verification code is successfully sent to ' + data);
+        this.notiService.succ('Verification code is successfully sent to ' + data, 700);
         break;
 
       case('SIGNUP_COMPLETED'):
-        alert('Sign up is successfully completed');
+        this.notiService.succ('Sign up is successfully completed');
         break;
 
       case('SIGNIN_COMPLETED'):
-        alert('Welcome!');
+        this.notiService.succ('Welcome!');
         break;
       
       case('PWCHANGE_COMPLETED'):
-        alert('password is successfully changed');
+        this.notiService.succ('password is successfully changed');
         break;
 
       case('FPU_COMPLETED'):
-        alert('Temporary password was sent to your email');
+        this.notiService.succ('Temporary password was sent to your email');
         break;
       
       case('UDR_COMPLETED'):
-        alert("Successfully deregistered");
+        this.notiService.succ("Successfully deregistered");
         break;
       
       case('SIGNOUT'):
-        alert("Sign out!");
+        this.notiService.succ("Sign out!");
         break;
       
       case('SENSOR_REG_COMPLETED'):
-        alert("Sensor "+ data +" is successfully registered");
+        this.notiService.succ("Sensor "+ data +" is successfully registered");
         break;
       
       case('SENSOR_DELETE_COMPLETED'):
-        alert('Successfully deregistered');
+        this.notiService.succ('Successfully deregistered');
         break;
 
       case('SENSOR_ASSOCIATION_COMPLETED'):
-        alert("Sensor "+ data +" is successfully associated");
+        this.notiService.succ("Sensor "+ data +" is successfully associated");
     }
   }
 

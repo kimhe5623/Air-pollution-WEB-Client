@@ -118,6 +118,11 @@ import { SensorHistoryComponent } from './main/dashboard/contents/sensor-history
 import { AdminSensorHistoryComponent } from './main/administrator/contents/admin-sensor-history/admin-sensor-history.component';
 import { SensorHistoryContentsComponent } from './components/contents/sensor-history-contents/sensor-history-contents.component';
 import { ShrToHavDialog } from './dialogs/shr-to-hav-dialog/shr-to-hav-dialog.component';
+import { InfoDialog } from './dialogs/noti/info-dialog/info-dialog';
+import { SuccDialog } from './dialogs/noti/succ-dialog/succ-dialog';
+import { ErrDialog } from './dialogs/noti/err-dialog/err-dialog';
+import { WarnDialog } from './dialogs/noti/warn-dialog/warn-dialog';
+import { NotiService } from './services/noti.service';
 
 @NgModule({
   declarations: [
@@ -183,6 +188,10 @@ import { ShrToHavDialog } from './dialogs/shr-to-hav-dialog/shr-to-hav-dialog.co
     SensorHistoryComponent,
     AdminSensorHistoryComponent,
     SensorHistoryContentsComponent,
+    InfoDialog,
+    SuccDialog,
+    ErrDialog,
+    WarnDialog,
   ],
   imports: [
     /** Angular Modules */
@@ -256,9 +265,13 @@ import { ShrToHavDialog } from './dialogs/shr-to-hav-dialog/shr-to-hav-dialog.co
     UserDeregistrationConfirmDialog,
     KasDialog,
     ShrToHavDialog,
+    InfoDialog,
+    SuccDialog,
+    ErrDialog,
+    WarnDialog,
   ],
   schemas: [NO_ERRORS_SCHEMA],
-  providers: [KasService],
+  providers: [KasService, NotiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

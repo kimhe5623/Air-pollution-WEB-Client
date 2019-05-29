@@ -1,6 +1,9 @@
 <app-navbar [currentMenu.solutions]="istrue"></app-navbar>
-<p style="margin-top:100px">
+<p>
   solutions works!
-  {{istrue}}
 </p>
+<button mdbBtn class="waves-light btnStyle primary-variant" (click)="btnClick(1)" mdbWavesEffect>Info</button>
+<button mdbBtn class="waves-light btnStyle primary-variant" (click)="btnClick(2)" mdbWavesEffect>Succ</button>
+<button mdbBtn class="waves-light btnStyle primary-variant" (click)="btnClick(3)" mdbWavesEffect>Err</button>
+<button mdbBtn class="waves-light btnStyle primary-variant" (click)="btnClick(4)" mdbWavesEffect>Warn</button>
 <app-footer></app-footer>
