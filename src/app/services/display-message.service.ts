@@ -145,16 +145,16 @@ export class DisplayMessageService {
   }
 
   printLog(contents: Array<string>){
-    var msg: string = "| SV | "
-    for(var i=0; i<contents.length; i++){
-      msg = msg.concat(contents[i]);
+    // var msg: string = "| SV | "
+    // for(var i=0; i<contents.length; i++){
+    //   msg = msg.concat(contents[i]);
       
 
-      if(i < contents.length-1){
-        msg = msg.concat(' | ');
-      }
-    }
-    console.log(msg);
+    //   if(i < contents.length-1){
+    //     msg = msg.concat(' | ');
+    //   }
+    // }
+    // console.log(msg);
   }
 
 }
