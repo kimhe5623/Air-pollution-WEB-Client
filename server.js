@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, '/dist/airound')));
 
 app.use('/serverapi', proxy({ target: 'http://somnium.me:4010' }));
 
-app.get('/*', (req, res) => res.sendFile(path.join(__dirname)));
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, '/dist/airound/index.html')));
 
 const server = http2.createServer(options, app);
 
