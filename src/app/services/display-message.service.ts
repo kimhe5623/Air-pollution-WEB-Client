@@ -39,7 +39,7 @@ export class DisplayMessageService {
         break;
 
       case ('INCORRECT_AUTHENTICATION_CODE'):
-        this.notiService.err('Incorrect authentication code under the verification code', 700);
+        this.notiService.err('Incorrect authentication code under the verification code', 600);
         break;
 
       case ('NOT_EXIST_USER_ID'):
@@ -71,7 +71,7 @@ export class DisplayMessageService {
         break;
 
       case ('NOT_ASSOCIATED_WITH_USER_ID'):
-        this.notiService.err('the requested WiFi MAC address is not an associated with user ID', 700);
+        this.notiService.err('the requested WiFi MAC address is not an associated with user ID', 600);
         break;
 
       case ('ALREADY_ASSOCIATED_WITH_USN'):
@@ -83,7 +83,7 @@ export class DisplayMessageService {
         break;
         
       case ('NOT_EXIST_SENSORS'):
-        this.notiService.err('Not exist under the spatial-temporal search condition',700);
+        this.notiService.err('Not exist under the spatial-temporal search condition',600);
         break;
 
       case ('INCORRECT_HEADER'):
@@ -104,7 +104,7 @@ export class DisplayMessageService {
   fnDispSuccessString(st: SuccessType, data: string){
     switch(st){
       case('VERIFICATION_CODE_SENT'):
-        this.notiService.succ('Verification code is successfully sent to ' + data, 700);
+        this.notiService.succ('Verification code is successfully sent to ' + data, 600);
         break;
 
       case('SIGNUP_COMPLETED'):

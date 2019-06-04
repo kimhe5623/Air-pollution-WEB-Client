@@ -1,47 +1,37 @@
-<mdb-navbar SideClass="navbar fixed-ontop navbar-expand-lg navbar-dark primary-variant scrolling-navbar ie-nav" [containerInside]="false">
+<mdb-navbar SideClass="navbar sticky-ontop navbar-expand-lg navbar-light primary scrolling-navbar ie-nav" [containerInside]="false">
   <mdb-navbar-brand>
-    <a class="navbar-brand font180 margin" href="/" (click)="clickLogo()" routerLinkActive="router-link-active" >
-      <strong>AiR</strong>ound&nbsp;U
+    <a class="navbar-brand font-lg on-primary font-bold" (click)="clickLogo()" routerLinkActive="router-link-active" >
+      Airound&nbsp;U
     </a>
   </mdb-navbar-brand>
   <links>
     
     <ul class="navbar-nav mr-auto" style="margin-left: 2rem">
-      <li class="nav-item waves-light space" [ngClass]="{'active': currentMenu.solutions}" mdbWavesEffect>
-        <a class="nav-link font135 margin" (click)="clickMenu(1)">Solutions
+      <li class="nav-item waves-light space" mdbWavesEffect>
+        <a class="nav-link font-md font-normal on-primary-variant" [ngClass]="{'activeMenu': currentMenu.solutions}" (click)="clickMenu(1)">Solutions
         </a>
       </li>
-      <li class="nav-item waves-light space" [ngClass]="{'active': currentMenu.technology}" mdbWavesEffect>
-        <a class="nav-link font135 margin" (click)="clickMenu(2)">Technology
+      <li class="nav-item waves-light space" mdbWavesEffect>
+        <a class="nav-link font-md font-normal on-primary-variant" [ngClass]="{'activeMenu': currentMenu.technology}" (click)="clickMenu(2)">Technology
         </a>
       </li>
 
        <!-- Dropdown -->
        <li class="nav-item dropdown space" dropdown>
-          <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light font135 margin" mdbWavesEffect>for Users<span class="caret"></span></a>
+          <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light font-md font-normal on-primary-variant" mdbWavesEffect>for Users<span class="caret"></span></a>
           <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
-              <a class="dropdown-item waves-light font120" [ngClass]="{'activeDropdown': currentMenu.introduction}" 
+              <a class="dropdown-item waves-light font-sm on-primary-variant" [ngClass]="{'activeDropdown': currentMenu.introduction}" 
               (click)="clickMenu(3)" mdbWavesEffect>
                 Introduction
               </a>
               <div class="divider dropdown-divider"></div>
-              <a class="dropdown-item waves-light font120"
+              <a class="dropdown-item waves-light font-sm on-primary-variant"
               (click)="clickMenu(4)" mdbWavesEffect>
                 Sign in
               </a>
           </div>
       </li>
+    </ul>
 
-      <li class="nav-item waves-light space" mdbWavesEffect>
-        <a class="nav-link font135 margin" (click)="clickMenu(5)">Administrator
-        </a>
-      </li>
-    </ul>
-    <ul class="navbar-nav nav-flex-icons">
-      <li class="nav-item waves-light">
-        <a class="btn waves-light secondary on-secondary buttonStyle" mdbWavesEffect>
-          Contact us</a>
-      </li>
-    </ul>
   </links>
 </mdb-navbar>

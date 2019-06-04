@@ -1,9 +1,9 @@
-<div class="wrapper">
-    <h1 class="title">Administrator - <strong>User management</strong></h1>
+<div class="wrapper" style="margin-bottom: 400px">
+    <h1 class="title font-lg4">Administrator - <strong>User management</strong></h1>
     <div class="chipWrapper">
-      <span class="badge badgeStyle" *ngFor="let option of search_options_array let idx=index">
+      <span class="badge badgeStyle font-md" *ngFor="let option of search_options_array let idx=index">
         <strong>{{option.key}}</strong>&nbsp;&nbsp;{{option.value}}
-        <i class="close fa fa-times closeButton" (click)="fnDeleteSearchOption(option.key)"></i>
+        <i class="close fas fa-times closeButton on-secondary font-md" (click)="fnDeleteSearchOption(option.key)"></i>
       </span>
     </div>
     <!-- Search form -->
@@ -23,7 +23,9 @@
       <mat-form-field class="searchInput" [floatLabel]="searchForm.value.floatLabel">
         <input matInput placeholder="Search" formControlName="input">
       </mat-form-field>
-      <button type="submit" class="btn waves-light secondary-variant searchButton"><i class="fas fa-search"></i></button>
+      <button type="submit" class="searchButton">
+        <i class="fas fa-search on-primary font-md2"></i>
+      </button>
     </form>
     <div class="mat-elevation-z8">
       <table mat-table [dataSource]="dataSource">

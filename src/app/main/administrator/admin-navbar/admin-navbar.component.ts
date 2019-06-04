@@ -127,5 +127,10 @@ export class AdminNavbarComponent implements OnInit {
         break;
     }
   }
+
+  clickLogo(){
+    this.storageService.set('menuNum', 0);
+    this.router.navigate(['/administrator']);
+  }
 }
 

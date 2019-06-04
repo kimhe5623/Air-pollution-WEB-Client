@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Historical air data</h1>
 <div mat-dialog-content class="dialog">
 
-  <p>Choose a start date and end date you want to see for historical air data</p>
+  <p><strong>Choose a start date and end date you want to see for historical air data</strong></p>
 
   <mat-form-field class="example-full-width">
     <input matInput [matDatepicker]="start" placeholder="Start date" [formControl]="startDateForm">
@@ -71,7 +71,7 @@
 
 </div>
 
-<div mat-dialog-actions style="padding-left: 7rem">
+<div mat-dialog-actions style="padding-left: 85px">
   <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle cancel" (click)="fnBtnClick(true)"
     mdbWavesEffect>Cancel</button>
   <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->

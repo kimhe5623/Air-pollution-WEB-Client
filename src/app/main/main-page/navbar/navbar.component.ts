@@ -38,7 +38,6 @@ export class NavbarComponent implements OnInit {
         this.currentMenu.introduction = true;
         break;
       //  case (4): ------> sign in
-      //  case (5): ------> administrator
     }
   }
 
@@ -75,14 +74,10 @@ export class NavbarComponent implements OnInit {
           this.router.navigate(['/signin']);
         }
         break;
-        
-      case (5): // => administrator
-        this.storageService.set('menuNum', 0);
-        this.router.navigate(['/signin']);
-        break;
     }
   }
   clickLogo(){
     this.storageService.set('menuNum', 0);
+    this.router.navigate(['/']);
   }
 }

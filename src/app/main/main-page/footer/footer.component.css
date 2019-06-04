@@ -1,12 +1,9 @@
-
 .padding {
-    padding-left: 3rem;
-    padding-right: 3rem;
+    padding-left: 3px;
+    padding-right: 3px;
 }
 .logo {
-    width: 200px;
-}
-.icon {
-    color: #ffffff;
-    margin-right: 1rem;
+    margin-top: 3px;
+    margin-left: 20px;
+    width: 4rem;
 }

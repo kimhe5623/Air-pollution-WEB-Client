@@ -10,8 +10,8 @@ import { HEADER } from 'src/app/header';
   providedIn: 'root'
 })
 export class NotiService {
-  width: number = 650;
-  height: number = 110;
+  width: number = 500;
+  height: number = 80;
   closeTimer: number = 3000;
   dialogRefs: any = [];
 

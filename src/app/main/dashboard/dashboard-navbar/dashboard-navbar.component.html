@@ -1,49 +1,49 @@
-<mdb-navbar SideClass="navbar fixed-ontop navbar-expand-lg navbar-dark primary scrolling-navbar ie-nav" [containerInside]="false">
-  <mdb-navbar-brand>
-    <a class="navbar-brand font180 margin" (click)="clickMenu(0)" routerLinkActive="router-link-active">
-      <strong>AiR</strong>ound&nbsp;U
-    </a>
-  </mdb-navbar-brand>
-  <links>
+<mdb-navbar SideClass="navbar sticky-ontop navbar-expand-lg navbar-light primary scrolling-navbar ie-nav" [containerInside]="false">
+    <mdb-navbar-brand>
+      <a class="navbar-brand font-lg on-primary font-bold" (click)="clickLogo()" routerLinkactiveDropdown="router-link-activeDropdown" >
+        Airound&nbsp;U
+      </a>
+    </mdb-navbar-brand>
+    <links>
 
     <ul class="navbar-nav mr-auto" style="margin-left: 2rem">
-      <li class="nav-item dropdown space10" dropdown>
-        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light font135 margin"
+      <li class="nav-item dropdown space" dropdown>
+        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light font-md font-normal on-primary-variant"
           mdbWavesEffect>
           Sensor
           <span class="caret"></span>
         </a>
         <div *dropdownMenu class="dropdown-menu" role="menu">
-          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.sensormg}" (click)="clickMenu(1)"
+          <a class="dropdown-item waves-light font-sm" [ngClass]="{'activeDropdown': currentMenu.sensormg}" (click)="clickMenu(1)"
             mdbWavesEffect>
             Sensor Management
           </a>
           <div class="divider dropdown-divider"></div>
-          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.personalsensor}" (click)="clickMenu(2)"
+          <a class="dropdown-item waves-light font-sm" [ngClass]="{'activeDropdown': currentMenu.personalsensor}" (click)="clickMenu(2)"
             mdbWavesEffect>
             My personal sensors
           </a>
         </div>
       </li>
 
-      <li class="nav-item dropdown space10" dropdown>
-        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light font135 margin"
+      <li class="nav-item dropdown space" dropdown>
+        <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light font-md font-normal on-primary-variant"
           mdbWavesEffect>
           History
           <span class="caret"></span>
         </a>
         <div *dropdownMenu class="dropdown-menu" role="menu">
-          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.airSensorHistory}" (click)="clickMenu(8)"
+          <a class="dropdown-item waves-light font-sm" [ngClass]="{'activeDropdown': currentMenu.airSensorHistory}" (click)="clickMenu(8)"
             mdbWavesEffect>
             Air sensors
           </a>
           <div class="divider dropdown-divider"></div>
-          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.airDataHistory}" (click)="clickMenu(3)"
+          <a class="dropdown-item waves-light font-sm" [ngClass]="{'activeDropdown': currentMenu.airDataHistory}" (click)="clickMenu(3)"
             mdbWavesEffect>
             Air data
           </a>
           <div class="divider dropdown-divider"></div>
-          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.HeartHistory}" (click)="clickMenu(4)"
+          <a class="dropdown-item waves-light font-sm" [ngClass]="{'activeDropdown': currentMenu.HeartHistory}" (click)="clickMenu(4)"
             mdbWavesEffect>
             Heart data
           </a>
@@ -54,21 +54,21 @@
     <ul class="navbar-nav nav-flex-icons">
       <!-- Dropdown -->
       <li class="nav-item dropdown" dropdown>
-        <a dropdownToggle mdbWavesEffect type="button" class="nav-link waves-light font135 margin" mdbWavesEffect>
-          <i class="fa fa-user-circle-o font230 space5" aria-hidden="true"></i>
+        <a dropdownToggle mdbWavesEffect type="button" class="nav-link waves-light" style="margin-left:135px" mdbWavesEffect>
+          <i class="fa fa-user-circle-o font-lg space font-md font-normal on-primary-variant" aria-hidden="true"></i>
           <span class="caret"></span>
         </a>
         <div *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
-          <p class="font120 userInfo">
+          <p class="dropdown-item font-sm">
             {{userInfo.email}}
           </p>
           <div class="divider dropdown-divider"></div>
-          <a class="dropdown-item waves-light font120" [ngClass]="{'active': currentMenu.changepw}" (click)="clickMenu(6)"
+          <a class="dropdown-item waves-light font-sm" [ngClass]="{'activeDropdown': currentMenu.changepw}" (click)="clickMenu(6)"
             mdbWavesEffect>
-            <i class="fa fa-refresh space10" aria-hidden="true"></i>Change password
+            <i class="fa fa-refresh space" aria-hidden="true"></i>Change password
           </a>
-          <a class="dropdown-item waves-light font120" (click)="clickMenu(7)" mdbWavesEffect>
-            <i class="fa fa-sign-out space10" aria-hidden="true"></i>Sign out
+          <a class="dropdown-item waves-light font-sm" (click)="clickMenu(7)" mdbWavesEffect>
+            <i class="fa fa-sign-out space" aria-hidden="true"></i>Sign out
           </a>
         </div>
       </li>

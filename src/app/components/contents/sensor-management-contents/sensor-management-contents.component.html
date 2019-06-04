@@ -1,8 +1,8 @@
-<div class="wrapper">
-  <h1 class="title">Sensor management</h1>
+<div class="wrapper" style="margin-bottom: 10rem">
+  <h1 class="title font-lg4">Sensor management</h1>
   <div class="buttonsGroup">
-    <button mdbBtn type="button" class="waves-light addition roundBtn" (click)="fnOpenDialog_SAS_procedure()" mdbWavesEffect>+</button>
-    <button mdbBtn type="button" class="waves-light deletion roundBtn" (click)="fnOpenDialog_SDD_procedure()" mdbWavesEffect>-</button>
+    <button mdbBtn type="button" class="waves-light secondary roundBtn font-lg" (click)="fnOpenDialog_SAS_procedure()" mdbWavesEffect>+</button>
+    <button mdbBtn type="button" class="waves-light secondary roundBtn font-lg" (click)="fnOpenDialog_SDD_procedure()" mdbWavesEffect>-</button>
   </div>
   <div class="mat-elevation-z8">
     <mat-accordion>
@@ -12,7 +12,7 @@
             [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
         </span>
-        <span *ngFor="let column of displayedColumns; let idx=index" class="eachtitle column-name" [ngStyle]="columnStyles[idx]">
+        <span *ngFor="let column of displayedColumns; let idx=index" class="eachtitle column-name font-md on-primary" [ngStyle]="columnStyles[idx]">
           {{column}}
         </span>
         <span style="width:10px"></span>
@@ -55,7 +55,7 @@
             <div class="row contentName">
               <strong>Cellular MAC address</strong>
             </div>
-            <div class="row content">
+            <div class="row">
               {{element.cellularMac}}
             </div>
           </div>
@@ -63,7 +63,7 @@
             <div class="row contentName">
               <strong>Mobility</strong>
             </div>
-            <div class="row content">
+            <div class="row">
               {{element.mobility == 0 ? 'Stationary' : 'Portable'}}
             </div>
           </div>
@@ -71,7 +71,7 @@
             <div class="row contentName">
               <strong>Current status</strong>
             </div>
-            <div class="row content">
+            <div class="row">
               <table class="tableStyle">
                 <tr>
                   <th>Temp</th>

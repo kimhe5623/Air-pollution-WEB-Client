@@ -1,13 +1,11 @@
 <app-navbar></app-navbar>
 
-<div class="row title">
-  <div class="col">
-    Air Quality Map<br>
-    <strong>Show pollution in Real-time</strong>
+<div class="row title on-primary">
+  <div class="col" style="text-align: center">
   </div>
 </div>
 <div class="row">
-  <div class="col cardWrapper">
+  <div class="col">
     <mat-card class="card">
       <app-air-maps *ngIf="airmapDisplay"></app-air-maps>
     </mat-card>

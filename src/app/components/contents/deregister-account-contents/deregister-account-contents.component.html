@@ -1,12 +1,12 @@
-<div class="wrapper">
-    <h1 class="title">Deregister account</h1>
+<div class="wrapper" style="margin-bottom: 500px">
+    <h1 class="title font-lg4">Deregister account</h1>
     <mat-card class="card">
       <form class="example-form form" (ngSubmit)="fnOnSubmitUdrForm()">
         <mat-form-field class="example-full-width block">
           <input matInput type="password" placeholder="Current password" [formControl]="currentPassword">
           <mat-error *ngIf="currentPassword.invalid && !errorhide">{{getCurrentPasswordErrorMessage()}}</mat-error>
         </mat-form-field>
-        <button type="submit" class="btn waves-light error buttonStyle" 
+        <button type="submit" class="btn waves-light primary-variant buttonStyle" 
           mdbWavesEffect>Deregister</button>
       </form>
     </mat-card>

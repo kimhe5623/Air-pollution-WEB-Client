@@ -11,13 +11,8 @@
     text-align: center;
 }
 
-.form {
-    font-size: 1.1rem;
-}
-
 .buttonStyle {
     margin-top: 30px;
-    font-size: 15px;
     width: auto;
     border-radius: 100px;
 }
@@ -41,10 +36,11 @@
 }
 
 .roundBtn {
-    width: 3.5rem;
+    width: 45px;
     border-radius: 20px;
-    font-size: 2rem;
-    padding: 0 1.2rem;
+    padding: 0 15px;
+    margin: 4px;
+    margin-top: 30px;
 }
 
 .buttonStyle1 {
@@ -73,12 +69,12 @@
 }
 
 .eachtitle {
-    font-size: 1.1rem;
     margin-right: 3rem;
 }
 .eachtitle.column-name {
     font-weight: bold;
 }
+
 
 .contents {
     padding: 0.5rem 0.5rem;
@@ -86,12 +82,7 @@
 
 p {
     margin: 0.5rem 0.5rem;
-    font-size: 1.1rem;
     line-height: 1.5rem;
-}
-
-mat-panel-title {
-    font-size: 1.17rem;
 }
 
 .registered {
@@ -135,11 +126,7 @@ mat-panel-title {
     padding-left:3rem;
 }
 .contentName {
-    font-size:1.1rem; 
     padding-bottom:1rem
-}
-.content{
-    font-size:1.3rem
 }
 
 .tableStyle{
@@ -148,7 +135,6 @@ mat-panel-title {
 tr, th{
     padding: 5px;
     border: solid 0.5px #cecece;
-    font-size: 1.1rem;
     text-align: center;
 }
 
@@ -156,33 +142,38 @@ tr, th{
 /**====================Search======================**/
 .searchInput{
     padding-left: 10px; 
-    font-size: 1.2em;
     width: 400px;
 }
 .searchSelect{
-    font-size: 1.2rem;
     width: 150px;
 }
 .searchButton{
-    padding: 7px;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-radius: 70%;
-    font-size: 1rem;
+    margin: 0 0;
+    padding: 0 0;
+    background-color: #ffffff00;
+    box-shadow: none;
+    border-style: none;
+    outline: none;
 }
 
 /***=====chip======***/
 .badgeStyle{
-    font-size: 1rem;
     font-weight: normal;
     border-radius: 50px;
-    padding: 16px;
+    padding-right: 8px;
+    padding-left: 10px;
+    padding-top: 9px;
+    padding-bottom: 8px;
     text-align: center;
-    background-color: var(--secondary-light) !important;
-    color: var(--on-background) !important;
+    background-color: var(--secondary) !important;
+    color: var(--on-secondary) !important;
     margin-right: 10px;
 }
 .closeButton{
     margin-left: 10px;
-    font-size: 1rem;
+    margin-bottom: 1px
+}
+.chipWrapper{
+    text-align: center;
+    margin-top: 20px;
 }

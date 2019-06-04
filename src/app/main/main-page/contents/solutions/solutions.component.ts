@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NotiService } from '../../../../services/noti.service';
+import { KasService } from '../../../../services/kas.service';
 
 @Component({
   selector: 'app-solutions',
@@ -9,7 +10,8 @@ import { NotiService } from '../../../../services/noti.service';
 export class SolutionsComponent implements OnInit {
   istrue: boolean = true;
   constructor(
-    private notiService: NotiService
+    private notiService: NotiService,
+    private kasService: KasService
   ) { }
 
   ngOnInit() {
@@ -29,6 +31,8 @@ export class SolutionsComponent implements OnInit {
       case(4):
         this.notiService.warn('Anyone with access can view your invited visitors.');
         break;
+      case(5):
+        this.kasService.openKasDialog();
     }
   }
 

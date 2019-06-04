@@ -219,7 +219,7 @@ export class AdminSensorManagementContentsComponent implements OnInit {
   //------(Dialog functions)--------
   fnOpenDialog_SAS_procedure(): void {
     const dialogRef = this.dialog.open(SensorAssociationDialog, {
-      width: '600px', height: 'auto',
+      width: '400px', height: 'auto',
       data: { sensorSerial: this.senserSerial, mobility: this.mobility, isCanceled: this.isCanceled }
     });
 

@@ -38,9 +38,15 @@
 .on-primary {
     color: var(--on-primary) !important;
 }
+.on-primary-variant {
+    color: var(--on-primary-variant) !important;
+}
 
 .on-secondary {
     color: var(--on-secondary) !important;
+}
+.on-secondary-variant {
+    color: var(--on-secondary-variant) !important;
 }
 
 .on-background {
@@ -101,16 +107,6 @@
     color: #c25988;
 }
 
-.addition {
-    color: var(--on-addition);
-    background-color: var(--addition);
-}
-
-.deletion {
-    color: var(--on-deletion);
-    background-color: var(--deletion);
-}
-
 .cancel {
     color: #ffffff;
     background-color: var(--cancel);
@@ -127,28 +123,25 @@
 /** Color definition */
 
 :root {
-    --primary: #6200EE;
-    --primary-light: #bb95f13b;
-    --primary-variant: #3700B3;
-    --secondary: #03DAC6;
+    --primary: #ffffff; /* White */
+    --primary-light: #73a4fc14; /* Transparented light blue */
+    --primary-variant: #f4f5f7; /* Light grey blue */
+    --secondary: #73a4fc; /* Sky blue */
     --secondary-light: #03dac51f;
     --secondary-variant: #018786;
     --background: #FFFFFF;
     --surface: #FFFFFF;
     --error: #C51162;
-    --on-primary: #ffffff;
-    --on-secondary: #000000;
-    --on-secondary-variant: #FFFFFF;
+    --on-primary: #4c6283; /* Dark grey blue */
+    --on-primary-variant: #96a2b5; /* light grey blue */
+    --on-secondary: #ffffff; /* White */
+    --on-secondary-variant: #000000; /* Black */
     --on-background: #000000;
     --on-surface: #000000;
-    --on-surface-light: #b1b1b12a;
+    --on-surface-light: #ffffff;
     --on-error: #ffffff;
     /*--------------------------*/
     --cancel: #554b6b;
-    --addition: #03DAC6;
-    --on-addition: #000000;
-    --deletion: #C51162;
-    --on-deletion: #ffffff;
     --active: #03daa4;
     --inactive: #8585858c;
     /*--------------------------*/

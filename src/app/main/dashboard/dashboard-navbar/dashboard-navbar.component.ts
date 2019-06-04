@@ -113,4 +113,9 @@ export class DashboardNavbarComponent implements OnInit {
     }
   }
 
+  clickLogo(){
+    this.storageService.set('menuNum', 0);
+    this.router.navigate(['/dashboard']);
+  }
+
 }

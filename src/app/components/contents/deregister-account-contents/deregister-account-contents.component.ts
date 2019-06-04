@@ -42,7 +42,7 @@ export class DeregisterAccountContentsComponent implements OnInit {
    */
   fnOpenConfirmDialog(): void {
     const dialogRef = this.dialog.open(UserDeregistrationConfirmDialog, {
-      width: 'auto', height: 'auto',
+      width: '450px', height: 'auto',
       data: { isCanceled: this.isCanceled }
     });
 

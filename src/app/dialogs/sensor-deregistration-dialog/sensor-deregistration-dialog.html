@@ -13,7 +13,7 @@
             <mat-radio-button [value]="5">6. Incorrect information was provided in registering a sensor</mat-radio-button>
         </mat-radio-group>
     </div>
-    <div mat-dialog-actions *ngIf="!isEmpty" style="padding-left: 12.5rem">
+    <div mat-dialog-actions *ngIf="!isEmpty" style="padding-left: 135px">
         <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle cancel" (click)="fnBtnClick(true)"
             mdbWavesEffect>Cancel</button>
         <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
@@ -27,7 +27,7 @@
     <div mat-dialog-content *ngIf="isEmpty" class="dialog">
         <strong>Choose sensors which you want to delete</strong>
     </div>
-    <div mat-dialog-actions *ngIf="data.num_of_selected_sensor == 0" style="padding-left: 6.7rem">
+    <div mat-dialog-actions *ngIf="data.num_of_selected_sensor == 0" style="padding-left: 85px">
         <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle cancel" style="width: auto" (click)="fnBtnClick(true)"
             mdbWavesEffect>Cancel</button>
     </div>

@@ -10,8 +10,8 @@ export class TemperatureComponent implements OnInit, OnChanges {
   @Input() unit: UnitsType = 'default';
   @Input() primary_color: string = '#000000';
   @Input() secondary_color: string = '#b4b4b4';
-  @Input() temperature_style: any = { 'font-size': '2.5rem' };
-  @Input() unit_style: any = { 'font-size': '0.7rem' };
+  @Input() temperature_style: any = { 'font-size': '40px' };
+  @Input() unit_style: any = { 'font-size': '20px' };
   @Output() unitChange: EventEmitter<UnitsType>;
 
 

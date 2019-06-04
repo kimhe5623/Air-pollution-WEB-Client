@@ -6,11 +6,11 @@
         </mat-form-field>
     </form>
     <mat-radio-group (change)="fnChoose($event)" style="font-size: 1.2rem; margin-left: 0.5rem">
-        <mat-radio-button [value]="0" style="margin-right:2rem" checked>Stationary</mat-radio-button>
-        <mat-radio-button [value]="1">Portable</mat-radio-button>
+        <mat-radio-button [value]="0" style="margin-right:15px" class="font-md" checked>Stationary</mat-radio-button>
+        <mat-radio-button [value]="1" class="font-md">Portable</mat-radio-button>
     </mat-radio-group>
 </div>
-<div mat-dialog-actions style="padding-left: 7rem">
+<div mat-dialog-actions style="padding-left: 15px">
     <button mdbBtn [mat-dialog-close]="data" class="waves-light btnStyle cancel" (click)="fnBtnClick(true)" mdbWavesEffect>Cancel</button>
     <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
     <button mdbBtn [mat-dialog-close]="data" [disabled]="associationForm.invalid" class="waves-light btnStyle primary-variant"

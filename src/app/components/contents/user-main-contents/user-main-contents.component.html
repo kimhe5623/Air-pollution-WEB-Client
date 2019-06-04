@@ -3,15 +3,15 @@
     <div class="row">
       <mat-card class="card">
         <div class="row">
-          <div class="col-6">
-            <h2>Your<br>Current<br>Heart rate<br>is</h2>
+          <div class="col-xl-5 col-lg-12 col-md-5 col-12">
+            <h2 class="font-lg">Your<br>Current<br>Heart rate<br>is</h2>
           </div>
-          <div class="col-6">
+          <div class="col-xl-7 col-lg-12 col-md-7 col-12">
             <!-- Heart rate -->
-            <circle-progress [percent]="currentHeartdata.hr" [radius]="60" [outerStrokeWidth]="16"
-              [innerStrokeWidth]="8" outerStrokeColor='var(--heartRate)' innerStrokeColor='var(--heartRate-light)'
-              [animation]="true" [animationDuration]="300" [titleFontSize]="30" [showUnits]="false" subtitle='bpm'
-              [subtitleFontSize]="20"></circle-progress>
+            <circle-progress [percent]="currentHeartdata.hr" [radius]="50" [outerStrokeWidth]="10"
+              [innerStrokeWidth]="5" outerStrokeColor='var(--heartRate)' innerStrokeColor='var(--heartRate-light)'
+              [animation]="true" [animationDuration]="300" [titleFontSize]="25" [showUnits]="false" subtitle='bpm'
+              [subtitleFontSize]="15"></circle-progress>
           </div>
         </div>
         <mat-card-actions style="text-align: right">
@@ -21,13 +21,11 @@
     </div>
     <div class="row">
       <mat-card class="card">
-        <mat-card-header>
-          <h2>Temperature</h2>
-        </mat-card-header>
+        <h2 class="font-lg">Temperature</h2>
         <mat-card-content>
           <!-- Temperature -->
           <app-temperature [temperature]="currentCelsius" primary_color="#000000" secondary_color="#929292be"
-            [temperature_style]="{'font-size':'4rem'}" [unit_style]="{'font-size':'2rem', 'padding':'4.8px'}"
+            [temperature_style]="{'font-size':'40px'}" [unit_style]="{'font-size':'20px', 'padding':'4.8px'}"
             (unitChange)="unitChange($event)"></app-temperature>
 
           <!-- Temperature Chart: Celsius -->
@@ -54,16 +52,16 @@
     <mat-card class="card">
       <mat-card-header>
         <mat-card-title>
-          <h2>The nearest sensor is</h2>
+          <h2 class="font-lg">The nearest sensor is</h2>
         </mat-card-title>
         <mat-card-subtitle>
-          <h4>At &nbsp;" {{ nearestSensorAddress }} "</h4>
-          <h5><strong>MAC address&nbsp;&nbsp;{{ nearestSensorMac }}</strong></h5>
+          <h4 class="font-md3">At &nbsp;" {{ nearestSensorAddress }} "</h4>
+          <h5 class="font-md2"><strong>MAC address&nbsp;&nbsp;{{ nearestSensorMac }}</strong></h5>
         </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <!-- airData Circles -->
-        <app-air-data [radius]="150" [sub_radius]="80" main_color='#FFFFFF' main_font_color='#000'
+        <app-air-data [radius]="120" [sub_radius]="70" main_color='#FFFFFF' main_font_color='#000'
           hovered_color='var(--grey)' hovered_font_color='#fff' dominent_color='' [data]='currentAirdata'>
         </app-air-data>
 
@@ -80,11 +78,11 @@
       </mat-card-actions>
     </mat-card>
   </div>
-  <div class="col-12">
+  <div class="col-12" style="padding-left:0;">
     <mat-card class="card">
       <mat-card-header>
         <mat-card-title>
-          <h2>Realtime Air Quality</h2>
+          <h2 class="font-lg">Realtime Air Quality</h2>
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>

@@ -49,8 +49,7 @@ export class AirDataComponent implements OnInit, DoCheck {
     'border': 'solid 12px var(--aqi-good)',
     'text-align': 'center',
     'margin-right': '8px',
-    'font-size': '43px',
-    'padding': '17px',
+    'padding': '9px',
     'line-height': '80px'
   };
 
@@ -62,11 +61,10 @@ export class AirDataComponent implements OnInit, DoCheck {
     'border': 'solid 5px var(--grey)',
     'color': '#000',
     'background-color': '#FFF',
-    'line-height': '70px',
+    'line-height': '62px',
     'text-align': 'center',
     'margin-right': '8px',
     'margin-top': '10px',
-    'font-size': '20px'
   };
   each_air_data_style: any = {
     CO: {},
@@ -78,14 +76,12 @@ export class AirDataComponent implements OnInit, DoCheck {
   }
 
   details_style: any = {
-    'font-size': '20px',
     'color': '#000000',
     'margin-right': '15px',
   };
 
   dominent_style: any = {
-    'font-size': '20px',
-    'color': 'var(--primary)',
+    'color': 'var(--on-primary)',
     'font-weight': '400'
   };
   /**------------------- */
