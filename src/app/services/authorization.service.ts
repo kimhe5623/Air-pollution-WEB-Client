@@ -12,7 +12,7 @@ export class AuthorizationService {
   ) { }
 
   isAdministor(usn: number): boolean {
-    if (usn < 1000) return true;
+    if (usn == 1) return true;
     else return false;
   }
 
