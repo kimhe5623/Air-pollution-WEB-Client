@@ -123,6 +123,7 @@ import { SuccDialog } from './dialogs/noti/succ-dialog/succ-dialog';
 import { ErrDialog } from './dialogs/noti/err-dialog/err-dialog';
 import { WarnDialog } from './dialogs/noti/warn-dialog/warn-dialog';
 import { NotiService } from './services/noti.service';
+import { EqualValidator } from './forLogin/customizedValidators';
 
 @NgModule({
   declarations: [
@@ -192,6 +193,7 @@ import { NotiService } from './services/noti.service';
     SuccDialog,
     ErrDialog,
     WarnDialog,
+    EqualValidator
   ],
   imports: [
     /** Angular Modules */

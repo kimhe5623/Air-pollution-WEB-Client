@@ -31,9 +31,22 @@
 
       <div class="input-row">
         <mat-form-field class="width100">
-          <input matInput placeholder="Password" formControlName="password" [type]="hide ? 'password' : 'text'">
+          <input matInput placeholder="Password" formControlName="password"
+                  name="password"
+                  [(ngModel)]="passwordInfo.pw" [type]="hide ? 'password' : 'text'">
           <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
           <mat-error *ngIf="signupForm.get('password').invalid">{{getPasswordErrorMessage()}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="input-row">
+        <mat-form-field class="width100">
+          <input matInput placeholder="Confirm password" formControlName="confirmPassword" 
+                  name="confirmPassword"
+                  [(ngModel)]="passwordInfo.confirmpw"
+                  validateEqual="password" [type]="hide ? 'password' : 'text'">
+          <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+          <mat-error *ngIf="signupForm.get('confirmPassword').invalid">{{getConfirmPasswordErrorMessage()}}</mat-error>
         </mat-form-field>
       </div>
 
@@ -56,12 +69,14 @@
         </mat-form-field>
       </div>
 
-      <button type="submit" class="btn waves-light secondary-variant on-primary buttonStyle" [disabled]="signupForm.invalid" mdbWavesEffect>
+      <button type="submit" class="btn waves-light primary on-primary buttonStyle" [disabled]="signupForm.invalid"
+        mdbWavesEffect>
         Sign up</button>
     </form>
     <!-- Sign up Form -->
     <div class="container">
-      Already have an account? <strong><a class="link-secondary" [routerLink]="['/signin']" routerLinkActive="router-link-active"><u>
+      Already have an account? <strong><a class="link-primary" [routerLink]="['/signin']"
+          routerLinkActive="router-link-active"><u>
             Sign in
           </u></a></strong>
     </div>

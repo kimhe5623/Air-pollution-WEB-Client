@@ -16,10 +16,9 @@
 .vfcBox{
     font-weight: 500;
     padding: 0.7rem;
-    font-size: 1.5rem;
     margin-right: 0.5rem;
-    background-color: var(--on-surface-light);
-    border: solid var(--secondary) 5px;
+    background-color: var(--primary);
+    border: solid var(--primary) 5px;
     border-radius: 50px;
 }
 .timerContainer{
@@ -27,12 +26,10 @@
     text-align: center;
 }
 .formStyle{
-    font-size: 1.5rem;
     width: 400px;
     margin-top: 1rem;
 }
 .buttonStyle{
     margin-top: 1.3rem;
     border-radius: 50px;
-    font-size: 1rem;
 }

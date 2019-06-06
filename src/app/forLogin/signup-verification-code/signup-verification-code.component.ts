@@ -16,7 +16,7 @@ export class SignupVerificationCodeComponent implements OnInit, OnDestroy {
   verificationCode: string;
   tci: number;
   vfc: any = [];
-  timerStyle: any = { 'badge': true, 'badge-default': true, 'font10': true, 'margin-top10': true };
+  timerStyle: any = { 'badge': true, 'secondary': true, 'font10': true, 'margin-top10': true };
   settedTime: number;
   sub: any;
 

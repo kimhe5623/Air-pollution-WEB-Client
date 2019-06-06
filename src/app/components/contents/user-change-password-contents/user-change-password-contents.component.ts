@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserManagementService } from 'src/app/services/httpRequest/user-management.service';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
 import { HEADER } from 'src/app/header';
 import { AuthorizationService } from 'src/app/services/authorization.service';
+import { DisplayMessageService } from '../../../services/display-message.service';
 
 @Component({
   selector: 'app-user-change-password-contents',
@@ -12,8 +13,11 @@ import { AuthorizationService } from 'src/app/services/authorization.service';
   styleUrls: ['./user-change-password-contents.component.css']
 })
 export class UserChangePasswordContentsComponent implements OnInit {
-  currentPassword: FormControl;
-  newPassword: FormControl;
+  pwchangeForm: FormGroup;
+  newPasswordInfo: any = {
+    pw: '',
+    confirmpw: ''
+  }
   hide: boolean;
   errorhide: boolean;
 
@@ -21,10 +25,15 @@ export class UserChangePasswordContentsComponent implements OnInit {
     private umService: UserManagementService,
     private router: Router,
     private storageService: StorageService,
-    private authService: AuthorizationService
-  ) {
-    this.currentPassword = new FormControl('', Validators.required);
-    this.newPassword = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(16), Validators.pattern("^(?=.*[0-9])(?=.*[!@.#$%^&*?_~])(?=.*[a-zA-Z])([a-zA-Z0-9!@.#$%^&*?_~]+)$")]);
+    private authService: AuthorizationService,
+    private fb: FormBuilder,
+    private dispMsgService: DisplayMessageService){
+
+    this.pwchangeForm = this.fb.group({
+      currentPassword: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(16), Validators.pattern("^(?=.*[0-9])(?=.*[!@.#$%^&*?_~])(?=.*[a-zA-Z])([a-zA-Z0-9!@.#$%^&*?_~]+)$")]],
+      confirmNewPassword: ['', [Validators.required]]
+    });
   }
 
   ngOnInit() {
@@ -33,32 +42,42 @@ export class UserChangePasswordContentsComponent implements OnInit {
   initData() {
     this.hide = true;
     this.errorhide = true;
-    this.currentPassword.setValue(null);
-    this.newPassword.setValue(null);
+    this.pwchangeForm.get('currentPassword').setValue(null);
+    this.pwchangeForm.get('newPassword').setValue(null);
   }
 
   getCurrentPasswordErrorMessage() {
     return 'The field is required';
   }
   getNewPasswordErrorMessage() {
-    return this.newPassword.hasError('required') ? 'The field is required' :
-      this.newPassword.hasError('minlength') ? 'Password must consist of over 6 characters' :
-      this.newPassword.hasError('maxlength') ? 'Password must consist of within 16 characters' :
-      this.newPassword.hasError('pattern') ? 'Password must contain at least one special character and number' : '';
+    return this.pwchangeForm.get('newPassword').hasError('required') ? 'The field is required' :
+      this.pwchangeForm.get('newPassword').hasError('minlength') ? 'Password must consist of over 6 characters' :
+      this.pwchangeForm.get('newPassword').hasError('maxlength') ? 'Password must consist of within 16 characters' :
+      this.pwchangeForm.get('newPassword').hasError('pattern') ? 'Password must contain at least one special character and number' : '';
+  }
+  getConfirmPasswordErrorMessage() {
+    return this.pwchangeForm.get('confirmNewPassword').hasError('required') ? 'The field is required' : 'It dosen\'t match with the password';
   }
 
   fnOnSubmitUpcForm() {
     this.errorhide = false;
 
-    if (!this.currentPassword.invalid && !this.newPassword.invalid) {
+    if (!this.pwchangeForm.get('currentPassword').invalid && !this.pwchangeForm.get('newPassword').invalid 
+        && !this.pwchangeForm.get('confirmNewPassword').invalid) {
 
-      var payload = {
-        nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
-        curPw: this.currentPassword.value,
-        newPw: this.newPassword.value,
+      if(this.pwchangeForm.get('currentPassword').value == this.pwchangeForm.get('newPassword').value){
+        this.dispMsgService.fnDispErrorString('ALREADY_USED_PW');
       }
-
-      this.umService.fnUpc(payload);
+      
+      else {
+        var payload = {
+          nsc: this.storageService.fnGetNumberOfSignedInCompletions(),
+          curPw: this.pwchangeForm.get('currentPassword').value,
+          newPw: this.pwchangeForm.get('newPassword').value,
+        }
+  
+        this.umService.fnUpc(payload);
+      }
     }
   }
 

@@ -1,21 +1,21 @@
 <div class="frame">
   <div class="contents">
-    <h1>Enter the sended code to</h1>
-    <h3>{{email}}</h3>
+    <h1 class="font-lg3">Enter the sended code to</h1>
+    <h3 class="font-lg">{{email}}</h3>
     <div class="vfcContainer">
-      <span class="vfcBox" *ngFor="let v of vfc">{{v}}</span>
+      <span class="vfcBox font-lg3" *ngFor="let v of vfc">{{v}}</span>
     </div>
     <div class="timerContainer">
       <app-timer *ngIf="timerDisplay" [style]="timerStyle" [visible]="true" [seconds]="settedTime" (timeout)="fnTimeout()"></app-timer>
     </div>
     <form fxLayout="column" class="example-container" (ngSubmit)="fnOnSubmitForVerifyingCode()">
       <div class="input-row">
-        <mat-form-field class="formStyle">
+        <mat-form-field class="formStyle font-md3">
           <input matInput placeholder="Authentication code" [formControl]="vfcFormControl">
           <mat-error *ngIf="vfcFormControl.invalid">{{getCodeErrorMessage()}}</mat-error>
         </mat-form-field>
       </div>
-      <button type="submit" class="btn waves-light secondary-variant on-primary buttonStyle" [disabled]="vfcFormControl.invalid"
+      <button type="submit" class="btn waves-light primary buttonStyle font-md" [disabled]="vfcFormControl.invalid"
         mdbWavesEffect>
         Verify</button>
     </form>

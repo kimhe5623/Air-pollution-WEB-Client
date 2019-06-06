@@ -98,6 +98,9 @@ export class DisplayMessageService {
         this.notiService.err('Unable to connect');
         break;
 
+      case ('ALREADY_USED_PW'):
+        this.notiService.err('Please choose another new password. It is already used.');
+
     }
   }
 
@@ -159,7 +162,7 @@ export class DisplayMessageService {
 
 }
 
-export declare type ErrorType = 'EMPTY_VALUE_INVALID' | 'INVALID_FORMAT'
+export declare type ErrorType = 'EMPTY_VALUE_INVALID' | 'INVALID_FORMAT' | 'ALREADY_USED_PW'
 
   // Result code error
   | 'OTHER' | 'CONFLICT_OF_TEMPORARY_CLIENT_ID' | 'DUPLICATE_OF_USER_ID' | 'NOT_EXIST_TEMPORARY_CLIENT_ID' | 'INCORRECT_AUTHENTICATION_CODE' | 'NOT_EXIST_USER_ID' | 'INCORRECT_CURRENT_USER_PASSWORD' | 'UNALLOCATED_USER_SEQUENCE_NUMBER' | 'INCORRECT_NUMBER_OF_SIGNED_IN_COMPLETIONS' | 'INCORRECT_USER_INFORMATION' | 'UNAUTHORIZED_USER_SEQUENCE_NUMBER' | 'NOT_EXIST_WIFI_MAC_ADDRESS' | 'NOT_ASSOCIATED_WITH_USER_ID' 

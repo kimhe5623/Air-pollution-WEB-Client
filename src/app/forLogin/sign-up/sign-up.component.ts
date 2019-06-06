@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserManagementService } from 'src/app/services/httpRequest/user-management.service';
-import { DataManagementService } from '../../services/data-management.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -11,18 +10,22 @@ import { DataManagementService } from '../../services/data-management.service';
 export class SignUpComponent implements OnInit {
   hide: boolean = true;
   signupForm: FormGroup;
+  passwordInfo: any = {
+    pw: '',
+    confirmpw: ''
+  };
   genderOptions: any = ['Female', 'Male', 'Other'];
 
 
   constructor(
     private fb: FormBuilder,
-    private umService: UserManagementService,
-    private dataService: DataManagementService) {
+    private umService: UserManagementService,) {
     this.signupForm = this.fb.group({
       firstname: ['', Validators.required],
       lastname: ['', Validators.required],
       email: ['', [Validators.required, Validators.pattern("^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$")]],
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(16), Validators.pattern("^(?=.*[0-9])(?=.*[!@.#$%^&*?_~])(?=.*[a-zA-Z])([a-zA-Z0-9!@.#$%^&*?_~]+)$")]],
+      confirmPassword: ['', [Validators.required]],
       birthdate: ['', Validators.required],
       gender: ['', [Validators.required]]
     });
@@ -44,6 +47,9 @@ export class SignUpComponent implements OnInit {
       this.signupForm.get('password').hasError('minlength') ? 'Password must consist of over 6 characters' :
       this.signupForm.get('password').hasError('maxlength') ? 'Password must consist of within 16 characters' :
       this.signupForm.get('password').hasError('pattern') ? 'Password must contain at least one special character and number' : '';
+  }
+  getConfirmPasswordErrorMessage() {
+    return this.signupForm.get('confirmPassword').hasError('required') ? 'The field is required' : 'It dosen\'t match with the password';
   }
   getEmailErrorMessage() {
     return this.signupForm.get('email').hasError('required') ? 'The field is required' :

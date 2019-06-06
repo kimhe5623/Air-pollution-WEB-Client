@@ -82,21 +82,13 @@
 
 .link-primary:link,
 .link-primary:visited {
-    color: var(--primary-variant);
+    color: var(--on-primary-variant);
 }
 
 .link-primary:hover {
-    color: #a833ec;
+    color: var(--secondary);
 }
 
-.link-secondary:link,
-.link-secondary:visited {
-    color: var(--secondary-variant);
-}
-
-.link-secondary:hover {
-    color: #0ac0c0;
-}
 
 .link-error:link,
 .link-error:visited {
