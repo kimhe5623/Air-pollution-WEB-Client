@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/storage.service';
-import { UserManagementService } from '../../../services/httpRequest/user-management.service';
 import { HEADER } from 'src/app/header';
 import { SignoutService } from 'src/app/services/signout.service';
 
@@ -28,7 +27,6 @@ export class DashboardNavbarComponent implements OnInit {
   constructor(
     private router: Router,
     private storageService: StorageService,
-    private umService: UserManagementService,
     private signoutService: SignoutService) { }
 
   ngOnInit() {

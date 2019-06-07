@@ -52,8 +52,11 @@
         width: 100%;
       }
 
-      .addressSearchContainer{
+      .addressSearchContainer_afterLoggedIn{
         padding-left: 1rem;
         padding-top: 1rem;
         padding-right: 1rem;
+      }
+      .addressSearchContainer_beforeLoggedIn{
+        padding-top: 0;
       }

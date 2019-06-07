@@ -4,15 +4,16 @@
     </div>
 
     <div [ngClass]="{'col-lg-12': true, 'col-xl-4': isClicked, 'col-xl-12': !isClicked }">
-        <div *ngIf="!noSensor" class="addressSearchContainer">
-            <mat-form-field class="nation" [ngClass]="{'nation100':isClicked}">
+        <div *ngIf="!noSensor" 
+        [ngClass]="{'addressSearchContainer_beforeLoggedIn': !isLoggedIn, 'addressSearchContainer_afterLoggedIn': isLoggedIn}">
+            <mat-form-field *ngIf="isLoggedIn" class="nation" [ngClass]="{'nation100':isClicked}">
                 <mat-select placeholder="Nation" [(ngModel)]="enteredNationCode"
                     (ngModelChange)="nationChanged($event)">
                     <mat-option>None</mat-option>
                     <mat-option *ngFor="let nation of nations0" [value]="nations1[nation][0]">{{nation}}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field class="address" [ngClass]="{'address100': isClicked}">
+            <mat-form-field *ngIf="isLoggedIn" class="address" [ngClass]="{'address100': isClicked}">
                 <input matInput id="autocomplete" placeholder="Address" [(ngModel)]="enteredAddress">
             </mat-form-field>
         </div>

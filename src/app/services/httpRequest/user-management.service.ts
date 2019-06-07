@@ -160,7 +160,7 @@ export class UserManagementService {
           this.stateService.fnStateOfUsnTransitChange(0, HEADER.MSGTYPE.SGI_RSP, rspMsg.payload.resultCode, null);
 
           if (rspMsg.payload.resultCode == HEADER.RESCODE_SWP_SGI.OK) { // success
-            var userInfo = { usn: rspMsg.payload.usn, nsc: rspMsg.payload.nsc, email: reqMsg.payload.userID };
+            var userInfo = { usn: rspMsg.payload.usn, nsc: rspMsg.payload.nsc, email: reqMsg.payload.userId };
             this.storageService.set('userInfo', userInfo);
             this.dispMsgService.fnDispSuccessString('SIGNIN_COMPLETED', HEADER.NULL_VALUE);
   

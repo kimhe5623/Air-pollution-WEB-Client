@@ -35,8 +35,7 @@ export class AdminNavbarComponent implements OnInit {
 
   ngOnInit() {
     this.setMenu(this.storageService.get('menuNum'));
-    this.userInfo.email = 'kimhe5623@naver.com';
-    //this.userInfo.email = this.storageService.get('userInfo').email;
+    this.userInfo.email = this.storageService.get('userInfo').email;
   }
 
   setMenu(menuNum: number) {
