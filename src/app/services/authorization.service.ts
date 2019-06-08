@@ -11,7 +11,9 @@ export class AuthorizationService {
     private storageService: StorageService
   ) { }
 
-  isAdministor(usn: number): boolean {
+  isAdministor(usn?: number): boolean {
+    if (usn == null) usn = this.storageService.fnGetUserSequenceNumber()
+    
     if (usn == 1) return true;
     else return false;
   }

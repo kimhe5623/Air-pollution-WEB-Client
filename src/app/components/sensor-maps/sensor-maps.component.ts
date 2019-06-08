@@ -329,7 +329,7 @@ export class SensorMapsComponent implements OnInit {
         if (result != null && !result.isCanceled) {
           this.storageService.set('shrToHav', { startTmsp: result.startTmsp, endTmsp: result.endTmsp, currentGeometry: this.currentGeometry });
 
-          if (this.authService.isAdministor(this.storageService.fnGetUserSequenceNumber())) {
+          if (this.authService.isAdministor()) {
             this.router.navigate([HEADER.ROUTER_PATHS.ADMIN_AIR_HISTORY]);
           }
           else {

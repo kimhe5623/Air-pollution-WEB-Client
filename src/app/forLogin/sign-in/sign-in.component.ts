@@ -1,14 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { UserManagementService } from '../../services/httpRequest/user-management.service';
-import { HEADER } from 'src/app/header';
+import { AuthorizationService } from '../../services/authorization.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.css']
 })
-export class SignInComponent {
+export class SignInComponent implements OnInit {
 
   hide: boolean = true;
   errorhide: boolean = true;
@@ -17,11 +18,26 @@ export class SignInComponent {
 
   constructor(
     private fb: FormBuilder,
-    private umService: UserManagementService) {
+    private umService: UserManagementService,
+    private authService: AuthorizationService,
+    private router: Router) {
     this.signinForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern("^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$")]],
       password: ['', Validators.required]
     })
+  }
+
+  ngOnInit() {
+
+    if(this.authService.isUserLoggedIn()) {
+      if(this.authService.isAdministor()){
+        this.router.navigate(['/administrator']);
+      }
+      else {
+        this.router.navigate(['/dashboard']);
+      }
+    }
+    
   }
 
   getPasswordErrorMessage() {

@@ -239,7 +239,7 @@ export class UserMainContentsComponent implements OnInit, OnDestroy {
   }
 
   clickDetails(w: string) {
-    var isAdmin: boolean = this.authService.isAdministor(this.storageService.fnGetUserSequenceNumber());
+    var isAdmin: boolean = this.authService.isAdministor();
     switch (w) {
       case ('heartrate'):
         if (isAdmin) {

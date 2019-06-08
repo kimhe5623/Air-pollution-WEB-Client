@@ -156,9 +156,8 @@
     display: flex;
     flex-direction: column;
     margin: auto auto;
-    margin-top: 125px;
+    margin-top: 8rem;
     width: 63%;
-    font-size: 18px;
 }
 /*
 .example-container>* {
@@ -182,16 +181,14 @@ input.example-right-align {
 /** Button */
 .buttonStyle {
     margin: auto auto;
-    margin-top: 30px;
-    font-size: 15px;
+    margin-top: 2rem;
     width: auto;
     border-radius: 100px;
 }
 
 /** msgs */
 .container{
-    margin-top: 30px;
+    margin-top: 1rem;
     line-height: 2.5;
     text-align: center;
-    font-size: 18px;
 }

@@ -82,7 +82,7 @@ export class UserChangePasswordContentsComponent implements OnInit {
   }
 
   clickDeregister() {
-    if (this.authService.isAdministor(this.storageService.fnGetUserSequenceNumber())) {
+    if (this.authService.isAdministor()) {
       this.router.navigate([HEADER.ROUTER_PATHS.ADMIN_DEREGISTER_ACCOUNT], { skipLocationChange: true });
     }
     else {

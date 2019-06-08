@@ -7,8 +7,8 @@
     </nav>
     <!-- Sign up Form -->
     <form fxLayout="column" class="example-container" [formGroup]="signupForm" (ngSubmit)="fnOnSubmitSignupForm()">
-      <h1>Create a New Account</h1>
-      <p>Start your <strong>AiR</strong>ound U service</p>
+      <h1 class="font-lg4">Create a New Account</h1>
+      <p class="font-sm2">Start your <strong>AiR</strong>ound U service</p>
 
       <div class="input-row" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
         <mat-form-field class="width48 margin-right2" fxFlex>
@@ -31,9 +31,8 @@
 
       <div class="input-row">
         <mat-form-field class="width100">
-          <input matInput placeholder="Password" formControlName="password"
-                  name="password"
-                  [(ngModel)]="passwordInfo.pw" [type]="hide ? 'password' : 'text'">
+          <input matInput placeholder="Password" formControlName="password" name="password"
+            [(ngModel)]="passwordInfo.pw" [type]="hide ? 'password' : 'text'">
           <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
           <mat-error *ngIf="signupForm.get('password').invalid">{{getPasswordErrorMessage()}}</mat-error>
         </mat-form-field>
@@ -41,10 +40,8 @@
 
       <div class="input-row">
         <mat-form-field class="width100">
-          <input matInput placeholder="Confirm password" formControlName="confirmPassword" 
-                  name="confirmPassword"
-                  [(ngModel)]="passwordInfo.confirmpw"
-                  validateEqual="password" [type]="hide ? 'password' : 'text'">
+          <input matInput placeholder="Confirm password" formControlName="confirmPassword" name="confirmPassword"
+            [(ngModel)]="passwordInfo.confirmpw" validateEqual="password" [type]="hide ? 'password' : 'text'">
           <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
           <mat-error *ngIf="signupForm.get('confirmPassword').invalid">{{getConfirmPasswordErrorMessage()}}</mat-error>
         </mat-form-field>
@@ -75,14 +72,14 @@
     </form>
     <!-- Sign up Form -->
     <div class="container">
-      Already have an account? <strong><a class="link-primary" [routerLink]="['/signin']"
-          routerLinkActive="router-link-active"><u>
-            Sign in
-          </u></a></strong>
+      <p class="font-sm2">
+        Already have an account? <strong><a class="link-primary" [routerLink]="['/signin']"
+            routerLinkActive="router-link-active"><u>
+              Sign in
+            </u></a></strong>
+      </p>
     </div>
 
   </div>
-  <div class="col span_1_of_2 rightSide signup">
-    <img class="rightSide-img" src="assets/signup.svg">
-  </div>
+  <div class="col span_1_of_2 rightSide signup"></div>
 </div>

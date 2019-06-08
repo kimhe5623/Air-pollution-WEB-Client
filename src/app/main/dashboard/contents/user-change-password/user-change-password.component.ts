@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { StorageService } from 'src/app/services/storage.service';
 import { Router } from '@angular/router';
+import { AuthorizationService } from '../../../../services/authorization.service';
 
 @Component({
   selector: 'app-user-change-password',
@@ -10,12 +10,18 @@ import { Router } from '@angular/router';
 export class UserChangePasswordComponent implements OnInit {
 
   constructor(
-    private storageService: StorageService,
-    private router: Router){}
+    private router: Router,
+    private authService: AuthorizationService
+    ){}
 
   ngOnInit(){
-    if(this.storageService.get('userInfo') == null){
-      this.router.navigate(['/page-not-found']);
+
+    if(!this.authService.isUserLoggedIn()){
+      this.router.navigate(['/']);
     }
+    else if(this.authService.isAdministor()){
+      this.router.navigate(['/administrator']);
+    }
+    
   }
 }

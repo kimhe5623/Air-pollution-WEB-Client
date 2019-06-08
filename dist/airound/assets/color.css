@@ -64,18 +64,18 @@
 /**/
 
 .signin {
-    background: rgb(238,154,229);
-    background: linear-gradient(90deg, rgba(238,154,229,1) 0%, rgba(89,97,249,1) 100%);
+    background: url(images/above-atmosphere-clouds.jpg) no-repeat center center;
+    background-size: cover;
 }
 
 .signup {
-    background: rgb(0,195,196);
-    background: linear-gradient(90deg, rgba(0,195,196,1) 0%, rgba(77,83,201,1) 100%);
+    background: url(images/auto-beach-car.jpg) no-repeat center center;
+    background-size: cover;
 }
 
 .forgotpw {
-    background: rgb(67, 203, 255);
-    background: linear-gradient(90deg, rgba(67, 203, 255, 1) 0%, rgba(151, 8, 204, 1) 100%);
+    background: url(images/architecture-black-and-white-bridge.jpg) no-repeat center center;
+    background-size: cover;
 }
 
 /* Link */

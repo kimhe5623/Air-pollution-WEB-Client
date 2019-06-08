@@ -8,8 +8,8 @@
 
     <!-- Sign in Form -->
     <form class="example-container" [formGroup]="signinForm" (ngSubmit)="onSubmitSigninForm()">
-      <h1>Sign in to <strong>AiR</strong>ound&nbsp;U</h1>
-      <p>Welcome to your account dashboard</p>
+      <h1 class="font-lg4">Sign in to <strong>AiR</strong>ound&nbsp;U</h1>
+      <p class="font-sm2">Welcome to your account dashboard</p>
       <mat-form-field>
         <input type="text" matInput placeholder="Email" formControlName="email">
         <mat-error *ngIf="signinForm.get('email').invalid && !errorhide">{{getEmailErrorMessage()}}</mat-error>
@@ -25,15 +25,16 @@
     </form>
     <!-- Sign in Form -->
     <div class="container">
-      <strong><a class="link-primary" [routerLink]="['/forgot-pw']" routerLinkActive="router-link-active"><u>Forgot
-            Password?</u></a></strong>
-      <br> Don't have an account? <strong><a class="link-primary" [routerLink]="['/signup']" routerLinkActive="router-link-active"><u>Sign
-            Up
-          </u></a></strong>
+      <p clss="font-sm2">
+        <strong><a class="link-primary" [routerLink]="['/forgot-pw']" routerLinkActive="router-link-active"><u>Forgot
+              Password?</u></a></strong>
+        <br> Don't have an account? <strong><a class="link-primary" [routerLink]="['/signup']"
+            routerLinkActive="router-link-active"><u>Sign
+              Up
+            </u></a></strong>
+      </p>
     </div>
   </div>
 
-  <div class="col span_1_of_2 rightSide signin">
-    <img class="rightSide-img" src="assets/login.svg">
-  </div>
+  <div class="col span_1_of_2 rightSide signin"></div>
 </div>

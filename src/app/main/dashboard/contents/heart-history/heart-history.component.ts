@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { StorageService } from 'src/app/services/storage.service';
 import { Router } from '@angular/router';
+import { AuthorizationService } from '../../../../services/authorization.service';
 
 @Component({
   selector: 'app-heart-history',
@@ -9,12 +9,17 @@ import { Router } from '@angular/router';
 })
 export class HeartHistoryComponent implements OnInit {
   constructor(
-    private storageService: StorageService,
+    private authService: AuthorizationService,
     private router: Router){}
 
   ngOnInit(){
-    if(this.storageService.get('userInfo') == null){
-      this.router.navigate(['/page-not-found']);
+
+    if(!this.authService.isUserLoggedIn()){
+      this.router.navigate(['/']);
     }
+    else if(this.authService.isAdministor()){
+      this.router.navigate(['/administrator']);
+    }
+    
   }
 }

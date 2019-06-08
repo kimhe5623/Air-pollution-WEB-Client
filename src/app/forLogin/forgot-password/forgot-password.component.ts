@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserManagementService } from 'src/app/services/httpRequest/user-management.service';
+import { AuthorizationService } from '../../services/authorization.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-forgot-password',
@@ -13,7 +15,10 @@ export class ForgotPasswordComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private umService: UserManagementService,) {
+    private umService: UserManagementService,
+    private authService: AuthorizationService,
+    private router: Router
+    ) {
     this.forgotpwForm = this.fb.group({
       firstname: ['', Validators.required],
       lastname: ['', Validators.required],
@@ -22,7 +27,17 @@ export class ForgotPasswordComponent implements OnInit {
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    
+    if(this.authService.isUserLoggedIn()) {
+      if(this.authService.isAdministor()){
+        this.router.navigate(['/administrator']);
+      }
+      else {
+        this.router.navigate(['/dashboard']);
+      }
+    }
+  }
 
 
   /** Form Error MSGs */
