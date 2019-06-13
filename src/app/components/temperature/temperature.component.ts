@@ -40,7 +40,6 @@ export class TemperatureComponent implements OnInit, OnChanges {
 
     this.division_style = this.JSON_copy(this.unit_style);
 
-
     this.celsius = 0;
     this.fahrenheit = 0;
 
@@ -68,12 +67,14 @@ export class TemperatureComponent implements OnInit, OnChanges {
   click(unit: UnitsType) {
 
     if (unit == 'C' || unit == 'default') {
+      this.isCelsius = true;
       this.temperature = this.celsius;
       this.celsius_style['color'] = this.primary_color;
       this.fahrenheit_style['color'] = this.secondary_color;
     }
 
     else if(unit == 'F') {
+      this.isCelsius = false;
       this.temperature = this.fahrenheit;
       this.celsius_style['color'] = this.secondary_color;
       this.fahrenheit_style['color'] = this.primary_color;

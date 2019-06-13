@@ -1,5 +1,7 @@
 <div class="wrapper" style="margin-bottom: 400px">
-    <h1 class="title font-lg4">Administrator - <strong>User management</strong></h1>
+    <h1 class="title font-xl" style="text-align: center; margin-bottom: 0">
+      <strong style="margin-right: 20px">TOTAL USERS</strong>{{USER_LIST.length}}
+    </h1>
     <div class="chipWrapper">
       <span class="badge badgeStyle font-md" *ngFor="let option of search_options_array let idx=index">
         <strong>{{option.key}}</strong>&nbsp;&nbsp;{{option.value}}

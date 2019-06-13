@@ -124,6 +124,7 @@ import { ErrDialog } from './dialogs/noti/err-dialog/err-dialog';
 import { WarnDialog } from './dialogs/noti/warn-dialog/warn-dialog';
 import { NotiService } from './services/noti.service';
 import { EqualValidator } from './forLogin/customizedValidators';
+import { AirDataForRavComponent } from './components/air-data-for-rav/air-data-for-rav.component';
 
 @NgModule({
   declarations: [
@@ -193,7 +194,8 @@ import { EqualValidator } from './forLogin/customizedValidators';
     SuccDialog,
     ErrDialog,
     WarnDialog,
-    EqualValidator
+    EqualValidator,
+    AirDataForRavComponent
   ],
   imports: [
     /** Angular Modules */

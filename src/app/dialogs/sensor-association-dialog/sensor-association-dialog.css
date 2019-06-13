@@ -1,9 +1,16 @@
-.dialog{
+.dialog {
     height: 110px;
 }
-.inputStyle{
+
+.inputStyle {
     width: 100%;
 }
-.btnStyle{
+
+.btnStyle {
     width: 150px;
+}
+
+.tooltips {
+    margin-left: 130px;
+    color: var(--on-primary);
 }

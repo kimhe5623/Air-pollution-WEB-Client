@@ -1,6 +1,10 @@
 <div class="wrapper" style="margin-bottom: 100px">
-  <h1 class="title font-lg4">Administrator - <strong>Sensor management</strong></h1>
+  <h1 class="title font-xl" style="text-align: center; margin-bottom: 0">
+    <strong style="margin-right: 20px">TOTAL SENSORS</strong>{{SENSOR_LIST.length}}
+  </h1>
   <mat-card class="card">
+    <i class="fas fa-question-circle tooltips font-lg"
+      mdbTooltip="Enter a properly formatted MAC address like 'a1:b2:c3:d4:e5:f6'" placement="right"></i>
     <form class="example-form font-md2" (ngSubmit)="fnOnSubmitAsrForm()">
       <mat-form-field class="example-full-width inputStyle">
         <input matInput placeholder="Wifi MAC Address" [formControl]="wifi_mac">
@@ -8,8 +12,8 @@
       <mat-form-field class="example-full-width inputStyle">
         <input matInput placeholder="Cellular MAC Address" [formControl]="cellular_mac">
       </mat-form-field>
-      <button type="submit" class="btn waves-light primary-variant buttonStyle" [disabled]="wifi_mac.invalid || cellular_mac.invalid"
-        mdbWavesEffect>Register</button>
+      <button type="submit" class="btn waves-light primary-variant buttonStyle"
+        [disabled]="wifi_mac.invalid || cellular_mac.invalid" mdbWavesEffect>Register</button>
     </form>
   </mat-card>
   <div class="row rowStyle">
@@ -45,18 +49,21 @@
     <div class="col-lg-12 col-xl-3 buttonsGroup">
       <button mdbBtn type="button" class="waves-light secondary roundBtn font-lg" (click)="fnOpenDialog_SAS_procedure()"
         mdbWavesEffect>+</button>
-      <button mdbBtn type="button" class="waves-light secondary roundBtn font-lg" (click)="fnOpenDialog_ASD_procedure()" mdbWavesEffect>-</button>
+      <button mdbBtn type="button" class="waves-light secondary roundBtn font-lg" (click)="fnOpenDialog_ASD_procedure()"
+        mdbWavesEffect>-</button>
     </div>
   </div>
   <div class="mat-elevation-z8">
     <mat-accordion>
       <div class="tableheader">
         <span class="eachtitle checkboxWidth">
-          <mat-checkbox (change)="$event ? masterToggle() : null; selected()" [checked]="selection.hasValue() && isAllSelected()"
+          <mat-checkbox (change)="$event ? masterToggle() : null; selected()"
+            [checked]="selection.hasValue() && isAllSelected()"
             [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
         </span>
-        <span *ngFor="let column of displayedColumns; let idx=index;" class="eachtitle column-name font-md on-primary" [ngStyle]="columnStyles[idx]">
+        <span *ngFor="let column of displayedColumns; let idx=index;" class="eachtitle column-name font-md on-primary"
+          [ngStyle]="columnStyles[idx]">
           {{column}}
         </span>
       </div>
@@ -67,7 +74,8 @@
         </mat-expansion-panel-header>
         <mat-expansion-panel-header>
           <span class="eachtitle checkboxWidth">
-            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(element) : null; selected()"
+            <mat-checkbox (click)="$event.stopPropagation()"
+              (change)="$event ? selection.toggle(element) : null; selected()"
               [checked]="selection.isSelected(element)">
             </mat-checkbox>
           </span>
@@ -130,14 +138,30 @@
                   <th>GPS</th>
                 </tr>
                 <tr>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.temp == 1, inactive: element.status.temp == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.no2 == 1, inactive: element.status.no2 == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.so2 == 1, inactive: element.status.so2 == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.pm25 == 1, inactive: element.status.pm25 == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.pm10 == 1, inactive: element.status.pm10 == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.gps == 1, inactive: element.status.gps == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.temp == 1, inactive: element.status.temp == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.no2 == 1, inactive: element.status.no2 == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.so2 == 1, inactive: element.status.so2 == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.pm25 == 1, inactive: element.status.pm25 == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.pm10 == 1, inactive: element.status.pm10 == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.gps == 1, inactive: element.status.gps == 0}"
+                      aria-hidden="true"></i></th>
                 </tr>
               </table>
             </div>

@@ -1,18 +1,24 @@
 <div class="wrapper" style="margin-bottom: 10rem">
-  <h1 class="title font-lg4">Sensor management</h1>
+  <h1 class="title font-xl" style="text-align: center">
+    <strong style="margin-right: 20px">TOTAL SENSORS</strong>{{SENSOR_LIST.length}}
+  </h1>
   <div class="buttonsGroup">
-    <button mdbBtn type="button" class="waves-light secondary roundBtn font-lg" (click)="fnOpenDialog_SAS_procedure()" mdbWavesEffect>+</button>
-    <button mdbBtn type="button" class="waves-light secondary roundBtn font-lg" (click)="fnOpenDialog_SDD_procedure()" mdbWavesEffect>-</button>
+    <button mdbBtn type="button" class="waves-light secondary roundBtn font-lg" (click)="fnOpenDialog_SAS_procedure()"
+      mdbWavesEffect>+</button>
+    <button mdbBtn type="button" class="waves-light secondary roundBtn font-lg" (click)="fnOpenDialog_SDD_procedure()"
+      mdbWavesEffect>-</button>
   </div>
   <div class="mat-elevation-z8">
     <mat-accordion>
       <div class="tableheader">
         <span class="eachtitle checkboxWidth">
-          <mat-checkbox (change)="$event ? masterToggle() : null; selected()" [checked]="selection.hasValue() && isAllSelected()"
+          <mat-checkbox (change)="$event ? masterToggle() : null; selected()"
+            [checked]="selection.hasValue() && isAllSelected()"
             [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
         </span>
-        <span *ngFor="let column of displayedColumns; let idx=index" class="eachtitle column-name font-md on-primary" [ngStyle]="columnStyles[idx]">
+        <span *ngFor="let column of displayedColumns; let idx=index" class="eachtitle column-name font-md on-primary"
+          [ngStyle]="columnStyles[idx]">
           {{column}}
         </span>
         <span style="width:10px"></span>
@@ -24,7 +30,8 @@
         </mat-expansion-panel-header>
         <mat-expansion-panel-header>
           <span class="eachtitle checkboxWidth">
-            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(element) : null; selected()"
+            <mat-checkbox (click)="$event.stopPropagation()"
+              (change)="$event ? selection.toggle(element) : null; selected()"
               [checked]="selection.isSelected(element)">
             </mat-checkbox>
           </span>
@@ -84,14 +91,30 @@
                   <th>GPS</th>
                 </tr>
                 <tr>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.temp == 1, inactive: element.status.temp == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.no2 == 1, inactive: element.status.no2 == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.so2 == 1, inactive: element.status.so2 == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.pm25 == 1, inactive: element.status.pm25 == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.pm10 == 1, inactive: element.status.pm10 == 0}" aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle" [ngClass]="{active: element.status.gps == 1, inactive: element.status.gps == 0}" aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.temp == 1, inactive: element.status.temp == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.no2 == 1, inactive: element.status.no2 == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.so2 == 1, inactive: element.status.so2 == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.pm25 == 1, inactive: element.status.pm25 == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.pm10 == 1, inactive: element.status.pm10 == 0}"
+                      aria-hidden="true"></i></th>
+                  <th><i class="fa fa-circle"
+                      [ngClass]="{active: element.status.gps == 1, inactive: element.status.gps == 0}"
+                      aria-hidden="true"></i></th>
                 </tr>
               </table>
             </div>

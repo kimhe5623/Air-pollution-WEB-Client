@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-xl-3 col-lg-4 col-md-3 col-sm-4 col-xs-12">
+    <span class="font-lg4" [ngStyle]="aqi_style">{{shown_aqi.value}}</span>
+  </div>
+  <div class="col-xl-9 col-lg-8 col-md-9 col-sm-8 col-xs-12">
+    <div class="row">
+      <span class="font-md3" [ngStyle]="each_air_data_style.CO" (mouseover)="hover('CO')">CO</span>
+      <span class="font-md2" [ngStyle]="each_air_data_style.O3" (mouseover)="hover('O3')">O<sub>3</sub></span>
+      <span class="font-md2" [ngStyle]="each_air_data_style.NO2" (mouseover)="hover('NO2')">NO<sub>2</sub></span>
+      <span class="font-md2" [ngStyle]="each_air_data_style.SO2" (mouseover)="hover('SO2')">SO<sub>2</sub></span>
+      <span class="font-md2" [ngStyle]="each_air_data_style.PM25" (mouseover)="hover('PM25')">PM2.5</span>
+      <span class="font-md2" [ngStyle]="each_air_data_style.PM10" (mouseover)="hover('PM10')">PM10</span>
+    </div>
+    <div class="row" class="font-md2" style="padding-top:20px">
+      <!-------->
+      <span [ngStyle]="details_style">Temp</span>
+      <!-- Temperature -->
+      <app-temperature [temperature]="temp" primary_color="#000000" secondary_color="#929292be"
+        [temperature_style]="{'font-size':'20px', 'font-weight': 'normal'}" [unit_style]="{'font-size':'20px', 'font-weight': '400', 'padding':'4.8px'}"
+        (unitChange)="unitChange($event)"></app-temperature>
+      <!-------->
+    </div>
+    <div class="row" class="font-md">
+      <span style="padding-right: 2rem">{{current_description[0]}}</span>
+      <span *ngIf="shown_aqi.key == dominent" [ngStyle]="dominent_style">Dominant</span>
+    </div>
+  </div>
+</div>

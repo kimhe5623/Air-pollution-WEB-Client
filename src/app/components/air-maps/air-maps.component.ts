@@ -44,10 +44,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   /**
    * Nations
    */
-  nations0: any = {};
-  nations1: any = {};
-  nations2: any = {};
-  nations3: any = {};
+  // nations0: any = {};
+  // nations1: any = {};
+  // nations2: any = {};
+  // nations3: any = {};
 
   /**
    * Options 
@@ -121,11 +121,11 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.inInterval = HEADER.RES_SUCCESS;
     this.isLoggedIn = this.authService.isUserLoggedIn();
-
-    this.nations0 = HEADER.NATIONS[0]
-    this.nations1 = HEADER.NATIONS[1];
-    this.nations2 = HEADER.NATIONS[2];
-    this.nations3 = HEADER.NATIONS[3];
+    
+    // this.nations0 = HEADER.NATIONS[0]
+    // this.nations1 = HEADER.NATIONS[1];
+    // this.nations2 = HEADER.NATIONS[2];
+    // this.nations3 = HEADER.NATIONS[3];
 
     this.reqData((result) => {
       if (result != HEADER.NULL_VALUE) {
@@ -161,9 +161,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         }
       }
 
-      if (this.nations3[currentNationShortname] != null) {
-        this.enteredNationCode = this.nations3[currentNationShortname][1];
-      }
+      // if (this.nations3[currentNationShortname] != null) {
+      //   this.enteredNationCode = this.nations3[currentNationShortname][1];
+      // }
+
       /**
        * Google maps initialization
        */
@@ -181,7 +182,7 @@ export class AirMapsComponent implements OnInit, OnDestroy {
 
         this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
         this.autocomplete = new google.maps.places.Autocomplete(document.getElementById(`autocomplete`), {
-          types: [`address`],
+          types: [],
           componentRestrictions: [currentNationShortname],
         });
 
@@ -213,7 +214,6 @@ export class AirMapsComponent implements OnInit, OnDestroy {
         this.circles = {};
         this.infoWindow = new google.maps.InfoWindow();
 
-        this.clickedMarker = result.firstKey;
         this.addNewMarkers(this.data);
         this.addparsedDataWithFirstkey();
       }
@@ -274,6 +274,10 @@ export class AirMapsComponent implements OnInit, OnDestroy {
           this.noSensor = false;
 
           var parsedData = this.dataService.rspRealtimeAirDataParsing(result.payload.realtimeAirQualityDataList);
+
+          if(this.clickedMarker != ''){
+            this.clickedData = this.markers[this.clickedMarker]['data'];
+          }
 
           // Add firstkey with parsedData //
 
@@ -938,8 +942,8 @@ export class AirMapsComponent implements OnInit, OnDestroy {
   }
 
 
-  /** Nation */
-  nationChanged(value) {
-    this.autocomplete.setComponentRestrictions({ 'country': [this.nations2[value][1]] });
-  }
+  // /** Nation */
+  // nationChanged(value) {
+  //   this.autocomplete.setComponentRestrictions({ 'country': [this.nations2[value][1]] });
+  // }
 }

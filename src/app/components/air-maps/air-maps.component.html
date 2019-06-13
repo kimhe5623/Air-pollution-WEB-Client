@@ -5,14 +5,15 @@
 
     <div [ngClass]="{'col-lg-12': true, 'col-xl-4': isClicked, 'col-xl-12': !isClicked }">
         <div *ngIf="!noSensor" class="addressSearchContainer">
-            <mat-form-field *ngIf="isLoggedIn" class="nation" [ngClass]="{'nation100':isClicked}">
+            <!-- <mat-form-field *ngIf="isLoggedIn" class="nation" [ngClass]="{'nation100':isClicked}">
                 <mat-select placeholder="Nation" [(ngModel)]="enteredNationCode"
                     (ngModelChange)="nationChanged($event)">
                     <mat-option>None</mat-option>
                     <mat-option *ngFor="let nation of nations0" [value]="nations1[nation][0]">{{nation}}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field *ngIf="isLoggedIn" class="address" [ngClass]="{'address100': isClicked}">
+            <mat-form-field *ngIf="isLoggedIn" class="address" [ngClass]="{'address100': isClicked}"> -->
+            <mat-form-field *ngIf="isLoggedIn" class="address100">
                 <input matInput id="autocomplete" placeholder="Address" [(ngModel)]="enteredAddress">
             </mat-form-field>
         </div>
@@ -24,41 +25,46 @@
     <div *ngIf="isClicked" class="col-lg-12 col-xl-8">
         <div class="row">
             <div *ngIf="isLoggedIn" class="col-lg-4" style="margin-top: 1rem; margin-bottom: 1rem">
-                <h4 class="font-md2"><strong>MAC address</strong>&nbsp;&nbsp;{{dataService.rspToMacAddress(clickedMarker)}}</h4>
+                <h4 class="font-md2"><strong>MAC
+                        address</strong>&nbsp;&nbsp;{{dataService.rspToMacAddress(clickedMarker)}}</h4>
             </div>
             <div [ngClass]="{'col-lg-8': isLoggedIn, 'col-lg-12': !isLoggedIn}"
                 style="margin-top: 1rem; margin-bottom: 1rem">
                 <h4 class="font-md2"><strong>{{clickedLocation}}</strong></h4>
             </div>
             <div class="col-lg-12 font-md" style="margin-bottom: 1rem">
-                <h4>
+                <!-- airData Circles -->
+                <app-air-data-for-rav [radius]="120" [sub_radius]="70" main_color='#FFFFFF' main_font_color='#000'
+                    hovered_color='var(--grey)' hovered_font_color='#fff' dominent_color='' [data]="markers[clickedMarker]['data']">
+                </app-air-data-for-rav>
+                <!-- <h4>
                     <div class="tableContainer">
                         <table>
                             <tr>
                                 <th>CO</th>
-                                <td>{{clickedData.AQI_CO}}</td>
+                                <td>{{markers[clickedMarker]['data'].AQI_CO}}</td>
 
                                 <th>O<sub>3</sub></th>
-                                <td>{{clickedData.AQI_O3}}</td>
+                                <td>{{markers[clickedMarker]['data'].AQI_O3}}</td>
 
                                 <th>NO<sub>2</sub></th>
-                                <td>{{clickedData.AQI_NO2}}</td>
+                                <td>{{markers[clickedMarker]['data'].AQI_NO2}}</td>
 
                                 <th>SO<sub>2</sub></th>
-                                <td>{{clickedData.AQI_SO2}}</td>
+                                <td>{{markers[clickedMarker]['data'].AQI_SO2}}</td>
 
                                 <th>PM2.5</th>
-                                <td>{{clickedData.AQI_PM25}}</td>
+                                <td>{{markers[clickedMarker]['data'].AQI_PM25}}</td>
 
                                 <th>PM10</th>
-                                <td>{{clickedData.AQI_PM10}}</td>
+                                <td>{{markers[clickedMarker]['data'].AQI_PM10}}</td>
 
                                 <th>Temp</th>
-                                <td>{{clickedData.temperature}}</td>
+                                <td>{{markers[clickedMarker]['data'].temperature}}</td>
                             </tr>
                         </table>
                     </div>
-                </h4>
+                </h4> -->
             </div>
         </div>
         <!--

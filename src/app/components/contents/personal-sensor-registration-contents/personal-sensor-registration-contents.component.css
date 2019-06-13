@@ -16,3 +16,8 @@
 .block{
     display: block;
 }
+
+.tooltips {
+    margin-left: 530px;
+    color: var(--on-primary);
+}
