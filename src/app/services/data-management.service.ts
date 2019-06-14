@@ -283,14 +283,14 @@ export class DataManagementService {
 
   sensorStatusParsing(status: number): any {
     return {
-      temp: Math.floor((status / Math.pow(2, 0))) % 2, // bit1
-      co: Math.floor((status / Math.pow(2, 1))) % 2, // bit2
-      o3: Math.floor((status / Math.pow(2, 2))) % 2, // bit3
-      no2: Math.floor((status / Math.pow(2, 3))) % 2,  // bit4
-      so2: Math.floor((status / Math.pow(2, 4))) % 2,  // bit5
-      pm25: Math.floor((status / Math.pow(2, 5))) % 2, // bit6
-      pm10: Math.floor((status / Math.pow(2, 6))) % 2, // bit7
-      gps: Math.floor((status / Math.pow(2, 7))) % 2,  // bit8
+      temp: Math.floor((status / Math.pow(2, 0))) % 2 == 1 ? true : false, // bit1
+      co: Math.floor((status / Math.pow(2, 1))) % 2 == 1 ? true : false, // bit2
+      o3: Math.floor((status / Math.pow(2, 2))) % 2 == 1 ? true : false, // bit3
+      no2: Math.floor((status / Math.pow(2, 3))) % 2 == 1 ? true : false,  // bit4
+      so2: Math.floor((status / Math.pow(2, 4))) % 2 == 1 ? true : false,  // bit5
+      pm25: Math.floor((status / Math.pow(2, 5))) % 2 == 1 ? true : false, // bit6
+      pm10: Math.floor((status / Math.pow(2, 6))) % 2 == 1 ? true : false, // bit7
+      gps: Math.floor((status / Math.pow(2, 7))) % 2 == 1 ? true : false,  // bit8
     };
   }
 

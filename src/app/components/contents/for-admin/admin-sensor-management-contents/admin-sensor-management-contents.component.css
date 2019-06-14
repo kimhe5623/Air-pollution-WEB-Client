@@ -68,10 +68,7 @@
     width: 3rem;
 }
 
-.eachtitle {
-    margin-right: 3rem;
-}
-.eachtitle.column-name {
+.column-name {
     font-weight: bold;
 }
 
@@ -124,10 +121,17 @@ p {
 
 .contentWrapper {
     padding-left:3rem;
+    margin-bottom: 20px;
 }
 .contentName {
-    padding-bottom:1rem
+    padding-bottom: 1rem
 }
+
+.sensorStatus {
+    width: 55px;
+    text-align: center;
+}
+
 
 .tableStyle{
     width: 500px;
@@ -182,3 +186,118 @@ tr, th{
     margin-left: 95%;
     color: var(--on-primary);
 }
+
+/************ sensor Table ************/
+.checkboxWidth{
+    width: 50px;
+}
+.table_no {
+    width: 5%;
+}
+.table_mac_address {
+    width: 17%;
+}
+.table_activation {
+    width: 13%;
+}
+.table_nation {
+    width: 10%;
+}
+.table_state {
+    width: 10%;
+}
+.table_city {
+    width: 10%;
+}
+.table_registration_date {
+    width: 20%;
+}
+.table_userid {
+    width: 14%;
+}
+.table-padding {
+    padding-top: 3px;
+}
+
+
+/*  GO FULL WIDTH AT LESS THAN 1640 PIXELS */
+
+@media (max-width: 1640px) {
+    .table_no {
+        width: 7%;
+    }
+    .table_mac_address {
+        width: 20%
+    }
+    .table_activation {
+        width: 15%
+    }
+    .table_nation {
+        width: 12%
+    }
+    .table_state {
+        width: 12%
+    }
+    .table_city {
+        width: 12%
+    }
+    .table_registration_date {
+        width: 22%;
+    }
+}
+
+/*  GO FULL WIDTH AT LESS THAN 1450 PIXELS */
+
+@media (max-width: 1450px) {
+    .checkboxWidth{
+        width: 7%;
+    }
+    .table_no {
+        width: 7%;
+    }
+    .table_mac_address {
+        width: 23%
+    }
+    .table_activation {
+        width: 18%
+    }
+    .table_nation {
+        width: 15%
+    }
+    .table_state {
+        width: 15%
+    }
+    .table_city {
+        width: 15%
+    }
+}
+
+/*  GO FULL WIDTH AT LESS THAN 1022 PIXELS */
+@media only screen and (max-width: 1022px) {
+    .checkboxWidth{
+        width: 20%;
+    }
+    .table_no {
+        width: 20%;
+    }
+    .table_mac_address {
+        width: 40%
+    }
+    .table_activation {
+        width: 30%
+    }
+}
+
+/*  GO FULL WIDTH AT LESS THAN 900 PIXELS */
+@media only screen and (max-width: 900px) {
+    .checkboxWidth{
+        width: 20%;
+    }
+    .table_no {
+        width: 20%;
+    }
+    .table_mac_address {
+        width: 60%
+    }
+}
+

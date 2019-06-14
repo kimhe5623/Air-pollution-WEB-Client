@@ -14,14 +14,14 @@ import { DataManagementService } from 'src/app/services/data-management.service'
 })
 export class SensorManagementContentsComponent implements OnInit {
   displayedColumns: string[] = ['No.', 'MAC address', 'Activation', 'Nation', 'State', 'City', 'Registration date'];
-  columnStyles: any = [
-    { 'width': '3.5rem' }, // No
-    { 'width': '14rem' }, // Mac address
-    { 'width': '8rem' }, // Activation
-    { 'width': '5rem' }, // Nation
-    { 'width': '5rem' },  // State
-    { 'width': '5rem' },  // City
-    { 'width': '15rem' },  // Reg date
+  columnClasses: any = [
+    { 'table_no': true }, // No
+    { 'table_mac_address': true }, // Mac address
+    { 'table_activation': true }, // Activation
+    { 'table_nation': true }, // Nation
+    { 'table_state': true },  // State
+    { 'table_city': true },  // City
+    { 'table_registration_date': true },  // Reg date
   ];
   SENSOR_LIST: PeriodicElement[] = [];
   selection : SelectionModel<PeriodicElement>;
@@ -36,6 +36,9 @@ export class SensorManagementContentsComponent implements OnInit {
   mobility: number;
   reasonCode: number;
   //-------------------------------
+  isVisibleRegDateArc: boolean;
+  isVisibleGeoDataArc: boolean;
+  isVisibleActivationArc: boolean;
 
   constructor(
     public dialog: MatDialog,
@@ -46,6 +49,17 @@ export class SensorManagementContentsComponent implements OnInit {
 
   ngOnInit() {
     this.fnInitData();
+
+    this.windowSize();
+    window.onresize = () => {
+      this.windowSize();
+    }
+  }
+
+  windowSize() {
+    this.isVisibleRegDateArc = window.innerWidth <= 1640;
+    this.isVisibleGeoDataArc = window.innerWidth <= 1200;
+    this.isVisibleActivationArc = window.innerWidth <= 1022;
   }
 
   fnInitData() {

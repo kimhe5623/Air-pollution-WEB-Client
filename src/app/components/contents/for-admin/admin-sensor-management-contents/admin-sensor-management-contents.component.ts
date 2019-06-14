@@ -20,15 +20,15 @@ export class AdminSensorManagementContentsComponent implements OnInit {
   searchForm: FormGroup;
 
   displayedColumns: string[] = ['No.', 'MAC address', 'Activation', 'Nation', 'State', 'City', 'Registration date', 'UserID'];
-  columnStyles: any = [
-    { 'width': '3rem' }, // No
-    { 'width': '12rem' }, // Mac address
-    { 'width': '8rem' }, // Activation
-    { 'width': '4rem' }, // Nation
-    { 'width': '4rem' },  // State
-    { 'width': '8rem' },  // City
-    { 'width': '15rem' },  // Registration date
-    { 'width': '10rem' }, // UserID
+  columnClasses: any = [
+    { 'table_no': true }, // No
+    { 'table_mac_address': true }, // Mac address
+    { 'table_activation': true }, // Activation
+    { 'table_nation': true }, // Nation
+    { 'table_state': true },  // State
+    { 'table_city': true },  // City
+    { 'table_registration_date': true },  // Reg date
+    { 'table_userid': true }, // UserID
   ];
 
   SENSOR_LIST: PeriodicElement[] = [];
@@ -47,6 +47,11 @@ export class AdminSensorManagementContentsComponent implements OnInit {
   mobility: number;
   reasonCode: number;
   //-------------------------------
+
+  isVisibleUseridArc: boolean;
+  isVisibleRegDateArc: boolean;
+  isVisibleGeoDataArc: boolean;
+  isVisibleActivationArc: boolean;
 
   constructor(
     public dialog: MatDialog,
@@ -68,6 +73,18 @@ export class AdminSensorManagementContentsComponent implements OnInit {
 
   ngOnInit() {
     this.fnInitData();
+
+    this.windowSize();
+    window.onresize = () => {
+      this.windowSize();
+    }
+  }
+
+  windowSize() {
+    this.isVisibleUseridArc = window.innerWidth <= 1640;
+    this.isVisibleRegDateArc = window.innerWidth <= 1450;
+    this.isVisibleGeoDataArc  = window.innerWidth <= 1022;
+    this.isVisibleActivationArc = window.innerWidth <= 900;
   }
 
   fnInitData() {

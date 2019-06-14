@@ -56,15 +56,35 @@
   <div class="mat-elevation-z8">
     <mat-accordion>
       <div class="tableheader">
-        <span class="eachtitle checkboxWidth">
+        <span class="checkboxWidth table-padding">
           <mat-checkbox (change)="$event ? masterToggle() : null; selected()"
             [checked]="selection.hasValue() && isAllSelected()"
             [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
         </span>
-        <span *ngFor="let column of displayedColumns; let idx=index;" class="eachtitle column-name font-md on-primary"
-          [ngStyle]="columnStyles[idx]">
-          {{column}}
+        <span class="column-name font-md on-primary" [ngClass]="columnClasses[0]">
+          {{displayedColumns[0]}}
+        </span>
+        <span class="column-name font-md on-primary" [ngClass]="columnClasses[1]">
+          {{displayedColumns[1]}}
+        </span>
+        <span *ngIf="!isVisibleActivationArc" class="column-name font-md on-primary" [ngClass]="columnClasses[2]">
+          {{displayedColumns[2]}}
+        </span>
+        <span *ngIf="!isVisibleGeoDataArc" class="column-name font-md on-primary" [ngClass]="columnClasses[3]">
+          {{displayedColumns[3]}}
+        </span>
+        <span *ngIf="!isVisibleGeoDataArc" class="column-name font-md on-primary" [ngClass]="columnClasses[4]">
+          {{displayedColumns[4]}}
+        </span>
+        <span *ngIf="!isVisibleGeoDataArc" class="column-name font-md on-primary" [ngClass]="columnClasses[5]">
+          {{displayedColumns[5]}}
+        </span>
+        <span *ngIf="!isVisibleRegDateArc" class="column-name font-md on-primary" [ngClass]="columnClasses[6]">
+          {{displayedColumns[6]}}
+        </span>
+        <span *ngIf="!isVisibleUseridArc" class="column-name font-md on-primary" [ngClass]="columnClasses[7]">
+          {{displayedColumns[7]}}
         </span>
       </div>
 
@@ -73,39 +93,96 @@
           No sensor
         </mat-expansion-panel-header>
         <mat-expansion-panel-header>
-          <span class="eachtitle checkboxWidth">
+          <span class="checkboxWidth table-padding">
             <mat-checkbox (click)="$event.stopPropagation()"
               (change)="$event ? selection.toggle(element) : null; selected()"
               [checked]="selection.isSelected(element)">
             </mat-checkbox>
           </span>
-          <span class="eachtitle" [ngStyle]="columnStyles[0]">
+          <span class="table-padding" [ngClass]="columnClasses[0]">
             {{idx+1}}
           </span>
-          <span class="eachtitle" [ngStyle]="columnStyles[1]">
+          <span class="table-padding" [ngClass]="columnClasses[1]">
             {{element.mac}}
           </span>
-          <span class="eachtitle" [ngStyle]="columnStyles[2]">
+          <span class="table-padding" *ngIf="!isVisibleActivationArc" [ngClass]="columnClasses[2]">
             {{getSensorActivation(element.activation)}}
           </span>
-          <span class="eachtitle" [ngStyle]="columnStyles[3]">
+          <span class="table-padding" *ngIf="!isVisibleGeoDataArc" [ngClass]="columnClasses[3]">
             {{element.nation}}
           </span>
-          <span class="eachtitle" [ngStyle]="columnStyles[4]">
+          <span class="table-padding" *ngIf="!isVisibleGeoDataArc" [ngClass]="columnClasses[4]">
             {{element.state}}
           </span>
-          <span class="eachtitle" [ngStyle]="columnStyles[5]">
+          <span class="table-padding" *ngIf="!isVisibleGeoDataArc" [ngClass]="columnClasses[5]">
             {{element.city}}
           </span>
-          <span class="eachtitle" [ngStyle]="columnStyles[6]">
+          <span *ngIf="!isVisibleRegDateArc" [ngClass]="columnClasses[6]">
             {{element.regDate | date: 'medium'}}
           </span>
-          <span class="eachtitle" [ngStyle]="columnStyles[7]">
+          <span class="table-padding" *ngIf="!isVisibleUseridArc" [ngClass]="columnClasses[7]">
             {{element.userID}}
           </span>
         </mat-expansion-panel-header>
+
         <div class="row">
-          <div class="col-lg-6 col-xl-3 contentWrapper">
+          <div *ngIf="isVisibleActivationArc" class="contentWrapper"
+            [ngClass]="{'col-3':isVisibleActivationArc}">
+            <div class="row contentName">
+              <strong>Activation</strong>
+            </div>
+            <div class="row">
+              {{getSensorActivation(element.activation)}}
+            </div>
+          </div>
+          <div *ngIf="isVisibleGeoDataArc" class="contentWrapper"
+            [ngClass]="{'col-2':!isVisibleActivationArc, 'col-3':isVisibleActivationArc}">
+            <div class="row contentName">
+              <strong>Nation</strong>
+            </div>
+            <div class="row">
+              {{element.nation}}
+            </div>
+          </div>
+          <div *ngIf="isVisibleGeoDataArc" class="contentWrapper"
+            [ngClass]="{'col-2':!isVisibleActivationArc, 'col-3':isVisibleActivationArc}">
+            <div class="row contentName">
+              <strong>State</strong>
+            </div>
+            <div class="row">
+              {{element.state}}
+            </div>
+          </div>
+          <div *ngIf="isVisibleGeoDataArc" class="contentWrapper"
+            [ngClass]="{'col-2':!isVisibleActivationArc, 'col-3':isVisibleActivationArc}">
+            <div class="row contentName">
+              <strong>City</strong>
+            </div>
+            <div class="row">
+              {{element.city}}
+            </div>
+          </div>
+          <div *ngIf="isVisibleRegDateArc" class="contentWrapper"
+            [ngClass]="{'col-4': !isVisibleGeoDataArc, 'col-6': isVisibleGeoDataArc}">
+            <div class="row contentName">
+              <strong>Registration date</strong>
+            </div>
+            <div class="row">
+              {{element.regDate | date: 'medium'}}
+            </div>
+          </div>
+          <div *ngIf="isVisibleUseridArc" class="contentWrapper"
+            [ngClass]="{'col-4': !isVisibleActivationArc, 'col-6': isVisibleActivationArc}">
+            <div class="row contentName">
+              <strong>User ID</strong>
+            </div>
+            <div class="row">
+              {{element.userID}}
+            </div>
+          </div>
+          <!---------------->
+          <div class="contentWrapper"
+            [ngClass]="{'col-3': !isVisibleUseridArc, 'col-4': isVisibleUseridArc, 'col-6': isVisibleGeoDataArc}">
             <div class="row contentName">
               <strong>Cellular MAC address</strong>
             </div>
@@ -113,7 +190,8 @@
               {{element.cellularMac}}
             </div>
           </div>
-          <div class="col-lg-6 col-xl-2 contentWrapper">
+          <div class="contentWrapper"
+            [ngClass]="{'col-2': !isVisibleUsesridArc, 'col-4': isVisibleUseridArc && !isVisibleRegDateArc, 'col-3': isVisibleRegDateArc, 'col-6': isVisibleActivationArc}">
             <div class="row contentName">
               <strong>Mobility</strong>
             </div>
@@ -121,49 +199,52 @@
               {{element.mobility == 0 ? 'Stationary' : 'Portable'}}
             </div>
           </div>
-          <div class="col-lg-12 col-xl-7 contentWrapper">
-            <div class="row contentName">
-              <strong>Current status</strong>
+          <div class="contentWrapper"
+            [ngClass]="{'col-7': !isVisibleUseridArc, 'col-12': isVisibleUseridArc && !isVisibleRegDateArc || isVisibleActivationArc, 'col-9': isVisibleRegDateArc}">
+            <div class="row">
+              <strong>Sensor status</strong>
             </div>
             <div class="row">
-              <table class="tableStyle">
-                <tr>
-                  <th>Temp</th>
-                  <th>CO</th>
-                  <th>O<sub>3</sub></th>
-                  <th>NO<sub>2</sub></th>
-                  <th>SO<sub>2</sub></th>
-                  <th>PM2.5</th>
-                  <th>PM10</th>
-                  <th>GPS</th>
-                </tr>
-                <tr>
-                  <th><i class="fa fa-circle"
-                      [ngClass]="{active: element.status.temp == 1, inactive: element.status.temp == 0}"
-                      aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle"
-                      [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}"
-                      aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle"
-                      [ngClass]="{active: element.status.co == 1, inactive: element.status.co == 0}"
-                      aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle"
-                      [ngClass]="{active: element.status.no2 == 1, inactive: element.status.no2 == 0}"
-                      aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle"
-                      [ngClass]="{active: element.status.so2 == 1, inactive: element.status.so2 == 0}"
-                      aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle"
-                      [ngClass]="{active: element.status.pm25 == 1, inactive: element.status.pm25 == 0}"
-                      aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle"
-                      [ngClass]="{active: element.status.pm10 == 1, inactive: element.status.pm10 == 0}"
-                      aria-hidden="true"></i></th>
-                  <th><i class="fa fa-circle"
-                      [ngClass]="{active: element.status.gps == 1, inactive: element.status.gps == 0}"
-                      aria-hidden="true"></i></th>
-                </tr>
-              </table>
+              <span class="sensorStatus">
+                <p>Temp</p>
+                <i *ngIf="element.status.temp" class="fas fa-check-circle active font-lg2"></i>
+                <i *ngIf="!element.status.temp" class="fas fa-minus-circle inactive font-lg2"></i>
+              </span>
+              <span class="sensorStatus">
+                <p>CO</p>
+                <i *ngIf="element.status.co" class="fas fa-check-circle active font-lg2"></i>
+                <i *ngIf="!element.status.co" class="fas fa-minus-circle inactive font-lg2"></i>
+              </span>
+              <span class="sensorStatus">
+                <p>O<sub>3</sub></p>
+                <i *ngIf="element.status.o3" class="fas fa-check-circle active font-lg2"></i>
+                <i *ngIf="!element.status.o3" class="fas fa-minus-circle inactive font-lg2"></i>
+              </span>
+              <span class="sensorStatus">
+                <p>NO<sub>2</sub></p>
+                <i *ngIf="element.status.no2" class="fas fa-check-circle active font-lg2"></i>
+                <i *ngIf="!element.status.no2" class="fas fa-minus-circle inactive font-lg2"></i>
+              </span>
+              <span class="sensorStatus">
+                <p>SO<sub>2</sub></p>
+                <i *ngIf="element.status.so2" class="fas fa-check-circle active font-lg2"></i>
+                <i *ngIf="!element.status.so2" class="fas fa-minus-circle inactive font-lg2"></i>
+              </span>
+              <span class="sensorStatus">
+                <p>PM2.5</p>
+                <i *ngIf="element.status.pm25" class="fas fa-check-circle active font-lg2"></i>
+                <i *ngIf="!element.status.pm25" class="fas fa-minus-circle inactive font-lg2"></i>
+              </span>
+              <span class="sensorStatus">
+                <p>PM10</p>
+                <i *ngIf="element.status.pm10" class="fas fa-check-circle active font-lg2"></i>
+                <i *ngIf="!element.status.pm10" class="fas fa-minus-circle inactive font-lg2"></i>
+              </span>
+              <span class="sensorStatus">
+                <p>GPS</p>
+                <i *ngIf="element.status.gps" class="fas fa-check-circle active font-lg2"></i>
+                <i *ngIf="!element.status.gps" class="fas fa-minus-circle inactive font-lg2"></i>
+              </span>
             </div>
           </div>
         </div>

@@ -43,6 +43,12 @@ table {
     margin-top: 20px;
 }
 
+.paginator {
+    margin-top: 30px;
+    background-color: var(--primary-variant);
+    font-weight: 410;
+}
+
 .header {
     font-weight: bold;
 }

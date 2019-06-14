@@ -9,6 +9,7 @@ body {
 
 .wrapper {
     width: 70%;
+    min-width: 400px;
     margin: auto auto;
     margin-top: 30px;
     margin-bottom: 80px;

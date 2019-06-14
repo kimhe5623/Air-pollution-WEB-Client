@@ -25,15 +25,7 @@
 
 }
 
-.checkboxWidth{
-    width: 3.5rem;
-}
-
-.eachtitle {
-    margin-right: 3rem;
-
-}
-.eachtitle.column-name {
+.column-name {
     font-weight: bold;
 }
 
@@ -81,17 +73,97 @@ p {
 }
 
 .contentWrapper {
-    padding-left:3rem;
+    padding-left: 3rem;
+    margin-bottom: 20px;
 }
 .contentName {
-    padding-bottom:1rem
+    padding-bottom: 1rem
 }
 
-.tableStyle{
-    width: 500px;
-}
-tr, th{
-    padding: 5px;
-    border: solid 0.5px #cecece;
+.sensorStatus {
+    width: 55px;
     text-align: center;
+}
+
+/************ sensor Table ************/
+.checkboxWidth{
+    width: 50px;
+}
+.table_no {
+    width: 5%;
+}
+.table_mac_address {
+    width: 18%;
+}
+.table_activation {
+    width: 16%;
+}
+.table_nation {
+    width: 13%;
+}
+.table_state {
+    width: 13%;
+}
+.table_city {
+    width: 13%;
+}
+.table_registration_date {
+    width: 22%;
+}
+.table-padding {
+    padding-top: 3px;
+}
+
+
+/*  GO FULL WIDTH AT LESS THAN 1640 PIXELS */
+
+@media (max-width: 1640px) {
+    .table_no {
+        width: 7%;
+    }
+    .table_mac_address {
+        width: 22%
+    }
+    .table_activation {
+        width: 20%
+    }
+    .table_nation {
+        width: 17%
+    }
+    .table_state {
+        width: 17%
+    }
+    .table_city {
+        width: 17%
+    }
+}
+
+/*  GO FULL WIDTH AT LESS THAN 1200 PIXELS */
+
+@media (max-width: 1200px) {
+    .checkboxWidth{
+        width: 10%;
+    }
+    .table_no {
+        width: 20%;
+    }
+    .table_mac_address {
+        width: 40%
+    }
+    .table_activation {
+        width: 30%
+    }
+}
+
+/*  GO FULL WIDTH AT LESS THAN 1022 PIXELS */
+@media only screen and (max-width: 1022px) {
+    .checkboxWidth{
+        width: 20%;
+    }
+    .table_no {
+        width: 20%;
+    }
+    .table_mac_address {
+        width: 60%
+    }
 }
