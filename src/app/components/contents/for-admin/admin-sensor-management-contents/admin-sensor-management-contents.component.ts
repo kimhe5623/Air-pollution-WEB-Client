@@ -53,6 +53,9 @@ export class AdminSensorManagementContentsComponent implements OnInit {
   isVisibleGeoDataArc: boolean;
   isVisibleActivationArc: boolean;
 
+  //////////////
+  focusedSensorIdx: number = -1;
+
   constructor(
     public dialog: MatDialog,
     private storageService: StorageService,
@@ -83,7 +86,7 @@ export class AdminSensorManagementContentsComponent implements OnInit {
   windowSize() {
     this.isVisibleUseridArc = window.innerWidth <= 1640;
     this.isVisibleRegDateArc = window.innerWidth <= 1450;
-    this.isVisibleGeoDataArc  = window.innerWidth <= 1022;
+    this.isVisibleGeoDataArc = window.innerWidth <= 1022;
     this.isVisibleActivationArc = window.innerWidth <= 900;
   }
 
@@ -127,6 +130,8 @@ export class AdminSensorManagementContentsComponent implements OnInit {
             nation: 122,
             state: 'CA',
             city: 'San diego',
+            lat: this.dataService.rspToLatlng(result.payload.selectedSensorInformationList[i]['cgeo']).lat,
+            lng: this.dataService.rspToLatlng(result.payload.selectedSensorInformationList[i]['cgeo']).lng,
             cellularMac: this.dataService.rspToMacAddress(result.payload.selectedSensorInformationList[i]['cmac']),
             regDate: new Date(Number(result.payload.selectedSensorInformationList[i]['rdt'])),
             status: this.dataService.sensorStatusParsing(Number(result.payload.selectedSensorInformationList[i]['stat'])),
@@ -280,12 +285,31 @@ export class AdminSensorManagementContentsComponent implements OnInit {
       }
     });
   }
+
   //--------------------------------
+  openSensorArcItem(idx: number) {
+    this.focusedSensorIdx = idx;
+    console.log('Open arc => ', idx);
+  }
+
+  closeSensorArcItem(idx: number) {
+    if (this.focusedSensorIdx == idx) {
+      this.focusedSensorIdx = -1;
+      console.log('Close arc => ', idx);
+    }
+  }
+
+  clickSensorMapMarker(idx: number) {
+    this.focusedSensorIdx = idx;
+    console.log('Sensor Map marker clicked => ', idx);
+  }
 }
 
 export interface PeriodicElement {
   mac: string;
   activation: number;
+  lat: number;
+  lng: number;
   nation: number;
   state: string;
   city: string;

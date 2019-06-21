@@ -25,7 +25,7 @@ export class SensorManagementContentsComponent implements OnInit {
   ];
   SENSOR_LIST: PeriodicElement[] = [];
   selection : SelectionModel<PeriodicElement>;
-  index: number = 0;
+  //index: number = 0;
   existSensor: boolean;
   selectedSensor: any = [];
 
@@ -39,6 +39,10 @@ export class SensorManagementContentsComponent implements OnInit {
   isVisibleRegDateArc: boolean;
   isVisibleGeoDataArc: boolean;
   isVisibleActivationArc: boolean;
+
+  //////////////
+  focusedSensorIdx: number = -1;
+
 
   constructor(
     public dialog: MatDialog,
@@ -90,6 +94,8 @@ export class SensorManagementContentsComponent implements OnInit {
               nation: result.payload.selectedSensorInformationList[i][6],
               state: result.payload.selectedSensorInformationList[i][7],
               city: result.payload.selectedSensorInformationList[i][8],
+              lat: result.payload.selectedSensorInformationList[i][9],
+              lng: result.payload.selectedSensorInformationList[i][10],
             });
           }
         }
@@ -178,6 +184,20 @@ export class SensorManagementContentsComponent implements OnInit {
     });
   }
   //--------------------------------
+
+  openSensorArcItem(idx: number) {
+    this.focusedSensorIdx = idx;
+  }
+
+  closeSensorArcItem(idx: number) {
+    if(this.focusedSensorIdx == idx) {
+      this.focusedSensorIdx = -1;
+    }
+  }
+
+  clickSensorMapMarker(idx: number){
+    this.focusedSensorIdx = idx;
+  }
 }
 
 export interface PeriodicElement {
@@ -190,4 +210,6 @@ export interface PeriodicElement {
   regDate: Date;
   status: any;
   mobility: number;
+  lat: number;
+  lng: number;
 }

@@ -125,6 +125,7 @@ import { WarnDialog } from './dialogs/noti/warn-dialog/warn-dialog';
 import { NotiService } from './services/noti.service';
 import { EqualValidator } from './forLogin/customizedValidators';
 import { AirDataForRavComponent } from './components/air-data-for-rav/air-data-for-rav.component';
+import { SensorListMapsComponent } from './components/sensor-list-maps/sensor-list-maps.component';
 
 @NgModule({
   declarations: [
@@ -195,7 +196,8 @@ import { AirDataForRavComponent } from './components/air-data-for-rav/air-data-f
     ErrDialog,
     WarnDialog,
     EqualValidator,
-    AirDataForRavComponent
+    AirDataForRavComponent,
+    SensorListMapsComponent
   ],
   imports: [
     /** Angular Modules */

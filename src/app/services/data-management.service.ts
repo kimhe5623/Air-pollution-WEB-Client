@@ -273,6 +273,12 @@ export class DataManagementService {
     return mac;
   }
 
+  /** */
+  rspToLatlng(latlng: string): any {
+    var parsedLatlng = latlng.split(',')
+    return { lat: parsedLatlng[0], lng: parsedLatlng[1] };
+  }
+
   /**
    * Change the input string format to the reqMsg's format like 'AABBCCDDEEFF'
    * @param mac ex> 'AA:BB:CC:DD:EE:FF'

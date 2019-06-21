@@ -53,6 +53,9 @@
         mdbWavesEffect>-</button>
     </div>
   </div>
+  <mat-card class="map_card">
+    <app-sensor-list-maps *ngIf="SENSOR_LIST.length != 0" [data]="SENSOR_LIST" [focusedIdx]="focusedSensorIdx" (clickMarker)="clickSensorMapMarker($event)"></app-sensor-list-maps>
+  </mat-card>
   <div class="mat-elevation-z8">
     <mat-accordion>
       <div class="tableheader">
@@ -88,7 +91,9 @@
         </span>
       </div>
 
-      <mat-expansion-panel *ngFor="let element of SENSOR_LIST; let idx=index;">
+      <mat-expansion-panel *ngFor="let element of SENSOR_LIST; let idx=index;"
+          [expanded]="focusedSensorIdx == idx"
+          (closed)="closeSensorArcItem(idx)" (opened)="openSensorArcItem(idx)">
         <mat-expansion-panel-header *ngIf="!existSensor">
           No sensor
         </mat-expansion-panel-header>
