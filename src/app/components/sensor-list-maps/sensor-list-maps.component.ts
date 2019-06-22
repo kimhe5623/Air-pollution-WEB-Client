@@ -80,9 +80,9 @@ export class SensorListMapsComponent implements OnInit, DoCheck {
         position: new google.maps.LatLng(this.data[i].lat, this.data[i].lng),
 
         icon: {
-          anchor: new google.maps.Point(0, 20),
+          anchor: new google.maps.Point(0, 15),
           origin: new google.maps.Point(0, 0),
-          scaledSize: new google.maps.Size(40, 40),
+          scaledSize: new google.maps.Size(30, 30),
           url: i == this.currentFocusedMarkerIdx ? 'assets/map/marker/map-marker-focused.svg' : 'assets/map/marker/map-marker-unfocused.svg'
         },
 
@@ -109,10 +109,9 @@ export class SensorListMapsComponent implements OnInit, DoCheck {
     if(this.currentFocusedMarkerIdx != -1) {
       this.markers[this.currentFocusedMarkerIdx].setIcon(
         {
-          anchor: new google.maps.Point(0, 20),
-          labelOrigin: new google.maps.Point(20, 20),
+          anchor: new google.maps.Point(0, 15),
           origin: new google.maps.Point(0, 0),
-          scaledSize: new google.maps.Size(40, 40),
+          scaledSize: new google.maps.Size(30, 30),
           url: 'assets/map/marker/map-marker-unfocused.svg'
         }
       );
@@ -121,10 +120,9 @@ export class SensorListMapsComponent implements OnInit, DoCheck {
     if(idx != -1) {
       this.markers[idx].setIcon(
         {
-          anchor: new google.maps.Point(0, 20),
-          labelOrigin: new google.maps.Point(20, 20),
+          anchor: new google.maps.Point(0, 15),
           origin: new google.maps.Point(0, 0),
-          scaledSize: new google.maps.Size(40, 40),
+          scaledSize: new google.maps.Size(30, 30),
           url: 'assets/map/marker/map-marker-focused.svg'
         }
       );
