@@ -21,9 +21,7 @@
 
 <img src="https://user-images.githubusercontent.com/32252093/101591186-46c32480-3a2f-11eb-8c9c-f8170c9da66a.png" width="400px" />
 
-This system measures CO, O3, NO2, SO2, PM2.5, PM10, etc. used in air pollution indicators,
-Shows the AQI index. Users can obtain global atmospheric indicators by sharing measured data.
-have.
+This system measures CO, O3, NO2, SO2, PM2.5, PM10, etc., which are used in air pollution indicators, and displays the AQI index to the user. Users can obtain global atmospheric indicators by sharing the measured data.
 
 <a name="reference-model"/>
 
