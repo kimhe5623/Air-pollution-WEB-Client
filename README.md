@@ -27,14 +27,14 @@ This system measures CO, O3, NO2, SO2, PM2.5, PM10, etc., which are used in air 
 
 ## 1. Reference Model
 
-![image](https://user-images.githubusercontent.com/32252093/101592711-12049c80-3a32-11eb-9f14-eea8d4b0c475.png)
+<img src="https://user-images.githubusercontent.com/32252093/101599723-97da1500-3a3d-11eb-9b72-9a2518ba6cdd.png" width="400px"/>
 
 
 <a name="system-architecture"/>
 
 ## 2. System Architecture
 
-![image](https://user-images.githubusercontent.com/32252093/101599790-b3452000-3a3d-11eb-9b67-a3fd3ca0dc4d.png)
+<img src="https://user-images.githubusercontent.com/32252093/101599790-b3452000-3a3d-11eb-9b67-a3fd3ca0dc4d.png" width="700px"/>
 
 
 <a name="airound-web-application"/>
