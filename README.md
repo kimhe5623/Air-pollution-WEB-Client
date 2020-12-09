@@ -3,12 +3,12 @@
 [Airound](#airound)
 
 1. [Reference Model](#reference-model)
-2. [System Architecture)(#system-architecture)
+2. [System Architecture](#system-architecture)
 3. [Airound Web Application](#airound-web-application)
-  - [User Management](#user-management)
-  - [Sensor Management](#sensor-management)
-  - [Administrator Only](#admin-only)
-  - [Data Monitoring](#data-monitoring)
+    - [User Management](#user-management)
+    - [Sensor Management](#sensor-management)
+    - [Administrator Only](#admin-only)
+    - [Data Monitoring](#data-monitoring)
 
 4. [Angular version info](#version-info)
 5. [How to run](#how-to-run)
